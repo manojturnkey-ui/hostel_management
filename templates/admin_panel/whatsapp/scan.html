@@ -1,0 +1,196 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Scan Service</h4>
+                <a href="{% if active_setting and active_setting.pk %}{% url 'panel_whatsapp_setting_update' active_setting.pk %}{% else %}{% url 'panel_whatsapp_setting_create' %}{% endif %}" class="btn btn-sm btn-primary">
+                    {% if active_setting and active_setting.pk %}Edit{% else %}Add{% endif %}
+                </a>
+            </div>
+            <div class="card-body">
+                {% if active_setting %}
+                    <div class="border rounded p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">{{ active_setting.service_name|default:"WhatsApp Scan Service" }}</h6>
+                            <span class="badge bg-{{ active_setting.is_active|badge_class }}">{{ active_setting.is_active|display_value }}</span>
+                        </div>
+                        <p class="text-muted mb-2">{{ active_setting.service_url|default:"Service URL not configured." }}</p>
+                        <p class="mb-1"><strong>Session:</strong> {{ active_setting.session_name|default:"-" }}</p>
+                        <p class="mb-1"><strong>Default Country Code:</strong> {{ active_setting.default_country_code|default:"91" }}</p>
+                        <p class="mb-0"><strong>API Key:</strong> {% if active_setting.api_key %}Configured{% else %}Missing{% endif %}</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning mb-0">No WhatsApp scan service configured yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Connection Status</h4>
+                <div class="d-flex gap-2">
+                    <form method="post" action="{% url 'panel_whatsapp_restart' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Restart</button>
+                    </form>
+                    <form method="post" action="{% url 'panel_whatsapp_logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="border rounded p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>State</strong>
+                        <span id="wa-connected-badge" class="badge {% if gateway_status.connected %}bg-success{% elif gateway_status.configured and gateway_status.reachable %}bg-warning text-dark{% elif gateway_status.configured %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {% if gateway_status.connected %}Connected{% elif gateway_status.configured and gateway_status.reachable %}{{ gateway_status.state|default:"waiting" }}{% elif gateway_status.configured %}Offline{% else %}Not Configured{% endif %}
+                        </span>
+                    </div>
+                    <p class="mb-1"><strong>Mobile Number:</strong> <span id="wa-number">{{ gateway_status.number|default:"-" }}</span></p>
+                    <p class="mb-1"><strong>Reachable:</strong> <span id="wa-reachable">{{ gateway_status.reachable|yesno:"Yes,No" }}</span></p>
+                    <p class="mb-0"><strong>Last Error:</strong> <span id="wa-last-error">{{ gateway_status.last_error|default:"-" }}</span></p>
+                </div>
+                <div class="alert alert-info mb-0">
+                    Once the scan is completed and status becomes connected, booking, payment, and billing messages will send automatically from the linked WhatsApp session.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">WhatsApp QR Scan</h4>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="wa-refresh-btn">Refresh</button>
+            </div>
+            <div class="card-body text-center">
+                <div id="wa-qr-connected" class="{% if gateway_status.connected %}{% else %}d-none{% endif %}">
+                    <div class="alert alert-success mb-0">WhatsApp is already connected. No QR scan is required.</div>
+                </div>
+                <div id="wa-qr-wrapper" class="{% if gateway_status.connected %}d-none{% endif %}">
+                    <img id="wa-qr-image" src="{{ gateway_qr_image_data_url }}" alt="WhatsApp QR" class="img-fluid rounded-3 border mb-3 {% if not gateway_qr_image_data_url %}d-none{% endif %}" style="max-width: 280px;">
+                    <div id="wa-qr-message-box" class="{% if gateway_qr_image_data_url %}d-none{% endif %}">
+                        <div class="alert alert-warning mb-2">QR is not available yet.</div>
+                    </div>
+                    <p id="wa-qr-message" class="mb-0 text-muted">
+                        {% if gateway_qr_image_data_url %}
+                            Open WhatsApp on the target phone, use Linked Devices, and scan this QR code.
+                        {% else %}
+                            {{ gateway_qr_message|default:"Restart the scan service and wait a few seconds, then refresh this page." }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Recent WhatsApp Logs</h4>
+                <a href="{% url 'panel_whatsapp_template_list' %}" class="btn btn-sm btn-outline-primary">Open Templates</a>
+            </div>
+            <div class="card-body">
+                {% for log in recent_logs %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong>{{ log.event_type }}</strong>
+                            <span class="badge bg-{{ log.status|badge_class }}">{{ log.status }}</span>
+                        </div>
+                        <small class="text-muted d-block mb-2">{{ log.mobile_number }} | {{ log.created_at|display_value }}</small>
+                        <p class="mb-1">{{ log.message|truncatechars:120 }}</p>
+                        <small class="text-muted">{{ log.response|default:"-" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">No WhatsApp logs yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    (function () {
+        const statusUrl = "{% url 'panel_whatsapp_scan_status' %}";
+        const refreshButton = document.getElementById("wa-refresh-btn");
+        const connectedBadge = document.getElementById("wa-connected-badge");
+        const numberNode = document.getElementById("wa-number");
+        const reachableNode = document.getElementById("wa-reachable");
+        const errorNode = document.getElementById("wa-last-error");
+        const qrConnected = document.getElementById("wa-qr-connected");
+        const qrWrapper = document.getElementById("wa-qr-wrapper");
+        const qrImage = document.getElementById("wa-qr-image");
+        const qrMessage = document.getElementById("wa-qr-message");
+        const qrMessageBox = document.getElementById("wa-qr-message-box");
+
+        function applyStatus(data) {
+            numberNode.textContent = data.number || "-";
+            reachableNode.textContent = data.reachable ? "Yes" : "No";
+            errorNode.textContent = data.last_error || "-";
+
+            connectedBadge.className = "badge";
+            if (data.connected) {
+                connectedBadge.classList.add("bg-success");
+                connectedBadge.textContent = "Connected";
+                qrConnected.classList.remove("d-none");
+                qrWrapper.classList.add("d-none");
+                return;
+            }
+
+            qrConnected.classList.add("d-none");
+            qrWrapper.classList.remove("d-none");
+
+            if (data.configured && data.reachable) {
+                connectedBadge.classList.add("bg-warning", "text-dark");
+                connectedBadge.textContent = data.state || "waiting";
+            } else if (data.configured) {
+                connectedBadge.classList.add("bg-danger");
+                connectedBadge.textContent = "Offline";
+            } else {
+                connectedBadge.classList.add("bg-secondary");
+                connectedBadge.textContent = "Not Configured";
+            }
+
+            if (data.qr_image_data_url) {
+                qrImage.src = data.qr_image_data_url;
+                qrImage.classList.remove("d-none");
+                qrMessageBox.classList.add("d-none");
+                qrMessage.textContent = "Open WhatsApp on the target phone, use Linked Devices, and scan this QR code.";
+            } else {
+                qrImage.classList.add("d-none");
+                qrMessageBox.classList.remove("d-none");
+                qrMessage.textContent = data.qr_message || "QR is not available yet. Restart the scan service and wait a few seconds.";
+            }
+        }
+
+        async function refreshStatus() {
+            try {
+                const response = await fetch(statusUrl, {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to load WhatsApp scan status.");
+                }
+                const data = await response.json();
+                applyStatus(data);
+            } catch (error) {
+                connectedBadge.className = "badge bg-danger";
+                connectedBadge.textContent = "Offline";
+                errorNode.textContent = error.message;
+            }
+        }
+
+        refreshButton.addEventListener("click", refreshStatus);
+        setInterval(refreshStatus, 5000);
+    })();
+</script>
+{% endblock %}

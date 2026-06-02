@@ -1,9 +1,11 @@
 from django.urls import path
 
 from .views import (
-    WhatsAppDashboardView,
     WhatsAppGatewayLogoutView,
     WhatsAppGatewayRestartView,
+    WhatsAppRootRedirectView,
+    WhatsAppScanStatusView,
+    WhatsAppScanView,
     WhatsAppSettingCreateView,
     WhatsAppSettingUpdateView,
     WhatsAppTemplateCreateView,
@@ -13,7 +15,9 @@ from .views import (
 
 
 urlpatterns = [
-    path("whatsapp/", WhatsAppDashboardView.as_view(), name="panel_whatsapp_settings"),
+    path("whatsapp/", WhatsAppRootRedirectView.as_view(), name="panel_whatsapp_settings"),
+    path("whatsapp/scan/", WhatsAppScanView.as_view(), name="panel_whatsapp_scan"),
+    path("whatsapp/scan/status/", WhatsAppScanStatusView.as_view(), name="panel_whatsapp_scan_status"),
     path("whatsapp/restart/", WhatsAppGatewayRestartView.as_view(), name="panel_whatsapp_restart"),
     path("whatsapp/logout/", WhatsAppGatewayLogoutView.as_view(), name="panel_whatsapp_logout"),
     path("whatsapp/settings/add/", WhatsAppSettingCreateView.as_view(), name="panel_whatsapp_setting_create"),

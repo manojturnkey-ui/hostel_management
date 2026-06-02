@@ -38,7 +38,14 @@ def panel_context(request) -> dict[str, Any]:
         },
         {"label": "Students", "icon": "iconoir-user", "url_name": "panel_student_list"},
         {"label": "QR Settings", "icon": "iconoir-qr-code", "url_name": "panel_qr_setting_list"},
-        {"label": "WhatsApp Settings", "icon": "iconoir-chat-bubble", "url_name": "panel_whatsapp_settings"},
+        {
+            "label": "WhatsApp Settings",
+            "icon": "iconoir-chat-bubble",
+            "children": [
+                {"label": "WhatsApp Scan", "url_name": "panel_whatsapp_scan"},
+                {"label": "WhatsApp Template", "url_name": "panel_whatsapp_template_list"},
+            ],
+        },
         {
             "label": "Rent Management",
             "icon": "iconoir-dollar-circle",
