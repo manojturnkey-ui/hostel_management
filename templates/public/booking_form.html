@@ -1,8 +1,8 @@
 {% extends "layouts/public_base.html" %}
 {% block content %}
-<div class="row g-4 mt-2">
+<div class="row g-4 mt-2 align-items-stretch">
     <div class="col-lg-5">
-        <div class="public-card public-card-highlight">
+        <div class="public-card public-card-highlight h-100">
             <span class="public-badge-soft mb-3">Booking Summary</span>
             <h3 class="h4 mb-3">Selected Cot</h3>
             <ul class="public-list-clean mb-4">
@@ -34,13 +34,13 @@
         </div>
     </div>
     <div class="col-lg-7">
-        <div class="public-card public-card-highlight">
+        <div class="public-card public-card-highlight public-form-card h-100">
             <span class="public-badge-soft mb-3">Guest Details</span>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" class="d-flex flex-column flex-grow-1">
                 {% csrf_token %}
-                <div class="row">
+                <div class="row g-3 public-form-grid">
                     {% for field in form %}
-                        <div class="col-md-{% if field.name == 'address' or field.name == 'student_photo' or field.name == 'address_proof_front' or field.name == 'address_proof_back' or field.name == 'payment_screenshot' %}12{% else %}6{% endif %} public-field-block">
+                        <div class="col-md-6 public-field-block">
                             <label class="form-label">{{ field.label }}</label>
                             {{ field }}
                             {% if field.help_text %}
@@ -52,7 +52,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button type="submit" class="btn btn-dark btn-lg w-100">Submit Booking Request</button>
+                <button type="submit" class="btn btn-dark btn-lg w-100 mt-2 mt-lg-auto">Submit Booking Request</button>
             </form>
         </div>
     </div>

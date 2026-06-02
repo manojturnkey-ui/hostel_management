@@ -44,7 +44,7 @@ class PublicBookingForm(StyledFormMixin, forms.Form):
         validators=[validate_mobile_number],
         label="Relative Contact Number",
     )
-    address = forms.CharField(widget=forms.Textarea, label="Address")
+    address = forms.CharField(widget=forms.TextInput, label="Address")
     state = forms.CharField(max_length=150, label="State")
     pincode = forms.CharField(max_length=6, validators=[validate_pincode], label="Pincode")
     student_photo = forms.ImageField(required=False, validators=[validate_image_file], label="Guest Photo")

@@ -242,8 +242,6 @@ class DashboardView(PanelTemplateView):
             },
         }
         context["cot_cards"] = _build_cot_cards(cots)
-        context["recent_bookings"] = Booking.objects.select_related("student", "cot").order_by("-created_at")[:8]
-        context["access_overview"] = StudentAccess.objects.select_related("student").order_by("-updated_at")[:8]
         return context
 
 
