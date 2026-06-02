@@ -2,9 +2,10 @@
 {% block content %}
 <div class="row g-4 mt-2">
     <div class="col-lg-5">
-        <div class="public-card">
+        <div class="public-card public-card-highlight">
+            <span class="public-badge-soft mb-3">Booking Summary</span>
             <h3 class="h4 mb-3">Selected Cot</h3>
-            <ul class="list-unstyled mb-4">
+            <ul class="public-list-clean mb-4">
                 <li><strong>Area:</strong> {{ cot.room.floor.section.building.area.area_name }}</li>
                 <li><strong>Building:</strong> {{ cot.room.floor.section.building.building_name }}</li>
                 <li><strong>Section:</strong> {{ cot.room.floor.section.section_name }}</li>
@@ -19,11 +20,13 @@
             </div>
             <div class="mt-4">
                 <h5 class="mb-3">UPI QR Payment</h5>
-                {% if qr_setting %}
-                    <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="img-fluid rounded-4 border mb-3">
-                    <p class="mb-1"><strong>Title:</strong> {{ qr_setting.title }}</p>
-                    <p class="mb-1"><strong>UPI ID:</strong> {{ qr_setting.upi_id|default:"-" }}</p>
-                    <p class="mb-0"><strong>Account Name:</strong> {{ qr_setting.account_name|default:"-" }}</p>
+                {% if qr_setting and qr_setting.qr_image %}
+                    <div class="public-qr-frame">
+                        <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="public-qr-image mb-3">
+                        <p class="mb-1"><strong>Title:</strong> {{ qr_setting.title }}</p>
+                        <p class="mb-1"><strong>UPI ID:</strong> {{ qr_setting.upi_id|default:"-" }}</p>
+                        <p class="mb-0"><strong>Account Name:</strong> {{ qr_setting.account_name|default:"-" }}</p>
+                    </div>
                 {% else %}
                     <div class="alert alert-warning mb-0">No active QR payment setting available yet. Please contact admin.</div>
                 {% endif %}
@@ -31,7 +34,8 @@
         </div>
     </div>
     <div class="col-lg-7">
-        <div class="public-card">
+        <div class="public-card public-card-highlight">
+            <span class="public-badge-soft mb-3">Student Details</span>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">

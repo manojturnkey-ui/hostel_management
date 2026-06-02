@@ -3,7 +3,7 @@
 <div class="row g-4 mt-2">
     {% for cot in cots %}
         <div class="col-md-6 col-lg-4">
-            <div class="public-card h-100">
+            <div class="public-card public-card-highlight h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="badge bg-{{ cot.status_badge_class }}">{{ cot.status|title }}</span>
                     <strong>Cot {{ cot.cot_number }}</strong>
@@ -11,16 +11,16 @@
                 {% if cot.status == cot_available %}
                     <p class="mb-2"><strong>Price:</strong> Rs. {{ cot.cot_price }}</p>
                     <p class="mb-2"><strong>Deposit:</strong> Rs. {{ cot.security_deposit }}</p>
-                    <p class="text-muted">{{ cot.public_status_text }}</p>
-                    <a href="{% url 'public_booking_create' cot.pk %}" class="btn btn-dark w-100">Book Now</a>
+                    <p class="public-card-subtitle">{{ cot.public_status_text }}</p>
+                    <a href="{% url 'public_booking_create' cot.pk %}" class="btn btn-dark public-action w-100">Book Now</a>
                 {% else %}
-                    <p class="mb-2 text-muted">{{ cot.public_status_text }}</p>
+                    <p class="mb-2 public-card-subtitle">{{ cot.public_status_text }}</p>
                     <button class="btn btn-outline-secondary w-100" disabled>{{ cot.public_status_text }}</button>
                 {% endif %}
             </div>
         </div>
     {% empty %}
-        <div class="col-12"><div class="alert alert-info">No cots available in this room.</div></div>
+        <div class="col-12"><div class="alert alert-info public-empty-state">No cots available in this room.</div></div>
     {% endfor %}
 </div>
 {% endblock %}

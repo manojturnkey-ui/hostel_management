@@ -143,8 +143,37 @@ python manage.py ensure_panel_admin
 - Grace period extension
 - Student ledger
 - Access control models and logs
-- WhatsApp provider-ready service layer and logs
+- WhatsApp scan gateway integration and logs
 - Excel export for reports
+
+## WhatsApp Scan Service Integration
+
+This Django project is integrated with a separate Node.js WhatsApp scan microservice.
+
+Configure either:
+
+1. An active WhatsApp scan setting in the admin panel, or
+2. These environment variables:
+
+```text
+WHATSAPP_SCAN_BASE_URL=http://127.0.0.1:3001
+WHATSAPP_SCAN_API_KEY=your-api-key
+WHATSAPP_SCAN_TIMEOUT=15
+WHATSAPP_SCAN_DEFAULT_COUNTRY_CODE=91
+WHATSAPP_SCAN_SESSION_NAME=autoans-session
+```
+
+Admin panel page:
+
+- `/panel/whatsapp/`
+
+From there you can:
+
+- view live scan-service status
+- view the QR code from the Node service
+- restart the session
+- logout and force fresh QR scan
+- keep delivery logs and editable message templates in Django
 
 ## Render Deployment Notes
 

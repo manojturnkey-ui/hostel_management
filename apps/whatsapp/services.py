@@ -1,15 +1,14 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from string import Formatter
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
-from .models import (
-    WhatsAppLog,
-    WhatsAppLogStatusChoices,
-    WhatsAppMessageTemplate,
-    WhatsAppProviderChoices,
-    WhatsAppSetting,
-)
+from config.settings import env
+
+from .models import WhatsAppLog, WhatsAppLogStatusChoices, WhatsAppMessageTemplate, WhatsAppSetting
 
 
 DEFAULT_TEMPLATES = {
@@ -28,6 +27,34 @@ DEFAULT_TEMPLATES = {
 }
 
 
+@dataclass
+class GatewayResponse:
+    ok: bool
+    status_code: int | None
+    data: dict
+    error: str = ""
+
+    @property
+    def summary(self) -> str:
+        if self.error:
+            return self.error
+        if isinstance(self.data, dict):
+            return str(self.data.get("message") or self.data.get("state") or "OK")
+        return "OK"
+
+
+@dataclass
+class DashboardStatus:
+    configured: bool
+    reachable: bool
+    connected: bool
+    state: str
+    number: str
+    last_error: str
+    qr_image_data_url: str
+    raw: dict
+
+
 def ensure_default_templates() -> None:
     for template_key, content in DEFAULT_TEMPLATES.items():
         WhatsAppMessageTemplate.objects.get_or_create(
@@ -36,62 +63,29 @@ def ensure_default_templates() -> None:
         )
 
 
-@dataclass
-class ProviderResponse:
-    status: str
-    response: str
+def get_active_setting(include_env_fallback: bool = True) -> WhatsAppSetting | None:
+    setting = WhatsAppSetting.objects.filter(is_active=True).order_by("-created_at").first()
+    if setting and setting.service_url and setting.api_key:
+        return setting
 
+    if not include_env_fallback:
+        return setting
 
-class BaseWhatsAppProvider:
-    def __init__(self, setting: WhatsAppSetting | None):
-        self.setting = setting
+    service_url = (env("WHATSAPP_SCAN_BASE_URL", "") or "").strip().rstrip("/")
+    api_key = env("WHATSAPP_SCAN_API_KEY", "") or ""
+    if not service_url and not api_key:
+        return setting
 
-    def send_message(self, mobile_number: str, message: str) -> ProviderResponse:
-        raise NotImplementedError
-
-
-class ManualPlaceholderProvider(BaseWhatsAppProvider):
-    def send_message(self, mobile_number: str, message: str) -> ProviderResponse:
-        return ProviderResponse(
-            status=WhatsAppLogStatusChoices.PENDING,
-            response="Manual placeholder active. Message saved for later sending.",
-        )
-
-
-class GreenAPIProvider(BaseWhatsAppProvider):
-    def send_message(self, mobile_number: str, message: str) -> ProviderResponse:
-        if not self.setting or not self.setting.instance_id or not self.setting.api_token:
-            return ProviderResponse(
-                status=WhatsAppLogStatusChoices.FAILED,
-                response="Green API credentials are missing. Message stored only in log.",
-            )
-        return ProviderResponse(
-            status=WhatsAppLogStatusChoices.PENDING,
-            response="Green API integration stub is ready. Real sending will be added later.",
-        )
-
-
-class WhatsAppCloudAPIProvider(BaseWhatsAppProvider):
-    def send_message(self, mobile_number: str, message: str) -> ProviderResponse:
-        if not self.setting or not self.setting.phone_number_id or not self.setting.access_token:
-            return ProviderResponse(
-                status=WhatsAppLogStatusChoices.FAILED,
-                response="WhatsApp Cloud API credentials are missing. Message stored only in log.",
-            )
-        return ProviderResponse(
-            status=WhatsAppLogStatusChoices.PENDING,
-            response="WhatsApp Cloud API integration stub is ready. Real sending will be added later.",
-        )
-
-
-def get_provider(setting: WhatsAppSetting | None) -> BaseWhatsAppProvider:
-    provider_map = {
-        WhatsAppProviderChoices.GREEN_API: GreenAPIProvider,
-        WhatsAppProviderChoices.WHATSAPP_CLOUD_API: WhatsAppCloudAPIProvider,
-        WhatsAppProviderChoices.MANUAL_PLACEHOLDER: ManualPlaceholderProvider,
-    }
-    provider_class = provider_map.get(setting.provider if setting else WhatsAppProviderChoices.MANUAL_PLACEHOLDER, ManualPlaceholderProvider)
-    return provider_class(setting)
+    fallback = WhatsAppSetting(
+        service_name="Environment WhatsApp Scan",
+        service_url=service_url,
+        api_key=api_key,
+        default_country_code=env("WHATSAPP_SCAN_DEFAULT_COUNTRY_CODE", "91") or "91",
+        session_name=env("WHATSAPP_SCAN_SESSION_NAME", "") or "",
+        is_active=True,
+    )
+    fallback.pk = None
+    return fallback
 
 
 def get_template_content(template_key: str) -> str:
@@ -109,18 +103,105 @@ def render_template(template_key: str, context: dict) -> str:
     return raw_template.format(**safe_context)
 
 
+def build_gateway_url(service_url: str, endpoint: str) -> str:
+    return f"{service_url.rstrip('/')}/{endpoint.lstrip('/')}"
+
+
+def decode_json_response(raw: bytes) -> dict:
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return {"raw": raw.decode("utf-8", errors="ignore")}
+
+
+def gateway_request(setting: WhatsAppSetting | None, endpoint: str, method: str = "GET", payload: dict | None = None) -> GatewayResponse:
+    if not setting:
+        return GatewayResponse(False, None, {}, "WhatsApp scan service is not configured.")
+
+    service_url = (setting.service_url or "").strip().rstrip("/")
+    api_key = (setting.api_key or "").strip()
+    if not service_url or not api_key:
+        return GatewayResponse(False, None, {}, "WhatsApp scan service URL or API key is missing.")
+
+    request_data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    request = Request(build_gateway_url(service_url, endpoint), data=request_data, method=method.upper())
+    request.add_header("Accept", "application/json")
+    request.add_header("x-api-key", api_key)
+    if request_data is not None:
+        request.add_header("Content-Type", "application/json")
+
+    timeout = max(3, int(env("WHATSAPP_SCAN_TIMEOUT", "15") or "15"))
+
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            payload_data = decode_json_response(response.read())
+            return GatewayResponse(True, getattr(response, "status", 200), payload_data, "")
+    except HTTPError as exc:
+        payload_data = decode_json_response(exc.read())
+        message = payload_data.get("message") if isinstance(payload_data, dict) else ""
+        return GatewayResponse(False, exc.code, payload_data, message or str(exc))
+    except URLError as exc:
+        return GatewayResponse(False, None, {}, f"WhatsApp scan service is unreachable: {exc.reason}")
+    except Exception as exc:
+        return GatewayResponse(False, None, {}, f"Unexpected WhatsApp scan error: {exc}")
+
+
+def fetch_gateway_status(setting: WhatsAppSetting | None = None) -> DashboardStatus:
+    setting = setting or get_active_setting()
+    configured = bool(setting and setting.service_url and setting.api_key)
+    if not configured:
+        return DashboardStatus(False, False, False, "not_configured", "", "Configure the WhatsApp scan service first.", "", {})
+
+    response = gateway_request(setting, "/status")
+    if not response.ok:
+        return DashboardStatus(True, False, False, "offline", "", response.summary, "", response.data)
+
+    data = response.data
+    return DashboardStatus(
+        configured=True,
+        reachable=True,
+        connected=bool(data.get("connected")),
+        state=str(data.get("state") or "unknown"),
+        number=str(data.get("number") or ""),
+        last_error=str(data.get("lastError") or ""),
+        qr_image_data_url="",
+        raw=data,
+    )
+
+
+def fetch_gateway_qr(setting: WhatsAppSetting | None = None) -> GatewayResponse:
+    setting = setting or get_active_setting()
+    return gateway_request(setting, "/qr")
+
+
+def restart_gateway_session(setting: WhatsAppSetting | None = None) -> GatewayResponse:
+    setting = setting or get_active_setting()
+    return gateway_request(setting, "/restart", method="POST", payload={})
+
+
+def logout_gateway_session(setting: WhatsAppSetting | None = None) -> GatewayResponse:
+    setting = setting or get_active_setting()
+    return gateway_request(setting, "/logout", method="POST", payload={})
+
+
+def send_gateway_message(mobile_number: str, message: str, setting: WhatsAppSetting | None = None) -> GatewayResponse:
+    setting = setting or get_active_setting()
+    return gateway_request(setting, "/send", method="POST", payload={"phone": mobile_number, "message": message})
+
+
 def log_and_send(template_key: str, student, mobile_number: str, event_type: str, context: dict) -> WhatsAppLog:
     message = render_template(template_key, context)
-    setting = WhatsAppSetting.objects.filter(is_active=True).order_by("-created_at").first()
-    provider = get_provider(setting)
-    provider_response = provider.send_message(mobile_number, message)
+    gateway_response = send_gateway_message(mobile_number, message)
+    status = WhatsAppLogStatusChoices.SENT if gateway_response.ok and gateway_response.data.get("success", True) else WhatsAppLogStatusChoices.FAILED
     return WhatsAppLog.objects.create(
         student=student,
         mobile_number=mobile_number,
         event_type=event_type,
         message=message,
-        status=provider_response.status,
-        response=provider_response.response,
+        status=status,
+        response=gateway_response.summary,
     )
 
 

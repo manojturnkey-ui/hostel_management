@@ -17,6 +17,11 @@ class WhatsAppLogStatusChoices(models.TextChoices):
 
 
 class WhatsAppSetting(TimeStampedModel):
+    service_name = models.CharField(max_length=150, default="Primary WhatsApp Scan")
+    service_url = models.URLField(blank=True)
+    api_key = models.CharField(max_length=255, blank=True)
+    default_country_code = models.CharField(max_length=5, default="91", blank=True)
+    session_name = models.CharField(max_length=150, blank=True)
     provider = models.CharField(
         max_length=30,
         choices=WhatsAppProviderChoices.choices,
@@ -38,7 +43,7 @@ class WhatsAppSetting(TimeStampedModel):
         ordering = ["-is_active", "-created_at"]
 
     def __str__(self) -> str:
-        return self.get_provider_display()
+        return self.service_name or "WhatsApp Scan Service"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

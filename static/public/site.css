@@ -1,48 +1,251 @@
 :root {
-    --public-bg: #f4efe7;
-    --public-card: #fffdf9;
-    --public-accent: #0d6b67;
-    --public-dark: #1f2a33;
-    --public-soft: #e8dcc8;
+    --public-bg: #f6efe6;
+    --public-card: rgba(255, 252, 247, 0.92);
+    --public-accent: #0f6d68;
+    --public-accent-strong: #0b4f4b;
+    --public-gold: #d69a42;
+    --public-dark: #203039;
+    --public-muted: #61717b;
+    --public-border: rgba(32, 48, 57, 0.1);
 }
 
 body.public-body {
     background:
-        radial-gradient(circle at top left, rgba(13, 107, 103, 0.10), transparent 30%),
-        radial-gradient(circle at top right, rgba(191, 130, 70, 0.12), transparent 28%),
-        var(--public-bg);
+        radial-gradient(circle at 10% 0%, rgba(214, 154, 66, 0.18), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(15, 109, 104, 0.16), transparent 32%),
+        linear-gradient(180deg, #fbf6ef 0%, #f4ebe0 100%);
     color: var(--public-dark);
     min-height: 100vh;
+    position: relative;
+}
+
+body.public-body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("./hostel-scene.svg") center bottom / cover no-repeat;
+    opacity: 0.17;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.public-body > * {
+    position: relative;
+    z-index: 1;
 }
 
 .public-hero {
-    background: linear-gradient(135deg, rgba(255, 253, 249, 0.95), rgba(232, 220, 200, 0.85));
-    border-bottom: 1px solid rgba(31, 42, 51, 0.08);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 0 1rem;
+}
+
+.public-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 4% -20% auto;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(214, 154, 66, 0.24), transparent 68%);
+    filter: blur(10px);
+}
+
+.public-hero-panel {
+    background: linear-gradient(135deg, rgba(255, 251, 245, 0.95), rgba(255, 244, 231, 0.8));
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 2rem;
+    box-shadow: 0 30px 80px rgba(32, 48, 57, 0.12);
+    padding: 2rem;
+    backdrop-filter: blur(10px);
 }
 
 .public-kicker {
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     color: var(--public-accent);
     font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.public-hero-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.2rem, 4vw, 3.75rem);
+    line-height: 1.05;
+    margin-bottom: 1rem;
+}
+
+.public-hero-copy {
+    color: var(--public-muted);
+    font-size: 1.05rem;
+    max-width: 52rem;
+}
+
+.public-feature-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.public-feature-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(15, 109, 104, 0.12);
+    color: var(--public-dark);
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.public-hero-visual {
+    background: linear-gradient(160deg, rgba(15, 109, 104, 0.08), rgba(214, 154, 66, 0.12));
+    border: 1px solid rgba(15, 109, 104, 0.12);
+    border-radius: 1.75rem;
+    padding: 1rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.public-hero-visual img {
+    width: 100%;
+    display: block;
+    border-radius: 1.25rem;
+}
+
+.public-section {
+    padding-bottom: 3rem;
 }
 
 .public-card {
     background: var(--public-card);
-    border: 1px solid rgba(31, 42, 51, 0.08);
+    border: 1px solid var(--public-border);
     border-radius: 1.5rem;
     padding: 1.5rem;
-    box-shadow: 0 24px 60px rgba(31, 42, 51, 0.08);
+    box-shadow: 0 24px 60px rgba(32, 48, 57, 0.08);
+    backdrop-filter: blur(6px);
 }
 
-.public-card h3,
+.public-card h1,
 .public-card h2,
-.public-card h1 {
+.public-card h3,
+.public-card h4 {
     font-family: Georgia, "Times New Roman", serif;
 }
 
+.public-card-subtitle {
+    color: var(--public-muted);
+    margin-bottom: 1rem;
+}
+
+.public-card-highlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.public-card-highlight::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--public-accent), var(--public-gold));
+}
+
+.public-badge-soft {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(15, 109, 104, 0.1);
+    color: var(--public-accent-strong);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.public-action {
+    border-radius: 999px;
+    padding-inline: 1.2rem;
+}
+
+.public-outline-link {
+    border-color: rgba(32, 48, 57, 0.12);
+}
+
 .pricing-box {
-    background: rgba(13, 107, 103, 0.07);
-    border: 1px dashed rgba(13, 107, 103, 0.25);
+    background: rgba(15, 109, 104, 0.07);
+    border: 1px dashed rgba(15, 109, 104, 0.22);
     border-radius: 1rem;
     padding: 1rem;
+}
+
+.public-qr-frame {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 239, 227, 0.95));
+    border: 1px solid rgba(32, 48, 57, 0.08);
+    border-radius: 1.25rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.public-qr-image {
+    width: 100%;
+    max-width: 280px;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: 1rem;
+    background: #fff;
+    border: 1px solid rgba(32, 48, 57, 0.08);
+    padding: 0.75rem;
+}
+
+.public-list-clean {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.public-list-clean li + li {
+    margin-top: 0.6rem;
+}
+
+.public-empty-state {
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px dashed rgba(32, 48, 57, 0.16);
+}
+
+.public-card .btn-dark {
+    background: linear-gradient(135deg, #14363a, #0f6d68);
+    border: none;
+}
+
+.public-card .btn-dark:hover,
+.public-card .btn-dark:focus {
+    background: linear-gradient(135deg, #102b2e, #0b5753);
+}
+
+@media (max-width: 991.98px) {
+    .public-hero {
+        padding-top: 1.25rem;
+    }
+
+    .public-hero-panel {
+        padding: 1.4rem;
+        border-radius: 1.5rem;
+    }
+
+    .public-hero-visual {
+        margin-top: 1rem;
+    }
+
+    body.public-body::before {
+        background-size: 1600px auto;
+        background-position: center bottom;
+        opacity: 0.12;
+    }
 }

@@ -18,6 +18,8 @@ services:
         generateValue: true
       - key: DEBUG
         value: false
+      - key: SERVE_MEDIA_FILES
+        value: true
       - key: PANEL_ADMIN_EMAIL
         value: admin@example.com
       - key: PANEL_ADMIN_USERNAME

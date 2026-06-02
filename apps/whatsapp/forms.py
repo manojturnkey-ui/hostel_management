@@ -12,7 +12,14 @@ class BaseWhatsAppModelForm(StyledFormMixin, forms.ModelForm):
 class WhatsAppSettingForm(BaseWhatsAppModelForm):
     class Meta:
         model = WhatsAppSetting
-        fields = ["provider", "instance_id", "api_token", "phone_number_id", "access_token", "qr_session_image", "is_active"]
+        fields = ["service_name", "service_url", "api_key", "default_country_code", "session_name", "is_active"]
+        widgets = {
+            "api_key": forms.PasswordInput(render_value=True),
+        }
+
+    def clean_service_url(self):
+        service_url = (self.cleaned_data.get("service_url") or "").strip()
+        return service_url.rstrip("/")
 
 
 class WhatsAppMessageTemplateForm(BaseWhatsAppModelForm):

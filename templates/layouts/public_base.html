@@ -13,20 +13,32 @@
 <body class="public-body">
     <header class="public-hero">
         <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <p class="text-uppercase public-kicker mb-2">Hostel Management</p>
-                    <h1 class="display-5 fw-bold">{{ page_title|default:"Hostel Management" }}</h1>
-                    {% if page_description %}
-                        <p class="lead text-muted">{{ page_description }}</p>
-                    {% else %}
-                        <p class="lead text-muted">Explore area-wise hostel availability, choose a cot, and submit your booking online.</p>
-                    {% endif %}
+            <div class="public-hero-panel">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <p class="text-uppercase public-kicker mb-2">Hostel Management</p>
+                        <h1 class="public-hero-title">{{ page_title|default:"Hostel Management" }}</h1>
+                        {% if page_description %}
+                            <p class="public-hero-copy mb-0">{{ page_description }}</p>
+                        {% else %}
+                            <p class="public-hero-copy mb-0">Explore area-wise hostel availability, choose a cot, and submit your booking online with payment verification and fast admin approval.</p>
+                        {% endif %}
+                        <ul class="public-feature-list">
+                            <li class="public-feature-chip"><i class="iconoir-bed-ready"></i> Live cot availability</li>
+                            <li class="public-feature-chip"><i class="iconoir-wallet"></i> QR-based payment flow</li>
+                            <li class="public-feature-chip"><i class="iconoir-shield-check"></i> Verified booking process</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="public-hero-visual">
+                            <img src="{% static 'public/hostel-scene.svg' %}" alt="Hostel building illustration">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
-    <main class="pb-5">
+    <main class="public-section">
         <div class="container">
             {% if messages %}
                 <div class="mt-4">
