@@ -1,0 +1,48 @@
+from django.urls import path
+
+from .views import (
+    AreaCreateView,
+    AreaListView,
+    AreaUpdateView,
+    BuildingCreateView,
+    BuildingListView,
+    BuildingUpdateView,
+    CotCreateView,
+    CotListView,
+    CotUpdateView,
+    ExcelUploadView,
+    FloorCreateView,
+    FloorListView,
+    FloorUpdateView,
+    RoomCreateView,
+    RoomListView,
+    RoomUpdateView,
+    SectionCreateView,
+    SectionListView,
+    SectionUpdateView,
+    SystemSettingView,
+)
+
+
+urlpatterns = [
+    path("areas/", AreaListView.as_view(), name="panel_area_list"),
+    path("areas/add/", AreaCreateView.as_view(), name="panel_area_create"),
+    path("areas/<int:pk>/edit/", AreaUpdateView.as_view(), name="panel_area_update"),
+    path("buildings/", BuildingListView.as_view(), name="panel_building_list"),
+    path("buildings/add/", BuildingCreateView.as_view(), name="panel_building_create"),
+    path("buildings/<int:pk>/edit/", BuildingUpdateView.as_view(), name="panel_building_update"),
+    path("sections/", SectionListView.as_view(), name="panel_section_list"),
+    path("sections/add/", SectionCreateView.as_view(), name="panel_section_create"),
+    path("sections/<int:pk>/edit/", SectionUpdateView.as_view(), name="panel_section_update"),
+    path("floors/", FloorListView.as_view(), name="panel_floor_list"),
+    path("floors/add/", FloorCreateView.as_view(), name="panel_floor_create"),
+    path("floors/<int:pk>/edit/", FloorUpdateView.as_view(), name="panel_floor_update"),
+    path("rooms/", RoomListView.as_view(), name="panel_room_list"),
+    path("rooms/add/", RoomCreateView.as_view(), name="panel_room_create"),
+    path("rooms/<int:pk>/edit/", RoomUpdateView.as_view(), name="panel_room_update"),
+    path("cots/", CotListView.as_view(), name="panel_cot_list"),
+    path("cots/add/", CotCreateView.as_view(), name="panel_cot_create"),
+    path("cots/<int:pk>/edit/", CotUpdateView.as_view(), name="panel_cot_update"),
+    path("excel-upload/", ExcelUploadView.as_view(), name="panel_excel_upload"),
+    path("settings/", SystemSettingView.as_view(), name="panel_system_settings"),
+]

@@ -1,0 +1,20 @@
+{% extends "layouts/public_base.html" %}
+{% block content %}
+<div class="row g-4 mt-2">
+    {% for area in areas %}
+        <div class="col-md-6 col-lg-4">
+            <div class="public-card h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="badge bg-dark-subtle text-dark">{{ area.status|title }}</span>
+                    <i class="iconoir-map-pin fs-3 text-primary"></i>
+                </div>
+                <h3 class="h4">{{ area.area_name }}</h3>
+                <p class="text-muted">{{ area.description|default:"Explore all buildings in this area." }}</p>
+                <a href="{% url 'public_area_buildings' area.pk %}" class="btn btn-dark w-100">Open Area</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12"><div class="alert alert-info">No active areas available yet.</div></div>
+    {% endfor %}
+</div>
+{% endblock %}

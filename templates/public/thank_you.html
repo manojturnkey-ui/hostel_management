@@ -1,0 +1,13 @@
+{% extends "layouts/public_base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-7">
+        <div class="public-card text-center">
+            <div class="mb-3"><i class="iconoir-check-circle fs-1 text-success"></i></div>
+            <h2 class="mb-3">Your booking request is submitted.</h2>
+            <p class="lead text-muted">Admin will verify payment and confirm your cot.</p>
+            <a href="{% url 'public_home' %}" class="btn btn-dark mt-3">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

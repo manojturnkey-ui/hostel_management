@@ -1,0 +1,54 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Booking Information</h4></div>
+            <div class="card-body">
+                <dl class="row object-meta">
+                    <dt class="col-sm-4">Student</dt><dd class="col-sm-8">{{ booking.student.full_name }}</dd>
+                    <dt class="col-sm-4">Mobile</dt><dd class="col-sm-8">{{ booking.student.mobile_number }}</dd>
+                    <dt class="col-sm-4">Cot</dt><dd class="col-sm-8">{{ booking.cot.room.room_number }} / {{ booking.cot.cot_number }}</dd>
+                    <dt class="col-sm-4">Location</dt><dd class="col-sm-8">{{ booking.cot.get_location_path }}</dd>
+                    <dt class="col-sm-4">Monthly Rent</dt><dd class="col-sm-8">{{ booking.monthly_rent }}</dd>
+                    <dt class="col-sm-4">Security Deposit</dt><dd class="col-sm-8">{{ booking.security_deposit }}</dd>
+                    <dt class="col-sm-4">Total Amount</dt><dd class="col-sm-8">{{ booking.total_amount }}</dd>
+                    <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><span class="badge bg-{{ booking.booking_status|badge_class }}">{{ booking.booking_status }}</span></dd>
+                </dl>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr><th>Purpose</th><td>{{ booking.student.purpose_for_cot_booking }}</td></tr>
+                        <tr><th>Address</th><td>{{ booking.student.address }}</td></tr>
+                        <tr><th>Education</th><td>{{ booking.student.education|default:"-" }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Payment Review</h4></div>
+            <div class="card-body">
+                <p><strong>UTR / Transaction ID:</strong> {{ booking.payment.utr_transaction_id }}</p>
+                <p><strong>Payment Status:</strong> <span class="badge bg-{{ booking.payment.payment_status|badge_class }}">{{ booking.payment.payment_status }}</span></p>
+                {% if booking.payment.payment_screenshot %}
+                    <img src="{{ booking.payment.payment_screenshot.url }}" alt="Payment screenshot" class="preview-image mb-3">
+                {% endif %}
+                <form method="post" action="{% url 'panel_booking_confirm' booking.pk %}" class="mb-3">
+                    {% csrf_token %}
+                    <label class="form-label">Admin Remark</label>
+                    <textarea name="admin_remark" class="form-control mb-2" rows="3">{{ booking.admin_remark }}</textarea>
+                    <button type="submit" class="btn btn-success w-100">Confirm Booking</button>
+                </form>
+                <form method="post" action="{% url 'panel_booking_reject' booking.pk %}">
+                    {% csrf_token %}
+                    <label class="form-label">Reject Remark</label>
+                    <textarea name="admin_remark" class="form-control mb-2" rows="3"></textarea>
+                    <button type="submit" class="btn btn-danger w-100">Reject Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+from django.urls import path
+
+from .views import (
+    BillDetailView,
+    BookingDetailView,
+    ConfirmBillPaymentView,
+    ConfirmBookingView,
+    ConfirmedBookingListView,
+    CurrentMonthBillListView,
+    ExtendBillGracePeriodView,
+    ManualBillGenerateView,
+    ManualGraceExtensionView,
+    OverdueBillListView,
+    PaidBillListView,
+    PendingBillListView,
+    PendingBookingListView,
+    RejectBillPaymentView,
+    RejectBookingView,
+    RejectedBookingListView,
+    StudentLedgerView,
+    StudentListView,
+    UnpaidBillListView,
+)
+
+
+urlpatterns = [
+    path("students/", StudentListView.as_view(), name="panel_student_list"),
+    path("bookings/", PendingBookingListView.as_view(), name="panel_pending_booking_list"),
+    path("bookings/pending/", PendingBookingListView.as_view(), name="panel_booking_pending_alias"),
+    path("bookings/confirmed/", ConfirmedBookingListView.as_view(), name="panel_confirmed_booking_list"),
+    path("bookings/rejected/", RejectedBookingListView.as_view(), name="panel_rejected_booking_list"),
+    path("bookings/<int:pk>/", BookingDetailView.as_view(), name="panel_booking_detail"),
+    path("bookings/<int:pk>/confirm/", ConfirmBookingView.as_view(), name="panel_booking_confirm"),
+    path("bookings/<int:pk>/reject/", RejectBookingView.as_view(), name="panel_booking_reject"),
+    path("rent-management/", CurrentMonthBillListView.as_view(), name="panel_current_bill_list"),
+    path("rent-management/pending/", PendingBillListView.as_view(), name="panel_pending_bill_list"),
+    path("rent-management/paid/", PaidBillListView.as_view(), name="panel_paid_bill_list"),
+    path("rent-management/unpaid/", UnpaidBillListView.as_view(), name="panel_unpaid_bill_list"),
+    path("rent-management/overdue/", OverdueBillListView.as_view(), name="panel_overdue_bill_list"),
+    path("rent-management/ledger/", StudentLedgerView.as_view(), name="panel_student_ledger"),
+    path("rent-management/manual-generate/", ManualBillGenerateView.as_view(), name="panel_manual_bill_generate"),
+    path("rent-management/manual-grace-extension/", ManualGraceExtensionView.as_view(), name="panel_manual_grace_extension"),
+    path("rent-management/bills/<int:pk>/", BillDetailView.as_view(), name="panel_bill_detail"),
+    path("rent-management/bills/<int:pk>/confirm/", ConfirmBillPaymentView.as_view(), name="panel_bill_confirm"),
+    path("rent-management/bills/<int:pk>/reject/", RejectBillPaymentView.as_view(), name="panel_bill_reject"),
+    path("rent-management/bills/<int:pk>/extend-grace/", ExtendBillGracePeriodView.as_view(), name="panel_bill_extend_grace"),
+]

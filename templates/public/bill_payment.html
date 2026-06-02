@@ -1,0 +1,39 @@
+{% extends "layouts/public_base.html" %}
+{% block content %}
+<div class="row g-4 mt-2">
+    <div class="col-lg-5">
+        <div class="public-card">
+            <h3 class="h4 mb-3">Bill Summary</h3>
+            <ul class="list-unstyled">
+                <li><strong>Student:</strong> {{ bill.student.full_name }}</li>
+                <li><strong>Room / Cot:</strong> {{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</li>
+                <li><strong>Bill Amount:</strong> Rs. {{ bill.bill_amount }}</li>
+                <li><strong>Bill Period:</strong> {{ bill.billing_period_start }} to {{ bill.billing_period_end }}</li>
+                <li><strong>Grace Period Ends:</strong> {{ bill.grace_period_end_date }}</li>
+            </ul>
+            {% if qr_setting %}
+                <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="img-fluid rounded-4 border mb-3">
+                <p class="mb-1"><strong>UPI ID:</strong> {{ qr_setting.upi_id|default:"-" }}</p>
+                <p class="mb-0"><strong>Account Name:</strong> {{ qr_setting.account_name|default:"-" }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="public-card">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-dark btn-lg w-100">Submit Monthly Rent Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

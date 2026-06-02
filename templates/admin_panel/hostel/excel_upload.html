@@ -1,0 +1,54 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Excel File</label>
+                        {{ form.uploaded_file }}
+                        {% for error in form.uploaded_file.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Excel</button>
+                </form>
+                <hr>
+                <h6>Expected Columns</h6>
+                <code>area_name, building_name, section_name, floor_name, room_number, cot_number, cot_price, security_deposit, cot_status</code>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Upload Logs</h4></div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>ID</th><th>Status</th><th>Success</th><th>Failure</th><th>Created</th></tr></thead>
+                        <tbody>
+                            {% for log in upload_logs %}
+                                <tr>
+                                    <td>#{{ log.id }}</td>
+                                    <td><span class="badge bg-{{ log.status|badge_class }}">{{ log.status }}</span></td>
+                                    <td>{{ log.success_count }}</td>
+                                    <td>{{ log.failure_count }}</td>
+                                    <td>{{ log.created_at|display_value }}</td>
+                                </tr>
+                                {% if log.log_details %}
+                                    <tr><td colspan="5"><small class="text-muted">{{ log.log_details|join:" | " }}</small></td></tr>
+                                {% endif %}
+                            {% empty %}
+                                <tr><td colspan="5" class="text-center text-muted">No upload logs yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layouts/public_base.html" %}
+{% block content %}
+<div class="row g-4 mt-2">
+    {% for item in items %}
+        <div class="col-md-6 col-lg-4">
+            <div class="public-card h-100">
+                {% if item_type == "building" %}
+                    <h3 class="h4">{{ item.building_name }}</h3>
+                    <p class="text-muted">{{ item.description|default:"Open building sections." }}</p>
+                    <a href="{% url 'public_building_sections' item.pk %}" class="btn btn-dark w-100">View Sections</a>
+                {% elif item_type == "section" %}
+                    <h3 class="h4">{{ item.section_name }}</h3>
+                    <p class="text-muted">{{ item.description|default:"Open floors in this section." }}</p>
+                    <a href="{% url 'public_section_floors' item.pk %}" class="btn btn-dark w-100">View Floors</a>
+                {% elif item_type == "floor" %}
+                    <h3 class="h4">{{ item.floor_name }}</h3>
+                    <p class="text-muted">{{ item.description|default:"Open rooms on this floor." }}</p>
+                    <a href="{% url 'public_floor_rooms' item.pk %}" class="btn btn-dark w-100">View Rooms</a>
+                {% else %}
+                    <h3 class="h4">{{ item.full_label }}</h3>
+                    <p class="text-muted">{{ item.description|default:"View cots in this room." }}</p>
+                    <a href="{% url 'public_room_cots' item.pk %}" class="btn btn-dark w-100">View Cots</a>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12"><div class="alert alert-info">No records available on this level.</div></div>
+    {% endfor %}
+</div>
+{% endblock %}

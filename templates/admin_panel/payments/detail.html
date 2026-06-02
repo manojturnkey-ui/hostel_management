@@ -1,0 +1,43 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Payment Details</h4></div>
+            <div class="card-body">
+                <dl class="row object-meta">
+                    <dt class="col-sm-4">Student</dt><dd class="col-sm-8">{{ payment.booking.student.full_name }}</dd>
+                    <dt class="col-sm-4">Room / Cot</dt><dd class="col-sm-8">{{ payment.booking.cot.room.room_number }} / {{ payment.booking.cot.cot_number }}</dd>
+                    <dt class="col-sm-4">Amount</dt><dd class="col-sm-8">{{ payment.amount }}</dd>
+                    <dt class="col-sm-4">UTR</dt><dd class="col-sm-8">{{ payment.utr_transaction_id }}</dd>
+                    <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><span class="badge bg-{{ payment.payment_status|badge_class }}">{{ payment.payment_status }}</span></dd>
+                </dl>
+                <a href="{% url 'panel_booking_detail' payment.booking.pk %}" class="btn btn-outline-primary">Open Booking</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Verification</h4></div>
+            <div class="card-body">
+                {% if payment.payment_screenshot %}
+                    <img src="{{ payment.payment_screenshot.url }}" alt="Payment screenshot" class="preview-image mb-3">
+                {% endif %}
+                <form method="post" action="{% url 'panel_payment_confirm' payment.pk %}" class="mb-3">
+                    {% csrf_token %}
+                    <label class="form-label">Admin Remark</label>
+                    <textarea name="admin_remark" class="form-control mb-2" rows="3">{{ payment.admin_remark }}</textarea>
+                    <button class="btn btn-success w-100" type="submit">Confirm Payment</button>
+                </form>
+                <form method="post" action="{% url 'panel_payment_reject' payment.pk %}">
+                    {% csrf_token %}
+                    <label class="form-label">Reject Remark</label>
+                    <textarea name="admin_remark" class="form-control mb-2" rows="3"></textarea>
+                    <button class="btn btn-danger w-100" type="submit">Reject Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

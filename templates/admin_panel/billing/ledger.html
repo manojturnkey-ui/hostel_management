@@ -1,0 +1,67 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="d-flex gap-2 mb-3">
+                    <input type="text" name="student" value="{{ student_search }}" class="form-control" placeholder="Search by student, mobile, or room">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Booking</th>
+                                <th>Cot</th>
+                                <th>Monthly Rent</th>
+                                <th>Bill Period</th>
+                                <th>Bill Amount</th>
+                                <th>Status</th>
+                                <th>UTR</th>
+                                <th>Screenshot</th>
+                                <th>Confirmed At</th>
+                                <th>Balance</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in object_list %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ bill.student.full_name }}</strong><br>
+                                        <small class="text-muted">{{ bill.student.mobile_number }}</small>
+                                    </td>
+                                    <td>{{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</td>
+                                    <td>{{ bill.booking.cot.get_location_path }}</td>
+                                    <td>{{ bill.monthly_rent }}</td>
+                                    <td>{{ bill.billing_period_start }} to {{ bill.billing_period_end }}</td>
+                                    <td>{{ bill.bill_amount }}</td>
+                                    <td><span class="badge bg-{{ bill.payment_status|badge_class }}">{{ bill.payment_status }}</span></td>
+                                    <td>{{ bill.utr_transaction_id|default:"-" }}</td>
+                                    <td>
+                                        {% if bill.payment_screenshot %}
+                                            <a href="{{ bill.payment_screenshot.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ bill.confirmed_at|display_value }}</td>
+                                    <td>{{ bill.balance_amount }}</td>
+                                    <td class="text-end">
+                                        <a href="{% url 'panel_bill_detail' bill.pk %}" class="btn btn-sm btn-outline-secondary">Detail</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="12" class="text-center text-muted py-4">No ledger records found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% if page_title %}{{ page_title }} | {% endif %}Hostel Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{% static 'mifty/images/favicon.ico' %}">
+    <link href="{% static 'mifty/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'mifty/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'public/site.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body class="public-body">
+    <header class="public-hero">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <p class="text-uppercase public-kicker mb-2">Hostel Management</p>
+                    <h1 class="display-5 fw-bold">{{ page_title|default:"Hostel Management" }}</h1>
+                    {% if page_description %}
+                        <p class="lead text-muted">{{ page_description }}</p>
+                    {% else %}
+                        <p class="lead text-muted">Explore area-wise hostel availability, choose a cot, and submit your booking online.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="pb-5">
+        <div class="container">
+            {% if messages %}
+                <div class="mt-4">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</body>
+</html>

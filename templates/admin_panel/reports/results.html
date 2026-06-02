@@ -1,0 +1,45 @@
+{% extends "layouts/admin_base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3 mb-4">
+                    {% for field in filter_form %}
+                        <div class="col-md-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <div class="col-12 d-flex gap-2">
+                        <button class="btn btn-primary" type="submit">Apply Filters</button>
+                        <a class="btn btn-outline-success" href="?{% if export_query %}{{ export_query }}&{% endif %}export=xlsx">Export Excel</a>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                {% for header in report_headers %}
+                                    <th>{{ header }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in report_rows %}
+                                <tr>
+                                    {% for col in row %}
+                                        <td>{{ col }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="{{ report_headers|length }}" class="text-center text-muted">No report data found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "layouts/admin_base.html" %}
+{% block content %}
+<div class="row">
+    {% for report in report_links %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="mb-2">{{ report.label }}</h5>
+                    <p class="text-muted">Open filtered view and export to Excel.</p>
+                    <a href="{% url 'panel_report_result' report.key %}" class="btn btn-primary">Open Report</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

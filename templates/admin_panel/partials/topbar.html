@@ -1,0 +1,39 @@
+{% load static %}
+<div class="topbar d-print-none">
+    <div class="container-fluid">
+        <nav class="topbar-custom d-flex justify-content-between" id="topbar-custom">
+            <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
+                <li>
+                    <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
+                        <i class="iconoir-menu"></i>
+                    </button>
+                </li>
+                <li class="mx-2 welcome-text">
+                    <h5 class="mb-0 fw-semibold text-truncate">Welcome, {{ request.user.panel_name|default:request.user.username }}</h5>
+                    <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">{{ panel_site_title }} control center</h6>
+                </li>
+            </ul>
+            <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
+                <li class="topbar-item">
+                    <a class="nav-link nav-icon" href="javascript:void(0);" id="light-dark-mode">
+                        <i class="iconoir-half-moon dark-mode"></i>
+                        <i class="iconoir-sun-light light-mode"></i>
+                    </a>
+                </li>
+                <li class="dropdown topbar-item">
+                    <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#" role="button">
+                        <img src="{% static 'mifty/images/users/avatar-1.jpg' %}" alt="" class="thumb-md rounded-circle">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <span class="dropdown-item-text fw-semibold">{{ request.user.panel_name|default:request.user.username }}</span>
+                        <div class="dropdown-divider"></div>
+                        <form method="post" action="{% url 'panel_logout' %}" class="px-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm w-100">Logout</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

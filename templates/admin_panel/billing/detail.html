@@ -1,0 +1,61 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Bill Ledger</h4></div>
+            <div class="card-body">
+                <dl class="row object-meta">
+                    <dt class="col-sm-4">Student</dt><dd class="col-sm-8">{{ bill.student.full_name }}</dd>
+                    <dt class="col-sm-4">Room / Cot</dt><dd class="col-sm-8">{{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</dd>
+                    <dt class="col-sm-4">Bill Period</dt><dd class="col-sm-8">{{ bill.billing_period_start }} to {{ bill.billing_period_end }}</dd>
+                    <dt class="col-sm-4">Bill Type</dt><dd class="col-sm-8">{{ bill.bill_type }}</dd>
+                    <dt class="col-sm-4">Bill Amount</dt><dd class="col-sm-8">{{ bill.bill_amount }}</dd>
+                    <dt class="col-sm-4">Monthly Rent</dt><dd class="col-sm-8">{{ bill.monthly_rent }}</dd>
+                    <dt class="col-sm-4">UTR</dt><dd class="col-sm-8">{{ bill.utr_transaction_id|default:"-" }}</dd>
+                    <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><span class="badge bg-{{ bill.payment_status|badge_class }}">{{ bill.payment_status }}</span></dd>
+                    <dt class="col-sm-4">Grace Ends</dt><dd class="col-sm-8">{{ bill.grace_period_end_date }}</dd>
+                    <dt class="col-sm-4">Balance</dt><dd class="col-sm-8">{{ bill.balance_amount }}</dd>
+                </dl>
+                {% if bill.payment_screenshot %}
+                    <img src="{{ bill.payment_screenshot.url }}" alt="Monthly rent screenshot" class="preview-image mb-3">
+                {% endif %}
+                <p class="mb-0"><strong>Public Payment Link:</strong> <a href="{{ public_payment_url }}" target="_blank">{{ public_payment_url }}</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header"><h4 class="card-title mb-0">Verification</h4></div>
+            <div class="card-body">
+                <form method="post" action="{% url 'panel_bill_confirm' bill.pk %}" class="mb-3">
+                    {% csrf_token %}
+                    <label class="form-label">Admin Remark</label>
+                    <textarea name="admin_remark" class="form-control mb-2" rows="3">{{ bill.admin_remark }}</textarea>
+                    <button class="btn btn-success w-100" type="submit">Confirm Bill Payment</button>
+                </form>
+                <form method="post" action="{% url 'panel_bill_reject' bill.pk %}">
+                    {% csrf_token %}
+                    <label class="form-label">Reject Remark</label>
+                    <textarea name="admin_remark" class="form-control mb-2" rows="3"></textarea>
+                    <button class="btn btn-danger w-100" type="submit">Mark Unpaid</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Extend Grace Period</h4></div>
+            <div class="card-body">
+                <form method="post" action="{% url 'panel_bill_extend_grace' bill.pk %}">
+                    {% csrf_token %}
+                    <label class="form-label">New Grace End Date</label>
+                    {{ grace_form.grace_period_end_date }}
+                    <label class="form-label mt-2">Remark</label>
+                    {{ grace_form.admin_remark }}
+                    <button class="btn btn-primary w-100 mt-3" type="submit">Extend Grace</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

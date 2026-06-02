@@ -1,0 +1,64 @@
+{% load static panel_extras %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-startbar="light" data-bs-theme="light">
+<head>
+    <meta charset="utf-8">
+    <title>{% if page_title %}{{ page_title }} | {% endif %}{{ panel_site_title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Hostel Management System admin panel">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="{% static 'mifty/images/favicon.ico' %}">
+    <link href="{% static 'mifty/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'mifty/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'mifty/css/app.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .panel-card-icon { width: 54px; height: 54px; display: inline-flex; align-items: center; justify-content: center; border-radius: 18px; }
+        .page-subtitle { color: #6c757d; margin-top: -4px; }
+        .table-responsive .badge { font-size: 0.75rem; }
+        .object-meta dt { color: #6c757d; font-weight: 600; }
+        .object-meta dd { margin-bottom: 1rem; }
+        .preview-image { max-width: 100%; border-radius: 0.75rem; border: 1px solid #dee2e6; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include "admin_panel/partials/topbar.html" %}
+    {% include "admin_panel/partials/sidebar.html" %}
+    <div class="startbar-overlay d-print-none"></div>
+
+    <div class="page-wrapper">
+        <div class="page-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="page-title-box d-md-flex justify-content-md-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-1">{{ page_title|default:panel_site_title }}</h4>
+                                {% if page_subtitle %}
+                                    <p class="page-subtitle mb-0">{{ page_subtitle }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="{% url 'panel_dashboard' %}">{{ panel_site_title }}</a></li>
+                                    {% if page_title %}
+                                        <li class="breadcrumb-item active">{{ page_title }}</li>
+                                    {% endif %}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include "admin_panel/partials/messages.html" %}
+                {% block content %}{% endblock %}
+            </div>
+            {% include "admin_panel/partials/footer.html" %}
+        </div>
+    </div>
+
+    <script src="{% static 'mifty/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'mifty/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'mifty/js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

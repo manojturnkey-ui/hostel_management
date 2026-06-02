@@ -1,0 +1,68 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+                    <form method="get" class="d-flex gap-2">
+                        <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search here">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </form>
+                    <div class="d-flex gap-2">
+                        {% if create_url_name %}
+                            <a href="{% url create_url_name %}" class="btn btn-primary">Add New</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                {% for column in columns %}
+                                    <th>{{ column.label }}</th>
+                                {% endfor %}
+                                {% if detail_url_name or update_url_name %}
+                                    <th class="text-end">Actions</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for object in object_list %}
+                                <tr>
+                                    {% for column in columns %}
+                                        {% with value=object|get_attr:column.value %}
+                                            <td>
+                                                {% if "status" in column.value or column.value == "is_active" %}
+                                                    <span class="badge bg-{{ value|badge_class }}">{{ value|display_value }}</span>
+                                                {% else %}
+                                                    {{ value|display_value }}
+                                                {% endif %}
+                                            </td>
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {% if detail_url_name or update_url_name %}
+                                        <td class="text-end">
+                                            {% if detail_url_name %}
+                                                <a href="{% url detail_url_name object.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                                            {% endif %}
+                                            {% if update_url_name %}
+                                                <a href="{% url update_url_name object.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="{% if detail_url_name or update_url_name %}{{ columns|length|add:1 }}{% else %}{{ columns|length }}{% endif %}" class="text-center text-muted py-4">No records found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

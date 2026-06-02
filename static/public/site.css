@@ -1,0 +1,48 @@
+:root {
+    --public-bg: #f4efe7;
+    --public-card: #fffdf9;
+    --public-accent: #0d6b67;
+    --public-dark: #1f2a33;
+    --public-soft: #e8dcc8;
+}
+
+body.public-body {
+    background:
+        radial-gradient(circle at top left, rgba(13, 107, 103, 0.10), transparent 30%),
+        radial-gradient(circle at top right, rgba(191, 130, 70, 0.12), transparent 28%),
+        var(--public-bg);
+    color: var(--public-dark);
+    min-height: 100vh;
+}
+
+.public-hero {
+    background: linear-gradient(135deg, rgba(255, 253, 249, 0.95), rgba(232, 220, 200, 0.85));
+    border-bottom: 1px solid rgba(31, 42, 51, 0.08);
+}
+
+.public-kicker {
+    letter-spacing: 0.2em;
+    color: var(--public-accent);
+    font-weight: 700;
+}
+
+.public-card {
+    background: var(--public-card);
+    border: 1px solid rgba(31, 42, 51, 0.08);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 24px 60px rgba(31, 42, 51, 0.08);
+}
+
+.public-card h3,
+.public-card h2,
+.public-card h1 {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.pricing-box {
+    background: rgba(13, 107, 103, 0.07);
+    border: 1px dashed rgba(13, 107, 103, 0.25);
+    border-radius: 1rem;
+    padding: 1rem;
+}

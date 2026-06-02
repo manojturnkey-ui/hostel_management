@@ -1,0 +1,70 @@
+{% extends "layouts/admin_base.html" %}
+{% load panel_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Provider Settings</h4>
+                <a href="{% url 'panel_whatsapp_setting_create' %}" class="btn btn-sm btn-primary">Add</a>
+            </div>
+            <div class="card-body">
+                {% for item in settings_list %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-1">{{ item.get_provider_display }}</h6>
+                            <span class="badge bg-{{ item.is_active|badge_class }}">{{ item.is_active|display_value }}</span>
+                        </div>
+                        <p class="text-muted mb-2">{{ item.instance_id|default:item.phone_number_id|default:"No provider identifiers yet." }}</p>
+                        <a href="{% url 'panel_whatsapp_setting_update' item.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">No provider settings yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Templates</h4>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'panel_whatsapp_template_list' %}" class="btn btn-sm btn-outline-primary">Manage</a>
+                    <a href="{% url 'panel_whatsapp_template_create' %}" class="btn btn-sm btn-primary">Add</a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for item in templates_list %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ item.template_key }}</strong>
+                            <a href="{% url 'panel_whatsapp_template_update' item.pk %}">Edit</a>
+                        </div>
+                        <p class="text-muted mb-0">{{ item.content|truncatechars:90 }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Recent Logs</h4></div>
+            <div class="card-body">
+                {% for log in recent_logs %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong>{{ log.event_type }}</strong>
+                            <span class="badge bg-{{ log.status|badge_class }}">{{ log.status }}</span>
+                        </div>
+                        <small class="text-muted d-block mb-2">{{ log.mobile_number }} | {{ log.created_at|display_value }}</small>
+                        <p class="mb-1">{{ log.message|truncatechars:90 }}</p>
+                        <small class="text-muted">{{ log.response }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">No WhatsApp logs yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
