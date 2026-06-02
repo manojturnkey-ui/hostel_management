@@ -1,13 +1,77 @@
 {% extends "layouts/admin_base.html" %}
 {% load panel_extras %}
+
+{% block extra_css %}
+<style>
+    .dashboard-stat-card {
+        border: 0;
+        border-radius: 1.35rem;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(31, 50, 72, 0.08);
+    }
+    .dashboard-stat-card .card-body {
+        padding: 1.25rem;
+    }
+    .dashboard-stat-card.sunrise { background: linear-gradient(135deg, #fff5dd, #ffe6bd); }
+    .dashboard-stat-card.azure { background: linear-gradient(135deg, #eaf6ff, #d8ebff); }
+    .dashboard-stat-card.peach { background: linear-gradient(135deg, #fff0ea, #ffdccc); }
+    .dashboard-stat-card.violet { background: linear-gradient(135deg, #f4ebff, #e2d3ff); }
+    .dashboard-stat-card.mint { background: linear-gradient(135deg, #eafff4, #d3f9e4); }
+    .dashboard-stat-card.rose { background: linear-gradient(135deg, #fff0f4, #ffd3de); }
+    .dashboard-stat-card.amber { background: linear-gradient(135deg, #fff7e2, #ffe8af); }
+    .dashboard-stat-card.ocean { background: linear-gradient(135deg, #ecfbff, #cef1ff); }
+    .dashboard-stat-card.emerald { background: linear-gradient(135deg, #ebfff1, #c8f3d4); }
+    .dashboard-stat-card.coral { background: linear-gradient(135deg, #fff1ea, #ffd8c6); }
+    .dashboard-stat-card .panel-card-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.75);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+    .dashboard-filter-card,
+    .dashboard-cot-panel {
+        border-radius: 1.35rem;
+        border: 0;
+        box-shadow: 0 18px 42px rgba(31, 50, 72, 0.08);
+    }
+    .dashboard-cot-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+        gap: 1rem;
+    }
+    .cot-status-card {
+        border-radius: 1.25rem;
+        color: #1f3248;
+        padding: 1rem;
+        min-height: 210px;
+        box-shadow: 0 18px 36px rgba(26, 40, 60, 0.08);
+    }
+    .cot-status-card.cot-available { background: linear-gradient(160deg, #dff8e7, #bfeecf); }
+    .cot-status-card.cot-pending { background: linear-gradient(160deg, #fff1cf, #ffdca0); }
+    .cot-status-card.cot-occupied { background: linear-gradient(160deg, #ffd7dc, #ffb8c3); }
+    .cot-status-card.cot-maintenance { background: linear-gradient(160deg, #ebedf2, #d8dee9); }
+    .cot-status-card.cot-blocked { background: linear-gradient(160deg, #dedbe8, #c4bdd8); }
+    .cot-status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: rgba(255,255,255,0.68);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     {% for card in dashboard_cards %}
         <div class="col-md-6 col-lg-3">
-            <div class="card">
+            <div class="card dashboard-stat-card {{ card.theme }}">
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="panel-card-icon bg-primary-subtle text-primary">
+                        <div class="panel-card-icon text-dark">
                             <i class="{{ card.icon }} fs-4"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -21,14 +85,110 @@
     {% endfor %}
 </div>
 
-<div class="row">
+<div class="card dashboard-filter-card mt-2">
+    <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h4 class="card-title mb-1">Hostel Setup Filter</h4>
+                <p class="text-muted mb-0">Filter up to room level and review cot occupancy instantly.</p>
+            </div>
+            <a href="{% url 'panel_dashboard' %}" class="btn btn-outline-secondary btn-sm">Reset Filter</a>
+        </div>
+        <form method="get" class="row g-3">
+            <div class="col-md-4 col-xl">
+                <label class="form-label">Area</label>
+                <select name="area" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Areas</option>
+                    {% for item in hostel_filters.areas %}
+                        <option value="{{ item.pk }}" {% if hostel_filters.selected.area == item.pk %}selected{% endif %}>{{ item.area_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 col-xl">
+                <label class="form-label">Building</label>
+                <select name="building" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Buildings</option>
+                    {% for item in hostel_filters.buildings %}
+                        <option value="{{ item.pk }}" {% if hostel_filters.selected.building == item.pk %}selected{% endif %}>{{ item.building_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 col-xl">
+                <label class="form-label">Section</label>
+                <select name="section" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Sections</option>
+                    {% for item in hostel_filters.sections %}
+                        <option value="{{ item.pk }}" {% if hostel_filters.selected.section == item.pk %}selected{% endif %}>{{ item.section_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 col-xl">
+                <label class="form-label">Floor</label>
+                <select name="floor" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Floors</option>
+                    {% for item in hostel_filters.floors %}
+                        <option value="{{ item.pk }}" {% if hostel_filters.selected.floor == item.pk %}selected{% endif %}>{{ item.floor_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 col-xl">
+                <label class="form-label">Room</label>
+                <select name="room" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Rooms</option>
+                    {% for item in hostel_filters.rooms %}
+                        <option value="{{ item.pk }}" {% if hostel_filters.selected.room == item.pk %}selected{% endif %}>{{ item.full_label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card dashboard-cot-panel mt-4">
+    <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h4 class="card-title mb-1">Cot Status Overview</h4>
+                <p class="text-muted mb-0">Occupied cots show guest name and stay dates. Free cots show rate only.</p>
+            </div>
+            <span class="badge text-bg-light">{{ cot_cards|length }} cot{{ cot_cards|length|pluralize }}</span>
+        </div>
+        <div class="dashboard-cot-grid">
+            {% for item in cot_cards %}
+                <div class="cot-status-card {{ item.theme }}">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                        <div>
+                            <h5 class="mb-1">{{ item.cot.room.room_number }} / Cot {{ item.cot.cot_number }}</h5>
+                            <p class="text-muted mb-0">{{ item.cot.room.floor.section.building.area.area_name }} | {{ item.cot.room.floor.section.building.building_name }}</p>
+                        </div>
+                        <span class="cot-status-badge">{{ item.badge }}</span>
+                    </div>
+                    {% if item.guest_name %}
+                        <p class="mb-2"><strong>Guest:</strong> {{ item.guest_name }}</p>
+                        <p class="mb-2"><strong>Stay:</strong> {{ item.stay_start }} to {{ item.stay_end }}</p>
+                    {% endif %}
+                    <p class="mb-2"><strong>Rate:</strong> Rs. {{ item.monthly_rent }}</p>
+                    {% if not item.guest_name %}
+                        <p class="mb-0 text-muted">This cot is currently not occupied. Price shown for quick allotment reference.</p>
+                    {% elif item.status == "pending" %}
+                        <p class="mb-0 text-muted">Booking is waiting for admin verification.</p>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="alert alert-info mb-0">No cots matched the current hostel setup filter.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
     <div class="col-lg-7">
         <div class="card">
             <div class="card-header"><h4 class="card-title mb-0">Recent Bookings</h4></div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
-                        <thead><tr><th>Student</th><th>Room / Cot</th><th>Status</th><th>Created</th></tr></thead>
+                        <thead><tr><th>Guest</th><th>Room / Cot</th><th>Status</th><th>Created</th></tr></thead>
                         <tbody>
                             {% for booking in recent_bookings %}
                                 <tr>
@@ -52,7 +212,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
-                        <thead><tr><th>Student</th><th>Status</th><th>Reason</th></tr></thead>
+                        <thead><tr><th>Guest</th><th>Status</th><th>Reason</th></tr></thead>
                         <tbody>
                             {% for access in access_overview %}
                                 <tr>

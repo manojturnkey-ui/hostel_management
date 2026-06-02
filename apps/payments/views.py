@@ -18,7 +18,7 @@ class PendingPaymentListView(PanelListView):
     page_subtitle = "Booking payments waiting for admin confirmation"
     detail_url_name = "panel_payment_detail"
     columns = [
-        {"label": "Student", "value": "booking.student.full_name"},
+        {"label": "Guest", "value": "booking.student.full_name"},
         {"label": "Cot", "value": "booking.cot.cot_number"},
         {"label": "Room", "value": "booking.cot.room.room_number"},
         {"label": "Amount", "value": "amount"},
@@ -37,7 +37,7 @@ class PaymentHistoryView(PanelListView):
     page_subtitle = "All booking payment records"
     detail_url_name = "panel_payment_detail"
     columns = [
-        {"label": "Student", "value": "booking.student.full_name"},
+        {"label": "Guest", "value": "booking.student.full_name"},
         {"label": "Amount", "value": "amount"},
         {"label": "UTR", "value": "utr_transaction_id"},
         {"label": "Method", "value": "payment_method"},
@@ -57,7 +57,7 @@ class PaymentDetailView(PanelLoginRequiredMixin, DetailView):
         context.update(
             {
                 "page_title": "Payment Detail",
-                "page_subtitle": "Verify UTR, screenshot, and student details",
+                "page_subtitle": "Verify UTR, screenshot, and guest details",
                 "review_form": PaymentReviewForm(),
             }
         )
@@ -87,7 +87,7 @@ class RejectPaymentView(PanelLoginRequiredMixin, View):
 class QRCodeSettingListView(PanelListView):
     model = QRCodeSetting
     page_title = "QR Settings"
-    page_subtitle = "Manage active UPI QR codes for student payments"
+    page_subtitle = "Manage active UPI QR codes for guest payments"
     create_url_name = "panel_qr_setting_create"
     update_url_name = "panel_qr_setting_update"
     columns = [

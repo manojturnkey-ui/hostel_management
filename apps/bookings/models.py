@@ -46,14 +46,21 @@ class BillPaymentStatusChoices(models.TextChoices):
 
 
 class Student(TimeStampedModel):
+    guest_user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="guest_profile",
+        blank=True,
+        null=True,
+    )
     full_name = models.CharField(max_length=200)
     mobile_number = models.CharField(max_length=10, validators=[validate_mobile_number])
     whatsapp_number = models.CharField(max_length=10, validators=[validate_whatsapp_number])
     relative_contact_number = models.CharField(max_length=10, blank=True, validators=[validate_mobile_number])
     education = models.CharField(max_length=200, blank=True)
-    purpose_for_cot_booking = models.TextField()
+    purpose_for_cot_booking = models.TextField(blank=True, default="")
     address = models.TextField()
-    city_village = models.CharField(max_length=150)
+    city_village = models.CharField(max_length=150, blank=True, default="")
     state = models.CharField(max_length=150)
     pincode = models.CharField(max_length=6, validators=[validate_pincode])
     student_photo = models.ImageField(upload_to="students/photos/", validators=[validate_image_file], blank=True, null=True)
@@ -63,9 +70,15 @@ class Student(TimeStampedModel):
 
     class Meta:
         ordering = ["full_name"]
+        verbose_name = "Guest"
+        verbose_name_plural = "Guests"
 
     def __str__(self) -> str:
         return f"{self.full_name} ({self.mobile_number})"
+
+    @property
+    def guest_username(self) -> str:
+        return self.guest_user.username if self.guest_user else ""
 
 
 class Booking(TimeStampedModel):

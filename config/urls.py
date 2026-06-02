@@ -7,6 +7,7 @@ from django.views.static import serve
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
+    path("", include("apps.accounts.public_urls")),
     path("", include("apps.hostel.public_urls")),
     path("", include("apps.bookings.public_urls")),
     path("panel/", include("apps.accounts.urls")),

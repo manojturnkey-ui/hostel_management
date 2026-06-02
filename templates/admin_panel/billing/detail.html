@@ -7,7 +7,7 @@
             <div class="card-header"><h4 class="card-title mb-0">Bill Ledger</h4></div>
             <div class="card-body">
                 <dl class="row object-meta">
-                    <dt class="col-sm-4">Student</dt><dd class="col-sm-8">{{ bill.student.full_name }}</dd>
+                    <dt class="col-sm-4">Guest</dt><dd class="col-sm-8">{{ bill.student.full_name }}</dd>
                     <dt class="col-sm-4">Room / Cot</dt><dd class="col-sm-8">{{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</dd>
                     <dt class="col-sm-4">Bill Period</dt><dd class="col-sm-8">{{ bill.billing_period_start }} to {{ bill.billing_period_end }}</dd>
                     <dt class="col-sm-4">Bill Type</dt><dd class="col-sm-8">{{ bill.bill_type }}</dd>

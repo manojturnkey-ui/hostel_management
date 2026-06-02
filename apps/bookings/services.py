@@ -3,7 +3,9 @@ from __future__ import annotations
 import calendar
 from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
+from random import SystemRandom
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
 
@@ -22,6 +24,45 @@ from .models import (
 
 def get_system_setting():
     return SystemSetting.get_solo()
+
+
+def generate_simple_credential(length: int = 8) -> str:
+    characters = "abcdefghjkmnpqrstuvwxyz23456789"
+    chooser = SystemRandom()
+    return "".join(chooser.choice(characters) for _ in range(length))
+
+
+def generate_guest_username() -> str:
+    User = get_user_model()
+    while True:
+        candidate = f"g{generate_simple_credential(7)}"
+        if not User.objects.filter(username=candidate).exists():
+            return candidate
+
+
+def ensure_guest_user_for_student(student: Student):
+    User = get_user_model()
+    raw_password = generate_simple_credential(8)
+    if student.guest_user_id:
+        guest_user = student.guest_user
+        guest_user.display_name = student.full_name
+        guest_user.mobile_number = student.mobile_number
+    else:
+        guest_user = User(
+            username=generate_guest_username(),
+            display_name=student.full_name,
+            mobile_number=student.mobile_number,
+            is_staff=False,
+            is_superuser=False,
+        )
+    guest_user.set_password(raw_password)
+    guest_user.is_active = True
+    guest_user.email = ""
+    guest_user.save()
+    if student.guest_user_id != guest_user.pk:
+        student.guest_user = guest_user
+        student.save(update_fields=["guest_user"])
+    return guest_user, raw_password
 
 
 def calculate_first_bill_components(booking_from_date: date, monthly_rent: Decimal):
@@ -74,10 +115,10 @@ def get_or_create_student_from_public_form(cleaned_data: dict) -> Student:
         "mobile_number": cleaned_data["mobile_number"],
         "whatsapp_number": cleaned_data["whatsapp_number"],
         "relative_contact_number": cleaned_data.get("relative_contact_number", ""),
-        "education": cleaned_data.get("education", ""),
-        "purpose_for_cot_booking": cleaned_data["purpose_for_cot_booking"],
+        "education": "",
+        "purpose_for_cot_booking": "",
         "address": cleaned_data["address"],
-        "city_village": cleaned_data["city_village"],
+        "city_village": "",
         "state": cleaned_data["state"],
         "pincode": cleaned_data["pincode"],
         "student_photo": cleaned_data.get("student_photo"),
@@ -99,7 +140,7 @@ def get_or_create_student_from_public_form(cleaned_data: dict) -> Student:
 
 
 @transaction.atomic
-def create_public_booking(cot, cleaned_data: dict) -> Booking:
+def create_public_booking(cot, cleaned_data: dict) -> dict:
     from apps.whatsapp.services import send_booking_submitted_message, send_payment_pending_message
 
     cot = cot.__class__.objects.select_for_update().select_related("room__floor__section__building__area").get(pk=cot.pk)
@@ -107,12 +148,12 @@ def create_public_booking(cot, cleaned_data: dict) -> Booking:
         raise ValueError("This cot is not available for booking.")
 
     student = get_or_create_student_from_public_form(cleaned_data)
+    guest_user, raw_password = ensure_guest_user_for_student(student)
     estimates = estimate_booking_total(cot, cleaned_data["booking_from_date"])
     booking = Booking(
         student=student,
         cot=cot,
         booking_from_date=cleaned_data["booking_from_date"],
-        booking_to_date=cleaned_data.get("booking_to_date"),
         monthly_rent=estimates["monthly_rent"],
         security_deposit=estimates["security_deposit"],
         total_amount=estimates["total_amount"],
@@ -133,7 +174,11 @@ def create_public_booking(cot, cleaned_data: dict) -> Booking:
     cot.save(update_fields=["status", "updated_at"])
     send_booking_submitted_message(booking)
     send_payment_pending_message(booking)
-    return booking
+    return {
+        "booking": booking,
+        "guest_user": guest_user,
+        "guest_password": raw_password,
+    }
 
 
 def build_bill_dates(bill_year: int, bill_month: int, booking_from_date: date):

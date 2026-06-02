@@ -14,6 +14,14 @@
     <header class="public-hero">
         <div class="container py-5">
             <div class="public-hero-panel">
+                <div class="public-top-actions">
+                    <a href="{% url 'public_home' %}" class="btn btn-light public-mini-btn">Hostel Home</a>
+                    {% if request.user.is_authenticated and not request.user.is_staff %}
+                        <a href="{% url 'guest_dashboard' %}" class="btn btn-dark public-mini-btn">My Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'guest_login' %}" class="btn btn-dark public-mini-btn">Guest Login</a>
+                    {% endif %}
+                </div>
                 <div class="row align-items-center g-4">
                     <div class="col-lg-7">
                         <p class="text-uppercase public-kicker mb-2">Hostel Management</p>
@@ -50,5 +58,7 @@
             {% block content %}{% endblock %}
         </div>
     </main>
+    <script src="{% static 'mifty/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

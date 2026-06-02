@@ -6,7 +6,7 @@
             <span class="public-badge-soft mb-3">Rent Bill</span>
             <h3 class="h4 mb-3">Bill Summary</h3>
             <ul class="public-list-clean">
-                <li><strong>Student:</strong> {{ bill.student.full_name }}</li>
+                <li><strong>Guest:</strong> {{ bill.student.full_name }}</li>
                 <li><strong>Room / Cot:</strong> {{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</li>
                 <li><strong>Bill Amount:</strong> Rs. {{ bill.bill_amount }}</li>
                 <li><strong>Bill Period:</strong> {{ bill.billing_period_start }} to {{ bill.billing_period_end }}</li>

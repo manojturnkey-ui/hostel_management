@@ -197,7 +197,7 @@ class Cot(TimeStampedModel):
             return "Payment under verification"
         if self.status == CotStatusChoices.OCCUPIED:
             occupant = self.current_student_name()
-            return f"Occupied by: {occupant}" if occupant else "Occupied"
+            return f"Occupied by: {occupant}" if occupant else "Occupied by guest"
         if self.status == CotStatusChoices.MAINTENANCE:
             return "Under maintenance"
         return "Not available"

@@ -152,8 +152,7 @@ This Django project is integrated with a separate Node.js WhatsApp scan microser
 
 Configure either:
 
-1. An active WhatsApp scan setting in the admin panel, or
-2. These environment variables:
+Use these environment variables:
 
 ```text
 WHATSAPP_SCAN_BASE_URL=http://127.0.0.1:3001
@@ -165,15 +164,18 @@ WHATSAPP_SCAN_SESSION_NAME=autoans-session
 
 Admin panel page:
 
-- `/panel/whatsapp/`
+- `/panel/whatsapp/scan/`
+- `/panel/whatsapp/templates/`
 
 From there you can:
 
-- view live scan-service status
+- view live scan-service connection status
 - view the QR code from the Node service
 - restart the session
 - logout and force fresh QR scan
 - keep delivery logs and editable message templates in Django
+
+There is no separate scan-settings form in the panel. The WhatsApp scan service is connected directly through environment variables on the same server.
 
 ## Render Deployment Notes
 

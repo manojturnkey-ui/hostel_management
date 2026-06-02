@@ -24,10 +24,7 @@ class StudentForm(BaseBookingModelForm):
             "mobile_number",
             "whatsapp_number",
             "relative_contact_number",
-            "education",
-            "purpose_for_cot_booking",
             "address",
-            "city_village",
             "state",
             "pincode",
             "student_photo",
@@ -38,38 +35,31 @@ class StudentForm(BaseBookingModelForm):
 
 
 class PublicBookingForm(StyledFormMixin, forms.Form):
-    full_name = forms.CharField(max_length=200)
-    mobile_number = forms.CharField(max_length=10, validators=[validate_mobile_number])
-    whatsapp_number = forms.CharField(max_length=10, validators=[validate_whatsapp_number])
-    relative_contact_number = forms.CharField(max_length=10, required=False, validators=[validate_mobile_number])
-    education = forms.CharField(max_length=200, required=False)
-    purpose_for_cot_booking = forms.CharField(widget=forms.Textarea)
-    address = forms.CharField(widget=forms.Textarea)
-    city_village = forms.CharField(max_length=150)
-    state = forms.CharField(max_length=150)
-    pincode = forms.CharField(max_length=6, validators=[validate_pincode])
-    student_photo = forms.ImageField(required=False, validators=[validate_image_file])
-    address_proof_type = forms.ChoiceField(choices=AddressProofTypeChoices.choices)
-    address_proof_front = forms.ImageField(validators=[validate_image_file])
-    address_proof_back = forms.ImageField(required=False, validators=[validate_image_file])
-    booking_from_date = forms.DateField(widget=forms.DateInput)
-    booking_to_date = forms.DateField(required=False, widget=forms.DateInput)
-    utr_transaction_id = forms.CharField(max_length=100)
-    payment_screenshot = forms.ImageField(validators=[validate_image_file])
+    full_name = forms.CharField(max_length=200, label="Guest Full Name")
+    mobile_number = forms.CharField(max_length=10, validators=[validate_mobile_number], label="Mobile Number")
+    whatsapp_number = forms.CharField(max_length=10, validators=[validate_whatsapp_number], label="WhatsApp Number")
+    relative_contact_number = forms.CharField(
+        max_length=10,
+        required=False,
+        validators=[validate_mobile_number],
+        label="Relative Contact Number",
+    )
+    address = forms.CharField(widget=forms.Textarea, label="Address")
+    state = forms.CharField(max_length=150, label="State")
+    pincode = forms.CharField(max_length=6, validators=[validate_pincode], label="Pincode")
+    student_photo = forms.ImageField(required=False, validators=[validate_image_file], label="Guest Photo")
+    address_proof_type = forms.ChoiceField(choices=AddressProofTypeChoices.choices, label="Address Proof Type")
+    address_proof_front = forms.ImageField(validators=[validate_image_file], label="Address Proof Front")
+    address_proof_back = forms.ImageField(required=False, validators=[validate_image_file], label="Address Proof Back")
+    booking_from_date = forms.DateField(widget=forms.DateInput, label="Staying Start Date")
+    utr_transaction_id = forms.CharField(max_length=100, label="Payment UTR / Transaction ID")
+    payment_screenshot = forms.ImageField(validators=[validate_image_file], label="Payment Screenshot")
 
     def clean_booking_from_date(self):
         booking_from_date = self.cleaned_data["booking_from_date"]
         if booking_from_date < timezone.localdate():
             raise forms.ValidationError("Booking start date cannot be in the past.")
         return booking_from_date
-
-    def clean(self):
-        cleaned_data = super().clean()
-        booking_from_date = cleaned_data.get("booking_from_date")
-        booking_to_date = cleaned_data.get("booking_to_date")
-        if booking_from_date and booking_to_date and booking_to_date < booking_from_date:
-            self.add_error("booking_to_date", "Booking end date cannot be earlier than the start date.")
-        return cleaned_data
 
 
 class BookingReviewForm(StyledFormMixin, forms.Form):

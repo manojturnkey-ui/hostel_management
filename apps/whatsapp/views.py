@@ -8,8 +8,8 @@ from django.views.generic import RedirectView, TemplateView
 from config.mixins import PanelLoginRequiredMixin
 from config.panel_views import PanelCreateView, PanelListView, PanelUpdateView
 
-from .forms import WhatsAppMessageTemplateForm, WhatsAppSettingForm
-from .models import WhatsAppLog, WhatsAppMessageTemplate, WhatsAppSetting
+from .forms import WhatsAppMessageTemplateForm
+from .models import WhatsAppLog, WhatsAppMessageTemplate
 from .services import (
     ensure_default_templates,
     fetch_gateway_qr,
@@ -49,10 +49,8 @@ class WhatsAppScanView(PanelLoginRequiredMixin, TemplateView):
         context.update(
             {
                 "page_title": "WhatsApp Scan",
-                "page_subtitle": "QR connect, session status, and recent delivery logs",
-                "settings_list": WhatsAppSetting.objects.order_by("-is_active", "-created_at"),
+                "page_subtitle": "QR connect, live connection status, and recent delivery logs",
                 "recent_logs": WhatsAppLog.objects.select_related("student").order_by("-created_at")[:20],
-                "active_setting": active_setting,
                 "gateway_status": gateway_status,
                 "gateway_qr_image_data_url": gateway_qr_image_data_url,
                 "gateway_qr_message": gateway_qr_message,
@@ -87,24 +85,6 @@ class WhatsAppScanStatusView(PanelLoginRequiredMixin, View):
                 "qr_message": gateway_qr_message,
             }
         )
-
-
-class WhatsAppSettingCreateView(PanelCreateView):
-    model = WhatsAppSetting
-    form_class = WhatsAppSettingForm
-    page_title = "Create WhatsApp Scan Setting"
-    back_url_name = "panel_whatsapp_scan"
-    success_message = "WhatsApp scan setting created successfully."
-    success_url = reverse_lazy("panel_whatsapp_scan")
-
-
-class WhatsAppSettingUpdateView(PanelUpdateView):
-    model = WhatsAppSetting
-    form_class = WhatsAppSettingForm
-    page_title = "Update WhatsApp Scan Setting"
-    back_url_name = "panel_whatsapp_scan"
-    success_message = "WhatsApp scan setting updated successfully."
-    success_url = reverse_lazy("panel_whatsapp_scan")
 
 
 class WhatsAppTemplateListView(PanelListView):

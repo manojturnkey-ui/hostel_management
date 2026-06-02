@@ -35,14 +35,17 @@
     </div>
     <div class="col-lg-7">
         <div class="public-card public-card-highlight">
-            <span class="public-badge-soft mb-3">Student Details</span>
+            <span class="public-badge-soft mb-3">Guest Details</span>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
                     {% for field in form %}
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-{% if field.name == 'address' or field.name == 'student_photo' or field.name == 'address_proof_front' or field.name == 'address_proof_back' or field.name == 'payment_screenshot' %}12{% else %}6{% endif %} public-field-block">
                             <label class="form-label">{{ field.label }}</label>
                             {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
                             {% for error in field.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                             {% endfor %}

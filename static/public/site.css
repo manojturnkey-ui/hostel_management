@@ -60,6 +60,19 @@ body.public-body::before {
     backdrop-filter: blur(10px);
 }
 
+.public-top-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.public-mini-btn {
+    border-radius: 999px;
+    padding-inline: 1.1rem;
+    font-weight: 600;
+}
+
 .public-kicker {
     letter-spacing: 0.22em;
     color: var(--public-accent);
@@ -213,6 +226,86 @@ body.public-body::before {
     margin-top: 0.6rem;
 }
 
+.public-field-block {
+    margin-bottom: 1rem;
+}
+
+.public-field-block.field-wide {
+    grid-column: span 2;
+}
+
+.public-credentials {
+    background: linear-gradient(135deg, rgba(15, 109, 104, 0.12), rgba(214, 154, 66, 0.18));
+    border: 1px solid rgba(15, 109, 104, 0.18);
+    border-radius: 1.25rem;
+    padding: 1rem;
+}
+
+.credential-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(32, 48, 57, 0.08);
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.guest-dashboard-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.guest-booking-card,
+.guest-payment-card {
+    border-radius: 1.25rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(32, 48, 57, 0.09);
+}
+
+.guest-booking-card + .guest-booking-card {
+    margin-top: 1rem;
+}
+
+.guest-status-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: rgba(15, 109, 104, 0.1);
+    color: var(--public-accent-strong);
+}
+
+.guest-status-pill.pending_admin_confirmation {
+    background: rgba(214, 154, 66, 0.18);
+    color: #8c5e16;
+}
+
+.guest-status-pill.confirmed,
+.guest-status-pill.paid,
+.guest-status-pill.active {
+    background: rgba(34, 139, 94, 0.16);
+    color: #1d6f4c;
+}
+
+.guest-status-pill.rejected,
+.guest-status-pill.rejected_payment,
+.guest-status-pill.blocked,
+.guest-status-pill.overdue {
+    background: rgba(201, 72, 72, 0.16);
+    color: #8b2d2d;
+}
+
+.guest-status-pill.pending,
+.guest-status-pill.pending_verification {
+    background: rgba(232, 172, 72, 0.18);
+    color: #8a5a0f;
+}
+
 .public-empty-state {
     border-radius: 1.25rem;
     background: rgba(255, 255, 255, 0.78);
@@ -243,9 +336,20 @@ body.public-body::before {
         margin-top: 1rem;
     }
 
+    .public-top-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
     body.public-body::before {
         background-size: 1600px auto;
         background-position: center bottom;
         opacity: 0.12;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .public-field-block.field-wide {
+        grid-column: span 1;
     }
 }

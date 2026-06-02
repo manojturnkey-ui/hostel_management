@@ -28,23 +28,23 @@ from .services import (
 
 class StudentListView(PanelListView):
     model = Student
-    page_title = "Students"
-    page_subtitle = "Student profile and document records"
+    page_title = "Guests"
+    page_subtitle = "Guest profile and document records"
     columns = [
-        {"label": "Student Name", "value": "full_name"},
+        {"label": "Guest Name", "value": "full_name"},
         {"label": "Mobile", "value": "mobile_number"},
         {"label": "WhatsApp", "value": "whatsapp_number"},
-        {"label": "City / Village", "value": "city_village"},
+        {"label": "State", "value": "state"},
         {"label": "Created", "value": "created_at"},
     ]
-    search_fields = ["full_name", "mobile_number", "whatsapp_number", "city_village"]
+    search_fields = ["full_name", "mobile_number", "whatsapp_number", "state"]
 
 
 class BookingStatusListView(PanelListView):
     model = Booking
     detail_url_name = "panel_booking_detail"
     columns = [
-        {"label": "Student", "value": "student.full_name"},
+        {"label": "Guest", "value": "student.full_name"},
         {"label": "Cot", "value": "cot.cot_number"},
         {"label": "Room", "value": "cot.room.room_number"},
         {"label": "Monthly Rent", "value": "monthly_rent"},
@@ -89,7 +89,7 @@ class BookingDetailView(PanelLoginRequiredMixin, DetailView):
         context.update(
             {
                 "page_title": "Booking Detail",
-                "page_subtitle": "Review student profile, payment, and cot status",
+                "page_subtitle": "Review guest profile, payment, and cot status",
                 "review_form": BookingReviewForm(),
             }
         )
@@ -121,7 +121,7 @@ class BillListView(PanelListView):
     model = MonthlyRentDue
     detail_url_name = "panel_bill_detail"
     columns = [
-        {"label": "Student", "value": "student.full_name"},
+        {"label": "Guest", "value": "student.full_name"},
         {"label": "Bill Month", "value": "bill_month"},
         {"label": "Bill Year", "value": "bill_year"},
         {"label": "Bill Amount", "value": "bill_amount"},
@@ -174,10 +174,10 @@ class OverdueBillListView(BillListView):
 
 class StudentLedgerView(BillListView):
     template_name = "admin_panel/billing/ledger.html"
-    page_title = "Student Ledger"
+    page_title = "Guest Ledger"
     page_subtitle = "Ledger of rent bills and payment status"
     columns = [
-        {"label": "Student", "value": "student.full_name"},
+        {"label": "Guest", "value": "student.full_name"},
         {"label": "Mobile", "value": "student.mobile_number"},
         {"label": "Room", "value": "booking.cot.room.room_number"},
         {"label": "Cot", "value": "booking.cot.cot_number"},
@@ -309,7 +309,12 @@ class PublicBookingCreateView(FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        create_public_booking(self.cot, form.cleaned_data)
+        result = create_public_booking(self.cot, form.cleaned_data)
+        self.request.session["guest_portal_credentials"] = {
+            "username": result["guest_user"].username,
+            "password": result["guest_password"],
+            "guest_name": result["booking"].student.full_name,
+        }
         messages.success(self.request, "Your booking request has been submitted successfully.")
         return redirect("public_booking_thank_you")
 
@@ -339,6 +344,8 @@ class BookingThankYouView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = "Booking Submitted"
+        context["guest_credentials"] = self.request.session.pop("guest_portal_credentials", None)
+        context["guest_login_url"] = self.request.build_absolute_uri(reverse_lazy("guest_login"))
         return context
 
 

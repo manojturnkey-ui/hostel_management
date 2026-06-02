@@ -36,7 +36,7 @@ def panel_context(request) -> dict[str, Any]:
                 {"label": "Payment History", "url_name": "panel_payment_history"},
             ],
         },
-        {"label": "Students", "icon": "iconoir-user", "url_name": "panel_student_list"},
+        {"label": "Guests", "icon": "iconoir-user", "url_name": "panel_student_list"},
         {"label": "QR Settings", "icon": "iconoir-qr-code", "url_name": "panel_qr_setting_list"},
         {
             "label": "WhatsApp Settings",
@@ -55,7 +55,7 @@ def panel_context(request) -> dict[str, Any]:
                 {"label": "Paid Bills", "url_name": "panel_paid_bill_list"},
                 {"label": "Unpaid Bills", "url_name": "panel_unpaid_bill_list"},
                 {"label": "Overdue Bills", "url_name": "panel_overdue_bill_list"},
-                {"label": "Student Ledger", "url_name": "panel_student_ledger"},
+                {"label": "Guest Ledger", "url_name": "panel_student_ledger"},
                 {"label": "Manual Bill Generate", "url_name": "panel_manual_bill_generate"},
                 {"label": "Manual Grace Extension", "url_name": "panel_manual_grace_extension"},
             ],
@@ -64,7 +64,7 @@ def panel_context(request) -> dict[str, Any]:
             "label": "Access Control",
             "icon": "iconoir-fingerprint-lock-circle",
             "children": [
-                {"label": "Student Access", "url_name": "panel_student_access_list"},
+                {"label": "Guest Access", "url_name": "panel_student_access_list"},
                 {"label": "Biometric Devices", "url_name": "panel_biometric_device_list"},
                 {"label": "Gate Logs", "url_name": "panel_gate_access_log_list"},
             ],

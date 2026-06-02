@@ -8,11 +8,11 @@ from .models import BiometricDevice, GateAccessLog, StudentAccess
 
 class StudentAccessListView(PanelListView):
     model = StudentAccess
-    page_title = "Student Access"
+    page_title = "Guest Access"
     page_subtitle = "Manual gate access control and current status"
     update_url_name = "panel_student_access_update"
     columns = [
-        {"label": "Student", "value": "student.full_name"},
+        {"label": "Guest", "value": "student.full_name"},
         {"label": "Room", "value": "booking.cot.room.room_number"},
         {"label": "Cot", "value": "booking.cot.cot_number"},
         {"label": "Status", "value": "access_status"},
@@ -25,9 +25,9 @@ class StudentAccessListView(PanelListView):
 class StudentAccessUpdateView(PanelUpdateView):
     model = StudentAccess
     form_class = StudentAccessForm
-    page_title = "Update Student Access"
+    page_title = "Update Guest Access"
     back_url_name = "panel_student_access_list"
-    success_message = "Student access updated successfully."
+    success_message = "Guest access updated successfully."
     success_url = reverse_lazy("panel_student_access_list")
 
 
@@ -70,7 +70,7 @@ class GateAccessLogListView(PanelListView):
     page_title = "Gate Access Logs"
     page_subtitle = "Allowed and denied gate transactions"
     columns = [
-        {"label": "Student", "value": "student.full_name"},
+        {"label": "Guest", "value": "student.full_name"},
         {"label": "Device", "value": "device.device_name"},
         {"label": "Access Time", "value": "access_time"},
         {"label": "Result", "value": "access_result"},

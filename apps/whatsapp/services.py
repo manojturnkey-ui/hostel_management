@@ -63,21 +63,14 @@ def ensure_default_templates() -> None:
         )
 
 
-def get_active_setting(include_env_fallback: bool = True) -> WhatsAppSetting | None:
-    setting = WhatsAppSetting.objects.filter(is_active=True).order_by("-created_at").first()
-    if setting and setting.service_url and setting.api_key:
-        return setting
-
-    if not include_env_fallback:
-        return setting
-
+def get_active_setting() -> WhatsAppSetting | None:
     service_url = (env("WHATSAPP_SCAN_BASE_URL", "") or "").strip().rstrip("/")
     api_key = env("WHATSAPP_SCAN_API_KEY", "") or ""
-    if not service_url and not api_key:
-        return setting
+    if not service_url or not api_key:
+        return None
 
     fallback = WhatsAppSetting(
-        service_name="Environment WhatsApp Scan",
+        service_name="Integrated WhatsApp Scan",
         service_url=service_url,
         api_key=api_key,
         default_country_code=env("WHATSAPP_SCAN_DEFAULT_COUNTRY_CODE", "91") or "91",
