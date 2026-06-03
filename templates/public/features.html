@@ -2,116 +2,224 @@
 {% load static %}
 
 {% block content %}
-<section class="pt-120 pb-80 hostel-feature-grid-area">
+<section class="hostel-feature-toolbar-wrap">
+    <div class="container">
+        <div class="hostel-feature-toolbar-card">
+            <form method="get" action="{% url 'public_features' %}" class="row g-3 align-items-end hostel-feature-toolbar-form">
+                <div class="col-xl-3 col-lg-6">
+                    <div class="tg-booking-form-input hostel-toolbar-input">
+                        <label for="featureArea"><i class="fa-solid fa-location-dot"></i> Areas</label>
+                        <div class="hostel-toolbar-select-wrap">
+                            <select name="area" id="featureArea" class="hostel-search-select hostel-toolbar-select">
+                                <option value="">All Areas</option>
+                                {% for area in all_areas %}
+                                    <option value="{{ area.pk }}" {% if selected_filters.area == area.pk %}selected{% endif %}>{{ area.area_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="hostel-toolbar-angle"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6">
+                    <div class="tg-booking-form-input hostel-toolbar-input">
+                        <label for="featureBuilding"><i class="fa-solid fa-building"></i> Buildings</label>
+                        <div class="hostel-toolbar-select-wrap">
+                            <select name="building" id="featureBuilding" class="hostel-search-select hostel-toolbar-select">
+                                <option value="">All Buildings</option>
+                                {% for building in all_buildings %}
+                                    <option value="{{ building.pk }}" data-area="{{ building.area_id }}" {% if selected_filters.building == building.pk %}selected{% endif %}>{{ building.building_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="hostel-toolbar-angle"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6">
+                    <div class="tg-booking-form-input hostel-toolbar-input">
+                        <label for="featureSection"><i class="fa-solid fa-layer-group"></i> Sections / Wings</label>
+                        <div class="hostel-toolbar-select-wrap">
+                            <select name="section" id="featureSection" class="hostel-search-select hostel-toolbar-select">
+                                <option value="">All Sections</option>
+                                {% for section in all_sections %}
+                                    <option value="{{ section.pk }}" data-building="{{ section.building_id }}" {% if selected_filters.section == section.pk %}selected{% endif %}>{{ section.section_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="hostel-toolbar-angle"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6">
+                    <div class="tg-booking-form-input hostel-toolbar-input">
+                        <label for="featureFloor"><i class="fa-solid fa-stairs"></i> Floors</label>
+                        <div class="hostel-toolbar-select-wrap">
+                            <select name="floor" id="featureFloor" class="hostel-search-select hostel-toolbar-select">
+                                <option value="">All Floors</option>
+                                {% for floor in all_floors %}
+                                    <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}" {% if selected_filters.floor == floor.pk %}selected{% endif %}>{{ floor.floor_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="hostel-toolbar-angle"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="tg-btn tg-btn-hover hostel-feature-toolbar-btn">Search <i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="pt-70 pb-90 hostel-feature-listing-wrap">
     <div class="container">
         <div class="row g-4">
-            <div class="col-xl-4 col-lg-5">
-                <div class="hostel-filter-shell hostel-hotel-filter-shell">
-                    <div class="tg-sidebar-search-box mb-35">
-                        <h4 class="tg-sidebar-widget-title mb-20">Search Cots</h4>
-                        <p class="mb-0">Use the hostel structure filters below to narrow rooms and cots quickly.</p>
+            <div class="col-xxl-3 col-xl-4 col-lg-5">
+                <aside class="hostel-hotel-sidebar">
+                    <div class="hostel-hotel-sidebar-card">
+                        <div class="hostel-hotel-sidebar-head d-flex align-items-center justify-content-between">
+                            <h4>Search</h4>
+                            <a href="{% url 'public_features' %}">Reset All</a>
+                        </div>
+                        <p class="hostel-hotel-sidebar-copy">Filter live hostel inventory by area, building, section, and floor to find the right cot fast.</p>
+                        <form method="get" action="{% url 'public_features' %}" class="hostel-hotel-sidebar-form">
+                            <div class="hostel-hotel-filter-group">
+                                <h5>Hostel Structure</h5>
+                                <div class="hostel-form-group">
+                                    <label for="sidebarArea">Area</label>
+                                    <div class="hostel-select-field hostel-select-field-plain">
+                                        <span class="hostel-select-icon"><i class="fa-solid fa-location-dot"></i></span>
+                                        <select name="area" id="sidebarArea" class="hostel-search-select hostel-search-select-plain">
+                                            <option value="">All Areas</option>
+                                            {% for area in all_areas %}
+                                                <option value="{{ area.pk }}" {% if selected_filters.area == area.pk %}selected{% endif %}>{{ area.area_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="hostel-form-group">
+                                    <label for="sidebarBuilding">Building</label>
+                                    <div class="hostel-select-field hostel-select-field-plain">
+                                        <span class="hostel-select-icon"><i class="fa-solid fa-building"></i></span>
+                                        <select name="building" id="sidebarBuilding" class="hostel-search-select hostel-search-select-plain">
+                                            <option value="">All Buildings</option>
+                                            {% for building in all_buildings %}
+                                                <option value="{{ building.pk }}" data-area="{{ building.area_id }}" {% if selected_filters.building == building.pk %}selected{% endif %}>{{ building.building_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="hostel-form-group">
+                                    <label for="sidebarSection">Section / Wing</label>
+                                    <div class="hostel-select-field hostel-select-field-plain">
+                                        <span class="hostel-select-icon"><i class="fa-solid fa-layer-group"></i></span>
+                                        <select name="section" id="sidebarSection" class="hostel-search-select hostel-search-select-plain">
+                                            <option value="">All Sections</option>
+                                            {% for section in all_sections %}
+                                                <option value="{{ section.pk }}" data-building="{{ section.building_id }}" {% if selected_filters.section == section.pk %}selected{% endif %}>{{ section.section_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="hostel-form-group mb-0">
+                                    <label for="sidebarFloor">Floor</label>
+                                    <div class="hostel-select-field hostel-select-field-plain">
+                                        <span class="hostel-select-icon"><i class="fa-solid fa-stairs"></i></span>
+                                        <select name="floor" id="sidebarFloor" class="hostel-search-select hostel-search-select-plain">
+                                            <option value="">All Floors</option>
+                                            {% for floor in all_floors %}
+                                                <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}" {% if selected_filters.floor == floor.pk %}selected{% endif %}>{{ floor.floor_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hostel-hotel-filter-group">
+                                <h5>Cot Status Guide</h5>
+                                <ul class="hostel-hotel-status-list list-unstyled mb-0">
+                                    <li><span class="hostel-status-dot available"></span> Available for booking</li>
+                                    <li><span class="hostel-status-dot pending"></span> Payment under verification</li>
+                                    <li><span class="hostel-status-dot occupied"></span> Already occupied</li>
+                                    <li><span class="hostel-status-dot blocked"></span> Not available / blocked</li>
+                                </ul>
+                            </div>
+
+                            <div class="hostel-hotel-filter-group hostel-filter-note-group">
+                                <h5>Payment Mode</h5>
+                                <p class="mb-0">All cot reservations use QR payment upload and manual admin confirmation.</p>
+                            </div>
+
+                            <button type="submit" class="tg-btn tg-btn-hover hostel-sidebar-submit w-100">Search Cots <i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
                     </div>
-                    <form method="get" action="{% url 'public_features' %}" class="hostel-sidebar-filter-form">
-                        <div class="hostel-form-group">
-                            <label for="featureArea">Area</label>
-                            <div class="hostel-select-field">
-                                <span class="hostel-select-icon"><i class="fa-solid fa-location-dot"></i></span>
-                                <select name="area" id="featureArea" class="hostel-search-select">
-                                    <option value="">All Areas</option>
-                                    {% for area in all_areas %}
-                                        <option value="{{ area.pk }}" {% if selected_filters.area == area.pk %}selected{% endif %}>{{ area.area_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="hostel-form-group">
-                            <label for="featureBuilding">Building</label>
-                            <div class="hostel-select-field">
-                                <span class="hostel-select-icon"><i class="fa-solid fa-building"></i></span>
-                                <select name="building" id="featureBuilding" class="hostel-search-select">
-                                    <option value="">All Buildings</option>
-                                    {% for building in all_buildings %}
-                                        <option value="{{ building.pk }}" data-area="{{ building.area_id }}" {% if selected_filters.building == building.pk %}selected{% endif %}>{{ building.building_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="hostel-form-group">
-                            <label for="featureSection">Section / Wing</label>
-                            <div class="hostel-select-field">
-                                <span class="hostel-select-icon"><i class="fa-solid fa-layer-group"></i></span>
-                                <select name="section" id="featureSection" class="hostel-search-select">
-                                    <option value="">All Sections</option>
-                                    {% for section in all_sections %}
-                                        <option value="{{ section.pk }}" data-building="{{ section.building_id }}" {% if selected_filters.section == section.pk %}selected{% endif %}>{{ section.section_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="hostel-form-group">
-                            <label for="featureFloor">Floor</label>
-                            <div class="hostel-select-field">
-                                <span class="hostel-select-icon"><i class="fa-solid fa-stairs"></i></span>
-                                <select name="floor" id="featureFloor" class="hostel-search-select">
-                                    <option value="">All Floors</option>
-                                    {% for floor in all_floors %}
-                                        <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}" {% if selected_filters.floor == floor.pk %}selected{% endif %}>{{ floor.floor_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="tg-btn tg-btn-hover hostel-search-submit w-100">Search Now</button>
-                    </form>
-                </div>
+                </aside>
             </div>
-            <div class="col-xl-8 col-lg-7">
-                <div class="hostel-filter-shell hostel-hotel-result-shell mb-35">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <div>
-                            <span class="tg-section-su-subtitle">Hotel Grid Style</span>
-                            <h3 class="mb-0">Available Room & Cot Listings</h3>
+            <div class="col-xxl-9 col-xl-8 col-lg-7">
+                <div class="hostel-feature-results-head d-flex flex-wrap align-items-center justify-content-between gap-3 mb-30">
+                    <div>
+                        <h3 class="mb-1">{{ matching_cots|length }} Cots Found</h3>
+                        <p class="mb-0">Across {{ room_groups|length }} room groups with live availability and current status.</p>
+                    </div>
+                    <div class="hostel-feature-results-tools d-flex align-items-center gap-3">
+                        <div class="hostel-feature-sort-box">
+                            <span>Sort by:</span>
+                            <div class="hostel-feature-sort-pill">Hostel Structure</div>
                         </div>
-                        <div class="hostel-room-count">{{ matching_cots|length }} Cots Found</div>
+                        <div class="hostel-feature-view-icons">
+                            <span class="active"><i class="fa-solid fa-grip"></i></span>
+                            <span><i class="fa-solid fa-list"></i></span>
+                        </div>
                     </div>
                 </div>
-                <div class="row g-4">
+
+                <div class="row">
                     {% for group in room_groups %}
                         {% for cot in group.cots %}
-                            <div class="col-xl-6">
-                                <div class="tg-listing-card-item tg-listing-su-card-item hostel-feature-card hostel-feature-card-grid h-100">
-                                    <div class="tg-listing-card-thumb fix mb-25 p-relative">
+                            <div class="col-xxl-4 col-xl-6 col-md-6 tg-grid-full">
+                                <div class="tg-listing-card-item tg-listing-4-card-item hostel-grid-reference-card mb-25">
+                                    <div class="tg-listing-card-thumb tg-listing-2-card-thumb mb-15 fix p-relative hostel-grid-reference-thumb">
                                         <a href="{% if cot.status == 'available' %}{% url 'public_booking_create' cot.pk %}{% else %}{% url 'public_room_cots' cot.room_id %}{% endif %}">
-                                            <img class="tg-card-border w-100" src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '1' '2' '3' '4' '5' '6' %}.jpg" alt="listing">
-                                            <span class="tg-listing-item-price-discount">{{ cot.get_status_display }}</span>
+                                            <img class="tg-card-border w-100" src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '1' '2' '3' '4' '5' '6' %}.jpg" alt="Cot listing">
+                                            <span class="tg-listing-item-price-discount hostel-grid-badge hostel-grid-badge-{{ cot.status }}">{{ cot.get_status_display }}</span>
                                         </a>
+                                        <div class="tg-listing-2-price hostel-grid-price-tag">
+                                            {% if cot.security_deposit %}<del>Deposit Rs. {{ cot.security_deposit }}</del>{% endif %}
+                                            <span class="new">Rs. {{ cot.cot_price }}</span>
+                                            <span class="shift">/month</span>
+                                        </div>
                                     </div>
-                                    <div class="tg-listing-card-content">
-                                        <div class="hostel-grid-path mb-15">
-                                            <i class="fa-solid fa-route hostel-inline-icon"></i>
-                                            {{ group.room.floor.section.building.area.area_name }} / {{ group.room.floor.section.building.building_name }}
+                                    <div class="tg-listing-card-content p-relative">
+                                        <h4 class="tg-listing-card-title mb-5"><a href="{% url 'public_room_cots' cot.room_id %}">Room {{ cot.room.room_number }} - Cot {{ cot.cot_number }}</a></h4>
+                                        <span class="tg-listing-card-duration-map d-inline-block hostel-grid-location-line">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            {{ group.room.floor.section.building.area.area_name }}, {{ group.room.floor.section.building.building_name }}
+                                        </span>
+                                        <div class="hostel-grid-submeta mb-10">
+                                            <span><i class="fa-solid fa-layer-group"></i> {{ group.room.floor.section.section_name }}</span>
+                                            <span><i class="fa-solid fa-stairs"></i> {{ group.room.floor.floor_name }}</span>
                                         </div>
-                                        <h4 class="tg-listing-card-title mb-10"><a href="{% url 'public_room_cots' cot.room_id %}">Room {{ cot.room.room_number }} / Cot {{ cot.cot_number }}</a></h4>
-                                        <p class="hostel-grid-meta mb-15">{{ group.room.floor.section.section_name }} | {{ group.room.floor.floor_name }} | {{ group.room.full_label }}</p>
-                                        <div class="tg-listing-card-duration-tour mb-15 d-flex align-items-center gap-3 flex-wrap">
-                                            <span class="tg-listing-card-duration-map">
-                                                <i class="fa-solid fa-bed hostel-inline-icon"></i>Cot {{ cot.cot_number }}
-                                            </span>
-                                            <span class="tg-listing-card-duration-time">
-                                                <i class="fa-solid fa-wallet hostel-inline-icon"></i>Rs. {{ cot.cot_price }}
-                                            </span>
+                                        <div class="hostel-grid-submeta mb-12">
+                                            <span><i class="fa-solid fa-door-open"></i> {{ group.room.full_label }}</span>
+                                            <span><i class="fa-solid fa-bed"></i> {{ cot.public_status_text }}</span>
                                         </div>
-                                        <div class="hostel-grid-summary">
-                                            <span><i class="fa-solid fa-circle-info hostel-inline-icon"></i>{{ cot.public_status_text }}</span>
-                                            <span><i class="fa-solid fa-shield-heart hostel-inline-icon"></i>Deposit Rs. {{ cot.security_deposit }}</span>
+                                        <div class="tg-listing-card-review mb-12">
+                                            <span class="tg-listing-rating-icon"><i class="fa-sharp fa-solid fa-star"></i></span>
+                                            <span class="tg-listing-rating-icon"><i class="fa-sharp fa-solid fa-star"></i></span>
+                                            <span class="tg-listing-rating-icon"><i class="fa-sharp fa-solid fa-star"></i></span>
+                                            <span class="tg-listing-rating-icon"><i class="fa-sharp fa-solid fa-star"></i></span>
+                                            <span class="tg-listing-rating-icon"><i class="fa-sharp fa-solid fa-star"></i></span>
+                                            <span class="tg-listing-rating-percent">QR payment supported</span>
                                         </div>
-                                        <div class="tg-listing-card-price d-flex align-items-end justify-content-between mt-20">
-                                            <div class="hostel-grid-price">Monthly Rent Rs. {{ cot.cot_price }}</div>
-                                            <div>
-                                                {% if cot.status == 'available' %}
-                                                    <a class="tg-btn-border" href="{% url 'public_booking_create' cot.pk %}">Book Now <i class="fa-solid fa-arrow-right-long"></i></a>
-                                                {% else %}
-                                                    <span class="hostel-disabled-action">{{ cot.get_status_display }}</span>
-                                                {% endif %}
+                                        <div class="tg-listing-avai d-flex align-items-center justify-content-between">
+                                            {% if cot.status == 'available' %}
+                                                <a class="tg-listing-avai-btn" href="{% url 'public_booking_create' cot.pk %}">Book Now</a>
+                                            {% else %}
+                                                <a class="tg-listing-avai-btn hostel-grid-disabled-btn" href="{% url 'public_room_cots' cot.room_id %}">{{ cot.get_status_display }}</a>
+                                            {% endif %}
+                                            <div class="tg-listing-item-wishlist hostel-grid-wishlist">
+                                                <a href="{% url 'public_room_cots' cot.room_id %}" aria-label="View cot details">
+                                                    <i class="fa-regular fa-eye"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -122,11 +230,24 @@
                         <div class="col-12">
                             <div class="hostel-empty-panel text-center">
                                 <h4>No rooms or cots matched your filters.</h4>
-                                <p class="mb-0">Try removing one filter or choose a different area, building, section, or floor.</p>
+                                <p class="mb-0">Try clearing one filter or choose a different area, building, section, or floor.</p>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
+
+                {% if matching_cots %}
+                    <div class="tg-pagenation-wrap text-center mt-35">
+                        <nav>
+                            <ul>
+                                <li><span class="p-btn mr-25">Live Inventory</span></li>
+                                <li><span class="active">1</span></li>
+                                <li><span>Current View</span></li>
+                                <li><span class="p-btn ml-25">Hostelio</span></li>
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -137,48 +258,78 @@
     {{ block.super }}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const areaSelect = document.getElementById("featureArea");
-            const buildingSelect = document.getElementById("featureBuilding");
-            const sectionSelect = document.getElementById("featureSection");
-            const floorSelect = document.getElementById("featureFloor");
+            const selectGroups = [
+                {
+                    area: document.getElementById("featureArea"),
+                    building: document.getElementById("featureBuilding"),
+                    section: document.getElementById("featureSection"),
+                    floor: document.getElementById("featureFloor")
+                },
+                {
+                    area: document.getElementById("sidebarArea"),
+                    building: document.getElementById("sidebarBuilding"),
+                    section: document.getElementById("sidebarSection"),
+                    floor: document.getElementById("sidebarFloor")
+                }
+            ];
 
-            function applyFeatureFilters() {
-                const selectedArea = areaSelect.value;
-                const selectedBuilding = buildingSelect.value;
-                const selectedSection = sectionSelect.value;
+            function filterOptions(group) {
+                const selectedArea = group.area.value;
+                const selectedBuilding = group.building.value;
+                const selectedSection = group.section.value;
 
-                Array.from(buildingSelect.options).forEach(function (option, index) {
+                Array.from(group.building.options).forEach(function (option, index) {
                     option.hidden = index !== 0 && selectedArea && option.dataset.area !== selectedArea;
                 });
 
-                Array.from(sectionSelect.options).forEach(function (option, index) {
+                Array.from(group.section.options).forEach(function (option, index) {
                     option.hidden = index !== 0 && selectedBuilding && option.dataset.building !== selectedBuilding;
                 });
 
-                Array.from(floorSelect.options).forEach(function (option, index) {
+                Array.from(group.floor.options).forEach(function (option, index) {
                     option.hidden = index !== 0 && selectedSection && option.dataset.section !== selectedSection;
                 });
             }
 
-            areaSelect.addEventListener("change", function () {
-                buildingSelect.value = "";
-                sectionSelect.value = "";
-                floorSelect.value = "";
-                applyFeatureFilters();
+            function syncGroup(source, target) {
+                target.area.value = source.area.value;
+                target.building.value = source.building.value;
+                target.section.value = source.section.value;
+                target.floor.value = source.floor.value;
+                filterOptions(target);
+            }
+
+            selectGroups.forEach(function (group, index) {
+                const otherGroup = selectGroups[index === 0 ? 1 : 0];
+
+                group.area.addEventListener("change", function () {
+                    group.building.value = "";
+                    group.section.value = "";
+                    group.floor.value = "";
+                    filterOptions(group);
+                    syncGroup(group, otherGroup);
+                });
+
+                group.building.addEventListener("change", function () {
+                    group.section.value = "";
+                    group.floor.value = "";
+                    filterOptions(group);
+                    syncGroup(group, otherGroup);
+                });
+
+                group.section.addEventListener("change", function () {
+                    group.floor.value = "";
+                    filterOptions(group);
+                    syncGroup(group, otherGroup);
+                });
+
+                group.floor.addEventListener("change", function () {
+                    syncGroup(group, otherGroup);
+                });
             });
 
-            buildingSelect.addEventListener("change", function () {
-                sectionSelect.value = "";
-                floorSelect.value = "";
-                applyFeatureFilters();
-            });
-
-            sectionSelect.addEventListener("change", function () {
-                floorSelect.value = "";
-                applyFeatureFilters();
-            });
-
-            applyFeatureFilters();
+            selectGroups.forEach(filterOptions);
+            syncGroup(selectGroups[0], selectGroups[1]);
         });
     </script>
 {% endblock %}
