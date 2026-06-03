@@ -1,0 +1,100 @@
+{% extends "layouts/public_base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="pt-120 pb-80">
+    <div class="container">
+        <div class="row g-4 mb-60">
+            {% for card in contact_cards %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="hostel-contact-card h-100">
+                        <span class="tg-section-su-subtitle mb-15">{{ card.title }}</span>
+                        <h3>{{ card.value }}</h3>
+                        <p class="mb-0">{{ card.copy }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <div class="tg-about-su-thumb p-relative wow fadeInLeft" data-wow-delay=".4s" data-wow-duration=".6s">
+                    <div class="tg-about-su-shape-2">
+                        <img src="{% static 'public/tourex/img/about/su/shape.png' %}" alt="">
+                    </div>
+                    <div class="tg-about-su-shape">
+                        <img src="{% static 'public/tourex/img/about/su/shape-2.png' %}" alt="">
+                    </div>
+                    <img src="{% static 'public/tourex/img/about/su/thumb.png' %}" alt="">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hostel-contact-form-card">
+                    <div class="tg-location-section-title mb-30">
+                        <h5 class="tg-section-su-subtitle mb-15">Contact Us</h5>
+                        <h2 class="tg-section-su-title text-capitalize mb-15">Need help with cot booking or payment verification?</h2>
+                        <p class="tg-section-su-para mb-10">Reach the hostel team for payment proof issues, cot allocation questions, guest portal support, or billing clarifications.</p>
+                    </div>
+                    <form action="#" class="hostel-contact-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Your name">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Email address">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Mobile number">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Subject">
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control hostel-contact-textarea" rows="5" placeholder="Write your message"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" class="tg-btn tg-btn-hover">Send Inquiry</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="tg-testimonial-area tg-testimonial-su-wrap p-relative pt-160 pb-50">
+    <img class="tg-testimonial-su-shape d-none d-xxl-block" src="{% static 'public/tourex/img/testimonial/su/shape.png' %}" alt="">
+    <img class="tg-testimonial-su-shape-2 d-none d-lg-block" src="{% static 'public/tourex/img/testimonial/su/shape-2.png' %}" alt="">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="tg-testimonial-4-wrap">
+                    <div class="swiper-container tg-testimonial-4-slide-active p-relative fix pb-20">
+                        <div class="swiper-wrapper">
+                            {% for testimonial in guest_testimonials %}
+                                <div class="swiper-slide">
+                                   <div class="tg-testimonial-4-content-wrap">
+                                      <div class="tg-testimonial-4-clients text-center">
+                                         <h5 class="tg-testimonial-4-name mb-0">{{ testimonial.name }}</h5>
+                                         <span class="d-inline-block mb-10">{{ testimonial.role }}</span>
+                                         <div class="tg-testimonial-4-ratings mb-20">
+                                             <i class="fa-sharp fa-solid fa-star"></i>
+                                             <i class="fa-sharp fa-solid fa-star"></i>
+                                             <i class="fa-sharp fa-solid fa-star"></i>
+                                             <i class="fa-sharp fa-solid fa-star"></i>
+                                             <i class="fa-sharp fa-solid fa-star"></i>
+                                         </div>
+                                         <p>"{{ testimonial.message }}"</p>
+                                      </div>
+                                   </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

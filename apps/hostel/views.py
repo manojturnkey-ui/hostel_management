@@ -23,6 +23,81 @@ from .models import (
 from .services import process_excel_upload
 
 
+def _safe_int(value):
+    return int(value) if value and str(value).isdigit() else None
+
+
+def _build_filter_collections():
+    return {
+        "areas": Area.objects.filter(status=ActiveStatusChoices.ACTIVE).order_by("area_name"),
+        "buildings": Building.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related("area").order_by("building_name"),
+        "sections": Section.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related("building", "building__area").order_by("section_name"),
+        "floors": Floor.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related("section", "section__building").order_by("floor_name"),
+    }
+
+
+def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=None):
+    queryset = Cot.objects.select_related("room__floor__section__building__area").order_by(
+        "room__floor__section__building__area__area_name",
+        "room__floor__section__building__building_name",
+        "room__floor__section__section_name",
+        "room__floor__floor_name",
+        "room__room_number",
+        "cot_number",
+    )
+    if area_id:
+        queryset = queryset.filter(room__floor__section__building__area_id=area_id)
+    if building_id:
+        queryset = queryset.filter(room__floor__section__building_id=building_id)
+    if section_id:
+        queryset = queryset.filter(room__floor__section_id=section_id)
+    if floor_id:
+        queryset = queryset.filter(room__floor_id=floor_id)
+    return queryset
+
+
+def _group_room_results(cots):
+    grouped = []
+    current_room_id = None
+    current_group = None
+    for cot in cots:
+        if cot.room_id != current_room_id:
+            current_room_id = cot.room_id
+            current_group = {"room": cot.room, "cots": []}
+            grouped.append(current_group)
+        current_group["cots"].append(cot)
+    return grouped
+
+
+def _dummy_testimonials():
+    return [
+        {
+            "name": "Aman Verma",
+            "role": "Guest from Jaipur",
+            "message": "The booking flow felt smooth from area selection to QR payment, and the guest login helped me track approval without calling the office.",
+            "image": "public/tourex/img/testimonial/tes-4/tes-1.png",
+        },
+        {
+            "name": "Priya Shah",
+            "role": "Working Professional",
+            "message": "I liked that I could see cot status clearly before paying. The room and cot details were much more transparent than most hostel sites.",
+            "image": "public/tourex/img/testimonial/tes-4/tes-2.png",
+        },
+        {
+            "name": "Rohan Kulkarni",
+            "role": "University Guest",
+            "message": "The portal made it easy to check my request status and latest payment without confusion. The interface feels modern and trustworthy.",
+            "image": "public/tourex/img/testimonial/tes-4/tes-3.png",
+        },
+        {
+            "name": "Neha Singh",
+            "role": "Returning Guest",
+            "message": "The structure from area to cot was simple to follow, and the guest dashboard kept everything important in one place after booking.",
+            "image": "public/tourex/img/testimonial/tes-4/tes-4.png",
+        },
+    ]
+
+
 class AreaListView(PanelListView):
     model = Area
     page_title = "Areas"
@@ -282,8 +357,81 @@ class AreaHomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        filters = _build_filter_collections()
         context["page_title"] = "Hostel Management"
-        context["areas"] = Area.objects.filter(status=ActiveStatusChoices.ACTIVE).order_by("area_name")
+        context["areas"] = filters["areas"]
+        context["all_areas"] = filters["areas"]
+        context["all_buildings"] = filters["buildings"]
+        context["all_sections"] = filters["sections"]
+        context["all_floors"] = filters["floors"]
+        context["top_cots"] = Cot.objects.select_related("room__floor__section__building__area").order_by("-cot_price", "cot_number")[:6]
+        context["who_we_are_testimonials"] = _dummy_testimonials()[:2]
+        context["guest_testimonials"] = _dummy_testimonials()
+        return context
+
+
+class FeaturePublicView(TemplateView):
+    template_name = "public/features.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        filters = _build_filter_collections()
+        selected_area = _safe_int(self.request.GET.get("area"))
+        selected_building = _safe_int(self.request.GET.get("building"))
+        selected_section = _safe_int(self.request.GET.get("section"))
+        selected_floor = _safe_int(self.request.GET.get("floor"))
+        matching_cots = list(_filtered_cots(selected_area, selected_building, selected_section, selected_floor))
+        context.update(
+            {
+                "page_title": "Features",
+                "page_description": "Explore filtered room and cot availability using the hostel search controls.",
+                "all_areas": filters["areas"],
+                "all_buildings": filters["buildings"],
+                "all_sections": filters["sections"],
+                "all_floors": filters["floors"],
+                "selected_filters": {
+                    "area": selected_area,
+                    "building": selected_building,
+                    "section": selected_section,
+                    "floor": selected_floor,
+                },
+                "matching_cots": matching_cots,
+                "room_groups": _group_room_results(matching_cots),
+                "top_cots": Cot.objects.select_related("room__floor__section__building__area").order_by("-cot_price", "cot_number")[:12],
+            }
+        )
+        return context
+
+
+class ContactPublicView(TemplateView):
+    template_name = "public/contact.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "page_title": "Contact Us",
+                "page_description": "Reach the hostel team for booking support, payment help, or room allocation queries.",
+                "contact_cards": [
+                    {
+                        "title": "Visit Hostel Desk",
+                        "value": "58 Hostel Avenue, Main Campus Road",
+                        "copy": "For room visits, cot confirmations, and offline support.",
+                    },
+                    {
+                        "title": "Call Support",
+                        "value": "+91 98765 43210",
+                        "copy": "Available for payment verification and booking assistance.",
+                    },
+                    {
+                        "title": "Email Support",
+                        "value": "support@hostelmanagement.local",
+                        "copy": "Send screenshots, billing questions, or onboarding requests.",
+                    },
+                ],
+                "guest_testimonials": _dummy_testimonials()[:3],
+            }
+        )
         return context
 
 

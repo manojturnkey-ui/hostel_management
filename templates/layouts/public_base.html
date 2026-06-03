@@ -26,7 +26,7 @@
     </div>
 
     <button class="scroll__top scroll-to-target" data-target="html">
-        <i class="fa-sharp fa-regular fa-arrow-up"></i>
+        <i class="fa-sharp fa-solid fa-arrow-up"></i>
     </button>
 
     <header class="tg-header-height">
@@ -52,13 +52,12 @@
                                 <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                                     <ul class="navigation">
                                         <li><a href="{% url 'public_home' %}">Home</a></li>
+                                        <li><a href="{% url 'public_features' %}">Features</a></li>
+                                        <li><a href="{% url 'public_contact' %}">Contact Us</a></li>
                                         {% if request.user.is_authenticated and not request.user.is_staff %}
                                             <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
                                             <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
-                                        {% else %}
-                                            <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
                                         {% endif %}
-                                        <li><a href="{% url 'panel_login' %}">Admin Panel</a></li>
                                     </ul>
                                 </div>
                             </nav>
@@ -71,7 +70,7 @@
                                     <i class="fa-solid fa-bed"></i>
                                 </span>
                                 <div class="tg-header-contact-number d-none d-xl-block">
-                                    <span>Smart Cot Booking</span>
+                                    <span>Hostel Smart Booking</span>
                                     <a href="{% url 'public_home' %}">Stay ready, pay by QR, track approval</a>
                                 </div>
                             </div>
@@ -85,7 +84,7 @@
                                         </button>
                                     </form>
                                 {% else %}
-                                    <a class="tg-btn-header" href="{% url 'guest_login' %}">
+                                    <a class="tg-btn-header hostel-guest-login-btn" href="{% url 'guest_login' %}">
                                         <span><i class="fa-solid fa-user"></i></span>
                                         Guest Login
                                     </a>
@@ -113,13 +112,15 @@
                 <div class="tgmobile__menu-outer">
                     <ul class="navigation">
                         <li><a href="{% url 'public_home' %}">Home</a></li>
+                        <li><a href="{% url 'public_features' %}">Features</a></li>
+                        <li><a href="{% url 'public_contact' %}">Contact Us</a></li>
                         {% if request.user.is_authenticated and not request.user.is_staff %}
                             <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
                             <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
-                        {% else %}
+                        {% endif %}
+                        {% if not request.user.is_authenticated or request.user.is_staff %}
                             <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
                         {% endif %}
-                        <li><a href="{% url 'panel_login' %}">Admin Panel</a></li>
                     </ul>
                 </div>
             </nav>
@@ -128,7 +129,7 @@
 
         <div class="offCanvas__info">
             <div class="offCanvas__close-icon menu-close">
-                <button><i class="fa-sharp fa-regular fa-xmark"></i></button>
+                <button><i class="fa-sharp fa-solid fa-xmark"></i></button>
             </div>
             <div class="offCanvas__logo mb-30">
                 <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-full.svg' %}" alt="Logo"></a>
@@ -145,7 +146,7 @@
                 <div class="contact-list mb-30">
                     <h4>Quick Links</h4>
                     <p><a href="{% url 'guest_login' %}">Guest Login</a></p>
-                    <p><a href="{% url 'panel_login' %}">Admin Panel</a></p>
+                    <p><a href="{% url 'public_contact' %}">Contact Us</a></p>
                 </div>
             </div>
         </div>
@@ -189,51 +190,92 @@
     </main>
 
     <footer>
-        <div class="tg-footer-area include-bg pt-120" data-background="{% static 'public/tourex/img/footer/footer.jpg' %}">
-            <div class="container">
-                <div class="tg-footer-top mb-40">
+        <div class="tg-footer-area tg-footer-su-wrapper tg-footer-space include-bg" data-background="{% static 'public/tourex/img/footer/footer.jpg' %}">
+           <div class="container">
+                <div class="tg-footer-top mb-45">
                     <div class="row">
-                        <div class="col-xl-4 col-lg-4 col-md-6">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                             <div class="tg-footer-widget mb-40">
                                 <div class="tg-footer-logo mb-20">
                                     <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-full.svg' %}" alt=""></a>
                                 </div>
-                                <p class="mb-20">A polished guest-facing booking experience for selecting cots, paying securely, and checking approvals from a single portal.</p>
+                                <p class="mb-20">Modern hostel booking for guests who want clear cot visibility, QR payment flow, and one-click status tracking.</p>
+                                <div class="tg-footer-form mb-30">
+                                    <form action="#">
+                                        <input type="email" placeholder="Enter your mail">
+                                        <button class="tg-footer-form-btn" type="submit">
+                                            <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1.52514 8.47486H20.4749M20.4749 8.47486L13.5 1.5M20.4749 8.47486L13.5 15.4497" stroke="white" stroke-width="1.77778" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
                                 <div class="tg-footer-social">
-                                    <a href="{% url 'public_home' %}"><i class="fa-solid fa-house"></i></a>
-                                    <a href="{% url 'guest_login' %}"><i class="fa-solid fa-user"></i></a>
-                                    <a href="{% url 'panel_login' %}"><i class="fa-solid fa-lock"></i></a>
+                                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                                    <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+                                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-6">
-                            <div class="tg-footer-widget tg-footer-link ml-40 mb-40">
-                                <h3 class="tg-footer-widget-title mb-25">Guest Actions</h3>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                            <div class="tg-footer-widget tg-footer-link ml-80 mb-40">
+                                <h3 class="tg-footer-widget-title mb-25">Quick Links</h3>
                                 <ul>
-                                    <li><a href="{% url 'public_home' %}">Browse Hostel Areas</a></li>
-                                    <li><a href="{% url 'guest_login' %}">Login to Guest Portal</a></li>
-                                    {% if request.user.is_authenticated and not request.user.is_staff %}
-                                        <li><a href="{% url 'guest_dashboard' %}">View My Stay</a></li>
-                                        <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
-                                    {% endif %}
+                                    <li><a href="{% url 'public_home' %}">Home</a></li>
+                                    <li><a href="{% url 'public_features' %}">Features</a></li>
+                                    <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
+                                    <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
+                                    <li><a href="{% url 'public_contact' %}">Contact Us</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-12">
-                            <div class="tg-footer-widget tg-footer-info mb-40">
-                                <h3 class="tg-footer-widget-title mb-25">Booking Promise</h3>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                            <div class="tg-footer-widget tg-footer-link mb-40">
+                                <h3 class="tg-footer-widget-title mb-25">Guest Utility</h3>
                                 <ul>
-                                    <li class="d-flex">
-                                        <span class="mr-15"><i class="fa-solid fa-bed text-white"></i></span>
-                                        <p class="mb-0">Area-to-cot navigation with real availability and pricing.</p>
+                                    <li><a href="{% url 'public_home' %}#area-grid">Browse Areas</a></li>
+                                    <li><a href="{% url 'public_features' %}">Search Rooms & Cots</a></li>
+                                    <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
+                                    <li><a href="{% url 'public_contact' %}">Payment Help</a></li>
+                                    <li><a href="{% url 'public_contact' %}">Stay Support</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                            <div class="tg-footer-widget tg-footer-info mb-40">
+                                <h3 class="tg-footer-widget-title mb-25">Information</h3>
+                                <ul>
+                                    <li>
+                                        <a class="d-flex" href="{% url 'public_contact' %}">
+                                            <span class="mr-15">
+                                                <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M19.0013 10.0608C19.0013 16.8486 10.3346 22.6668 10.3346 22.6668C10.3346 22.6668 1.66797 16.8486 1.66797 10.0608C1.66797 7.74615 2.58106 5.52634 4.20638 3.88965C5.83169 2.25297 8.03609 1.3335 10.3346 1.3335C12.6332 1.3335 14.8376 2.25297 16.4629 3.88965C18.0882 5.52634 19.0013 7.74615 19.0013 10.0608Z" stroke="white" stroke-width="1.73333" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M10.3346 12.9699C11.9301 12.9699 13.2235 11.6674 13.2235 10.0608C13.2235 8.45412 11.9301 7.15168 10.3346 7.15168C8.73915 7.15168 7.44575 8.45412 7.44575 10.0608C7.44575 11.6674 8.73915 12.9699 10.3346 12.9699Z" stroke="white" stroke-width="1.73333" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </span>
+                                            58 Hostel Avenue<br> Main Campus Road
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="d-flex" href="tel:+919876543210">
+                                            <span class="mr-15">
+                                                <i class="fa-sharp text-white fa-solid fa-phone"></i>
+                                            </span>
+                                            +91 98765 43210
+                                        </a>
                                     </li>
                                     <li class="d-flex">
-                                        <span class="mr-15"><i class="fa-solid fa-qrcode text-white"></i></span>
-                                        <p class="mb-0">UPI QR payment submission with screenshot and UTR proof.</p>
-                                    </li>
-                                    <li class="d-flex">
-                                        <span class="mr-15"><i class="fa-solid fa-circle-check text-white"></i></span>
-                                        <p class="mb-0">Guest dashboard for approval status, stay details, and latest payment.</p>
+                                        <span class="mr-15">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.9987 5.60006V12.0001L16.2654 14.1334M22.6654 12.0002C22.6654 17.8912 17.8897 22.6668 11.9987 22.6668C6.10766 22.6668 1.33203 17.8912 1.33203 12.0002C1.33203 6.10912 6.10766 1.3335 11.9987 1.3335C17.8897 1.3335 22.6654 6.10912 22.6654 12.0002Z" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                        <p class="mb-0">
+                                            Mon - Sat: 8 am - 5 pm,<br>
+                                            Sunday: <span class="text-white d-inline-block">Closed</span>
+                                        </p>
                                     </li>
                                 </ul>
                             </div>
@@ -242,7 +284,9 @@
                 </div>
             </div>
             <div class="tg-footer-copyright text-center">
-                <span>Copyright <a href="{% url 'public_home' %}">Hostel Management</a> | All rights reserved</span>
+                <span>
+                    Copyright <a href="{% url 'public_home' %}">Hostel Management</a> | All Right Reserved
+                </span>
             </div>
         </div>
     </footer>
