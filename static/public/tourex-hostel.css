@@ -97,6 +97,27 @@ body.hostel-public-body {
     text-align: left;
 }
 
+.hostel-public-body .tg-header-contact-number span,
+.hostel-public-body .tg-header-contact-number a {
+    color: #fff;
+}
+
+.hostel-header-contact-line {
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.hostel-header-contact-line span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.hostel-header-contact-line a {
+    font-size: 16px;
+    font-weight: 700;
+}
+
 .hostel-public-body .tg-header-btn .tg-btn-header {
     white-space: nowrap;
 }
@@ -155,30 +176,6 @@ body.hostel-public-body {
 .hostel-hero-btn-alt:hover {
     background: rgba(255, 255, 255, 0.12);
     color: #fff;
-}
-
-.hostel-hero-stats {
-    margin-top: 34px;
-    row-gap: 20px;
-}
-
-.hostel-hero-stat-card {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 24px;
-    padding: 24px 18px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
-}
-
-.hostel-hero-stat-card h4,
-.hostel-hero-stat-card p {
-    color: #fff;
-}
-
-.hostel-hero-stat-card h4 {
-    font-size: 32px;
-    margin-bottom: 6px;
 }
 
 .hostel-section-copy {
@@ -258,10 +255,10 @@ body.hostel-public-body {
 }
 
 .hostel-home-search {
-    margin: 40px auto 0;
+    margin: 42px auto 0;
     max-width: 1180px;
     text-align: left;
-    padding: 13px 14px 3px 26px;
+    padding: 8px 10px 0 22px;
     border-radius: 1000px;
 }
 
@@ -273,12 +270,13 @@ body.hostel-public-body {
 .hostel-home-search-grid .tg-booking-form-parent-inner {
     flex: 1 1 0;
     min-width: 0;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .hostel-home-select-wrap {
     position: relative;
-    padding-left: 26px;
+    padding-left: 24px;
+    padding-right: 18px;
 }
 
 .hostel-home-select-icon {
@@ -289,6 +287,16 @@ body.hostel-public-body {
     color: #353844;
 }
 
+.hostel-home-select-angle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #353844;
+    font-size: 14px;
+    pointer-events: none;
+}
+
 .hostel-home-search-select {
     width: 100%;
     min-height: auto;
@@ -297,7 +305,8 @@ body.hostel-public-body {
     color: #353844;
     font-family: var(--tg-ff-outfit);
     font-size: 16px;
-    padding: 0 24px 0 0;
+    line-height: 1.35;
+    padding: 0 20px 0 0;
     appearance: none;
 }
 
@@ -307,7 +316,7 @@ body.hostel-public-body {
 
 .hostel-home-search-btn {
     margin-left: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .hostel-hotel-filter-shell,
@@ -359,11 +368,11 @@ body.hostel-public-body {
 }
 
 .hostel-search-submit {
-    min-height: 60px;
+    min-height: 52px;
     border-radius: 100px;
     border: 0;
     white-space: nowrap;
-    padding-inline: 34px;
+    padding-inline: 28px;
 }
 
 .hostel-inline-icon {
@@ -1004,7 +1013,7 @@ body.hostel-public-body {
 
     .hostel-home-search {
         border-radius: 26px;
-        padding: 24px;
+        padding: 18px;
     }
 
     .hostel-public-body .tg-hero-tu-wrapper .tg-hero-content {
@@ -1059,7 +1068,7 @@ body.hostel-public-body {
     }
 
     .hostel-home-search {
-        padding: 20px;
+        padding: 18px;
         border-radius: 18px;
     }
 

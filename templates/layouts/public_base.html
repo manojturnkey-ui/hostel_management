@@ -64,9 +64,9 @@
                         <div class="tg-menu-right-action d-flex align-items-center justify-content-end">
                             <div class="tg-header-contact-info d-flex align-items-center">
                                 <span class="tg-header-contact-icon mr-10 d-none d-xl-block">
-                                    <i class="fa-solid fa-headset"></i>
+                                    <i class="fa-solid fa-phone"></i>
                                 </span>
-                                <div class="tg-header-contact-number d-none d-xl-block">
+                                <div class="tg-header-contact-number hostel-header-contact-line d-none d-xl-flex">
                                     <span>{{ public_contact_label }}</span>
                                     <a href="tel:{{ public_contact_number|cut:' ' }}">{{ public_contact_number }}</a>
                                 </div>
@@ -79,7 +79,7 @@
                                     </a>
                                 {% else %}
                                     <a class="tg-btn-header hostel-guest-login-btn" href="{% url 'guest_login' %}">
-                                        <span><i class="fa-solid fa-right-to-bracket"></i></span>
+                                        <span><i class="fa-solid fa-user"></i></span>
                                         Guest Login
                                     </a>
                                 {% endif %}
