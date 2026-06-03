@@ -497,7 +497,7 @@
                                 <h5>No previous booking yet</h5>
                                 <p class="mb-0">Your earlier guest requests will appear here once more than one booking exists.</p>
                             </div>
-                        {% endif %}
+                        {% endfor %}
                         {% if guest_bookings and highlighted_booking and guest_bookings|length == 1 %}
                             <div class="hostel-empty-panel">
                                 <h5>No previous booking yet</h5>
