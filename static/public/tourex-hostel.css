@@ -1962,3 +1962,59 @@ body.hostel-public-body {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+.hostel-public-body .tgmenu__nav {
+    margin-left: 18px !important;
+}
+
+.hostel-public-body .tgmenu__navbar-wrap ul {
+    gap: 16px;
+}
+
+.hostel-header-contact-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+}
+
+.hostel-header-contact-label {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.hostel-header-contact-stack a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.hostel-header-contact-stack a i {
+    font-size: 15px;
+}
+
+.hostel-public-body .sticky-menu .hostel-header-contact-label,
+.hostel-public-body .sticky-menu .hostel-header-contact-stack a,
+.hostel-public-body .sticky-menu .hostel-header-contact-stack a i {
+    color: var(--hostel-ink) !important;
+}
+
+@media (max-width: 1399px) {
+    .hostel-public-body .tgmenu__nav {
+        margin-left: 12px !important;
+    }
+
+    .hostel-public-body .tgmenu__navbar-wrap ul {
+        gap: 13px;
+    }
+
+    .hostel-header-contact-stack a {
+        font-size: 16px;
+    }
+}

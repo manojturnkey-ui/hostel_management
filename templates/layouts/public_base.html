@@ -63,12 +63,9 @@
                     <div class="col-xxl-3 col-xl-4 col-lg-4 col-7">
                         <div class="tg-menu-right-action d-flex align-items-center justify-content-end">
                             <div class="tg-header-contact-info d-flex align-items-center">
-                                <span class="tg-header-contact-icon mr-10 d-none d-xl-flex hostel-header-phone-circle">
-                                    <i class="fa-solid fa-phone"></i>
-                                </span>
-                                <div class="tg-header-contact-number hostel-header-contact-line d-none d-xl-flex">
-                                    <span>{{ public_contact_label }}</span>
-                                    <a href="tel:{{ public_contact_number|cut:' ' }}">{{ public_contact_number }}</a>
+                                <div class="tg-header-contact-number hostel-header-contact-stack d-none d-xl-flex">
+                                    <span class="hostel-header-contact-label">Call Us</span>
+                                    <a href="tel:{{ public_contact_number|cut:' ' }}"><i class="fa-solid fa-phone"></i>{{ public_contact_number }}</a>
                                 </div>
                             </div>
                             <div class="tg-header-btn ml-20 d-none d-sm-block">
@@ -318,4 +315,5 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
 
