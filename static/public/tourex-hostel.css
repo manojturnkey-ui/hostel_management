@@ -1574,20 +1574,20 @@ body.hostel-public-body {
 .hostel-public-body .sticky-menu .hostel-guest-login-btn,
 .hostel-public-body .sticky-menu .hostel-guest-login-btn span,
 .hostel-public-body .sticky-menu .hostel-guest-login-btn i {
-    color: #fff !important;
+    color: var(--hostel-ink) !important;
 }
 
 .hostel-public-body .sticky-menu .hostel-header-phone-circle {
-    background: rgba(255, 255, 255, 0.16);
-    color: #fff;
+    background: #f3f4f8;
+    color: var(--hostel-ink);
 }
 
 .hostel-public-body .sticky-menu .hostel-guest-login-btn {
-    background: rgba(255, 255, 255, 0.16);
+    background: #f3f4f8;
 }
 
 .hostel-public-body .sticky-menu .hostel-guest-login-btn:hover {
-    background: rgba(255, 255, 255, 0.24);
+    background: #e8ebf1;
 }
 
 .hostel-home-search {
@@ -1822,5 +1822,143 @@ body.hostel-public-body {
 
     .hostel-area-showcase-content h4 {
         font-size: 24px;
+    }
+}
+
+.hostel-public-body .tgmenu__wrap {
+    gap: 18px;
+}
+
+.hostel-public-body .tgmenu__nav {
+    margin-left: 34px !important;
+    flex: 1 1 auto;
+}
+
+.hostel-public-body .tgmenu__main-menu {
+    width: 100%;
+}
+
+.hostel-public-body .tgmenu__navbar-wrap ul {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.hostel-public-body .tg-header-tu-menu .tgmenu__navbar-wrap ul li a {
+    padding: 35px 0;
+    font-size: 18px;
+}
+
+.hostel-public-body .tg-menu-right-action {
+    gap: 14px;
+    flex-wrap: nowrap;
+}
+
+.hostel-public-body .tg-header-contact-info {
+    flex: 0 0 auto;
+}
+
+.hostel-public-body .tg-header-contact-number {
+    min-width: max-content;
+}
+
+.hostel-header-phone-circle i {
+    color: var(--hostel-ink) !important;
+}
+
+.hostel-public-body .sticky-menu .hostel-header-phone-circle i {
+    color: #fff !important;
+}
+
+@media (max-width: 1399px) {
+    .hostel-public-body .tgmenu__nav {
+        margin-left: 20px !important;
+    }
+
+    .hostel-public-body .tgmenu__navbar-wrap ul {
+        gap: 16px;
+    }
+
+    .hostel-public-body .tg-header-tu-menu .tgmenu__navbar-wrap ul li a {
+        font-size: 17px;
+    }
+}
+
+
+
+.hostel-premium-badge {
+    color: #fff !important;
+}
+
+.hostel-premium-thumb img {
+    min-height: 210px;
+}
+
+.hostel-premium-content {
+    padding: 18px 20px 20px;
+}
+
+.hostel-premium-meta {
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.hostel-premium-meta span {
+    font-size: 14px;
+}
+
+.hostel-premium-info-grid {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.hostel-premium-info-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6d6988;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.hostel-premium-info-line i {
+    color: var(--hostel-primary);
+    flex: 0 0 auto;
+}
+
+.hostel-premium-price-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.hostel-premium-price-box {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f7f7fb;
+}
+
+.hostel-premium-price-box span {
+    display: block;
+    margin-bottom: 6px;
+    color: #6d6988;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hostel-premium-price-box strong {
+    color: #5e2ced;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+@media (max-width: 767px) {
+    .hostel-premium-thumb img {
+        min-height: 190px;
+    }
+
+    .hostel-premium-price-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
