@@ -94,22 +94,22 @@
 {% endblock %}
 
 {% block content %}
-<div class="tg-listing-area tg-listing-su-spacing tg-grey-bg-2 pt-120 p-relative" id="area-grid">
+<div class="tg-listing-area tg-listing-su-spacing tg-grey-bg-2 p-relative hostel-home-section-area" id="area-grid">
     <img class="tg-listing-su-shape d-none d-xl-block" src="{% static 'public/tourex/img/listing/su/shape-2.png' %}" alt="">
     <img class="tg-listing-su-shape-2 d-none d-xxl-block" src="{% static 'public/tourex/img/listing/su/shape-1.png' %}" alt="">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6">
-                <div class="tg-listing-section-title-wrap text-center mb-40">
-                    <h5 class="tg-section-su-subtitle su-subtitle-2 mb-15 wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Choose Your Hostel Area</h5>
-                    <h2 class="tg-section-su-title text-capitalize wow fadeInUp mb-15" data-wow-delay=".5s" data-wow-duration=".9s">Area-Wise Hostel Entry Points</h2>
+                <div class="tg-listing-section-title-wrap text-center hostel-home-section-title">
+                    <h5 class="tg-section-su-subtitle su-subtitle-2 hostel-home-kicker wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Choose Your Hostel Area</h5>
+                    <h2 class="tg-section-su-title text-capitalize wow fadeInUp hostel-home-heading" data-wow-delay=".5s" data-wow-duration=".9s">Area-Wise Hostel Entry Points</h2>
                 </div>
             </div>
         </div>
         <div class="row">
             {% for area in areas %}
                 <div class="col-xl-4 col-lg-4 col-md-6">
-                    <div class="hostel-area-showcase-card mb-30">
+                    <div class="hostel-area-showcase-card hostel-home-card-gap">
                         <div class="hostel-area-showcase-thumb">
                             <a href="{% url 'public_area_buildings' area.pk %}">
                                 <img src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '1' '2' '3' '4' %}.jpg" alt="{{ area.area_name }}">
@@ -135,12 +135,12 @@
     </div>
 </div>
 
-<div class="tg-about-area p-relative z-index-1 pb-80 pt-80">
+<div class="tg-about-area p-relative z-index-1 hostel-home-section-about">
     <img class="tg-about-su-right-shape d-none d-xl-block" src="{% static 'public/tourex/img/about/su/right-shape.png' %}" alt="">
     <div class="container">
         <div class="row align-items-end">
             <div class="col-lg-5">
-                <div class="tg-about-su-thumb p-relative mb-40 wow fadeInLeft" data-wow-delay=".4s" data-wow-duration=".6s">
+                <div class="tg-about-su-thumb p-relative hostel-home-media-gap wow fadeInLeft" data-wow-delay=".4s" data-wow-duration=".6s">
                     <div class="tg-about-su-shape-2">
                         <img src="{% static 'public/tourex/img/about/su/shape.png' %}" alt="">
                     </div>
@@ -151,13 +151,13 @@
                 </div>
             </div>
             <div class="col-lg-7">
-                <div class="tg-about-su-content-wrap ml-80 mb-30 wow fadeInRight" data-wow-delay=".4s" data-wow-duration=".6s">
-                    <div class="tg-location-section-title mb-30">
-                        <h5 class="tg-section-su-subtitle mb-15">Who we are</h5>
-                        <h2 class="tg-section-su-title text-capitalize mb-15">Designed for modern hostel guests and clean hostel operations</h2>
+                <div class="tg-about-su-content-wrap ml-80 hostel-home-content-gap wow fadeInRight" data-wow-delay=".4s" data-wow-duration=".6s">
+                    <div class="tg-location-section-title hostel-home-title-gap">
+                        <h5 class="tg-section-su-subtitle hostel-home-kicker">Who we are</h5>
+                        <h2 class="tg-section-su-title text-capitalize hostel-home-heading">Designed for modern hostel guests and clean hostel operations</h2>
                         <p class="tg-section-su-para mb-10">This booking experience turns area selection, cot discovery, QR payment, and approval tracking into one smooth journey for guests and administrators.</p>
                     </div>
-                    <div class="tg-about-su-funfact-wrap mb-40">
+                    <div class="tg-about-su-funfact-wrap hostel-home-stats-gap">
                         <div class="tg-about-su-funfact-item mb-15">
                             <div class="tg-about-su-funfact-icon mb-20">
                                 <img src="{% static 'public/tourex/img/about/su/fun-3.png' %}" alt="">
@@ -206,20 +206,20 @@
     </div>
 </div>
 
-<div class="tg-location-area p-relative z-index-1 pb-65 pt-120">
+<div class="tg-location-area p-relative z-index-1 hostel-home-section-premium">
     <div class="tg-location-su-bg">
         <img src="{% static 'public/tourex/img/destination/tu/bg.png' %}" alt="">
     </div>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-9">
-                <div class="tg-location-section-title mb-30">
-                    <h5 class="tg-section-su-subtitle mb-15 wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Premium Picks</h5>
+                <div class="tg-location-section-title hostel-home-title-gap">
+                    <h5 class="tg-section-su-subtitle hostel-home-kicker wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Premium Picks</h5>
                     <h2 class="tg-section-su-title text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Top Cots By Highest Price</h2>
                 </div>
             </div>
             <div class="col-lg-3">
-                <div class="text-end mb-30 wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1s">
+                <div class="text-end hostel-home-title-gap wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1s">
                     <a class="tg-btn-border" href="{% url 'public_features' %}">See More <i class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </div>
@@ -227,7 +227,7 @@
         <div class="row">
             {% for cot in top_cots %}
                 <div class="col-xl-4 col-lg-6 col-md-6">
-                    <div class="hostel-premium-card mb-30">
+                    <div class="hostel-premium-card hostel-home-card-gap">
                         <div class="hostel-premium-thumb p-relative">
                             <img class="w-100" src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '4' '2' '3' '1' '2' '3' %}.jpg" alt="Premium cot">
                             <span class="hostel-premium-badge">Featured</span>
@@ -263,9 +263,9 @@
     </div>
 </div>
 
-<section class="hostel-process-area pt-80 pb-120">
+<section class="hostel-process-area hostel-home-section-process">
     <div class="container">
-        <div class="row justify-content-center mb-45">
+        <div class="row justify-content-center hostel-home-process-gap">
             <div class="col-lg-7">
                 <div class="tg-section-title-box text-center">
                     <span class="tg-section-subtitle">Our Working Process</span>

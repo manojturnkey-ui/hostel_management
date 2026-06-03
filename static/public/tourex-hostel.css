@@ -72,7 +72,7 @@ body.hostel-public-body {
     max-width: 700px;
     margin: 0 auto;
     color: rgba(255, 255, 255, 0.88);
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.85;
 }
 
@@ -1215,7 +1215,7 @@ body.hostel-public-body {
 
 .hostel-hotel-filter-group h5 {
     margin-bottom: 18px;
-    font-size: 22px;
+    font-size: 19px;
 }
 
 .hostel-select-field-plain .hostel-select-icon {
@@ -1326,7 +1326,7 @@ body.hostel-public-body {
     justify-content: center;
     background: #f5f5fa;
     color: var(--hostel-ink);
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .hostel-feature-view-icons span.active {
@@ -1641,32 +1641,38 @@ body.hostel-public-body {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 22px 24px;
-    border-radius: 22px;
+    padding: 16px 18px;
+    border-radius: 18px;
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 18px 32px rgba(22, 32, 50, 0.12);
 }
 
 .hostel-area-showcase-content h4 {
     margin-bottom: 0;
-    font-size: 34px;
-    line-height: 1.1;
+    font-size: 18px;
+    line-height: 1.15;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .hostel-area-showcase-content h4 a {
     color: var(--hostel-ink);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .hostel-area-showcase-arrow {
-    width: 54px;
-    height: 54px;
+    width: 44px;
+    height: 44px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: #f4f5f9;
     color: var(--hostel-ink);
-    font-size: 22px;
+    font-size: 16px;
     flex: 0 0 auto;
 }
 
@@ -1712,7 +1718,7 @@ body.hostel-public-body {
     justify-content: center;
     background: rgba(255, 255, 255, 0.96);
     color: var(--hostel-ink);
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .hostel-premium-arrow:hover {
@@ -1747,7 +1753,7 @@ body.hostel-public-body {
 
 .hostel-premium-content h4 {
     margin-bottom: 12px;
-    font-size: 22px;
+    font-size: 19px;
     line-height: 1.45;
 }
 
@@ -1765,7 +1771,7 @@ body.hostel-public-body {
 
 .hostel-premium-bottom strong {
     color: #5e2ced;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 700;
 }
 
@@ -1789,6 +1795,61 @@ body.hostel-public-body {
     object-fit: cover;
 }
 
+.hostel-home-section-area {
+    padding-top: 24px;
+}
+
+.hostel-home-section-about {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.hostel-home-section-premium {
+    padding-top: 24px;
+    padding-bottom: 13px;
+}
+
+.hostel-home-section-process {
+    padding-top: 16px;
+    padding-bottom: 24px;
+}
+
+.hostel-home-section-title {
+    margin-bottom: 18px;
+}
+
+.hostel-home-kicker {
+    margin-bottom: 8px !important;
+}
+
+.hostel-home-heading {
+    margin-bottom: 8px !important;
+}
+
+.hostel-home-title-gap {
+    margin-bottom: 18px !important;
+}
+
+.hostel-home-card-gap {
+    margin-bottom: 6px;
+}
+
+.hostel-home-media-gap {
+    margin-bottom: 8px !important;
+}
+
+.hostel-home-content-gap {
+    margin-bottom: 6px !important;
+}
+
+.hostel-home-stats-gap {
+    margin-bottom: 8px !important;
+}
+
+.hostel-home-process-gap {
+    margin-bottom: 20px !important;
+}
+
 .hostel-public-body .tg-footer-su-wrapper .tg-footer-logo img {
     max-height: 56px;
     filter: none;
@@ -1800,7 +1861,7 @@ body.hostel-public-body {
     }
 
     .hostel-area-showcase-content h4 {
-        font-size: 28px;
+        font-size: 17px;
     }
 }
 
@@ -1817,20 +1878,28 @@ body.hostel-public-body {
         left: 14px;
         right: 14px;
         bottom: 14px;
-        padding: 18px 18px;
+        padding: 14px 14px;
     }
 
     .hostel-area-showcase-content h4 {
-        font-size: 24px;
+        font-size: 16px;
     }
 }
 
 .hostel-public-body .tgmenu__wrap {
-    gap: 18px;
+    gap: 0;
+}
+
+.hostel-public-body .tgmenu__wrap .logo {
+    margin-right: 0 !important;
+}
+
+.hostel-public-body .menu-tigger {
+    margin-left: -14px;
 }
 
 .hostel-public-body .tgmenu__nav {
-    margin-left: 34px !important;
+    margin-left: 18px !important;
     flex: 1 1 auto;
 }
 
@@ -1841,12 +1910,12 @@ body.hostel-public-body {
 .hostel-public-body .tgmenu__navbar-wrap ul {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 18px;
 }
 
 .hostel-public-body .tg-header-tu-menu .tgmenu__navbar-wrap ul li a {
     padding: 35px 0;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .hostel-public-body .tg-menu-right-action {
@@ -1872,15 +1941,15 @@ body.hostel-public-body {
 
 @media (max-width: 1399px) {
     .hostel-public-body .tgmenu__nav {
-        margin-left: 20px !important;
+        margin-left: 12px !important;
     }
 
     .hostel-public-body .tgmenu__navbar-wrap ul {
-        gap: 16px;
+        gap: 12px;
     }
 
     .hostel-public-body .tg-header-tu-menu .tgmenu__navbar-wrap ul li a {
-        font-size: 17px;
+        font-size: 14px;
     }
 }
 
@@ -1949,7 +2018,7 @@ body.hostel-public-body {
 
 .hostel-premium-price-box strong {
     color: #5e2ced;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
 }
 
@@ -1990,7 +2059,7 @@ body.hostel-public-body {
     align-items: center;
     gap: 8px;
     color: #fff;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     white-space: nowrap;
 }
@@ -2018,3 +2087,7 @@ body.hostel-public-body {
         font-size: 16px;
     }
 }
+
+
+
+
