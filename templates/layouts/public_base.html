@@ -51,10 +51,10 @@
                             <nav class="tgmenu__nav tgmenu-1-space ml-190">
                                 <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                                     <ul class="navigation">
-                                        <li><a href="{% url 'public_home' %}">Home</a></li>
-                                        <li><a href="{% url 'public_features' %}">Features</a></li>
-                                        <li><a href="{% url 'public_blogs' %}">Blogs</a></li>
-                                        <li><a href="{% url 'public_contact' %}">Contact</a></li>
+                                        <li><a href="{% url 'public_home' %}"><i class="fa-solid fa-house hostel-desktop-nav-icon"></i>Home</a></li>
+                                        <li><a href="{% url 'public_features' %}"><i class="fa-solid fa-hotel hostel-desktop-nav-icon"></i>Features</a></li>
+                                        <li><a href="{% url 'public_blogs' %}"><i class="fa-solid fa-newspaper hostel-desktop-nav-icon"></i>Blogs</a></li>
+                                        <li><a href="{% url 'public_contact' %}"><i class="fa-solid fa-address-book hostel-desktop-nav-icon"></i>Contact</a></li>
                                     </ul>
                                 </div>
                             </nav>
@@ -63,7 +63,7 @@
                     <div class="col-xxl-3 col-xl-4 col-lg-4 col-7">
                         <div class="tg-menu-right-action d-flex align-items-center justify-content-end">
                             <div class="tg-header-contact-info d-flex align-items-center">
-                                <span class="tg-header-contact-icon mr-10 d-none d-xl-block">
+                                <span class="tg-header-contact-icon mr-10 d-none d-xl-flex hostel-header-phone-circle">
                                     <i class="fa-solid fa-phone"></i>
                                 </span>
                                 <div class="tg-header-contact-number hostel-header-contact-line d-none d-xl-flex">
@@ -198,7 +198,7 @@
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                             <div class="tg-footer-widget mb-40">
                                 <div class="tg-footer-logo mb-20">
-                                    <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-full.svg' %}" alt=""></a>
+                                    <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-white.svg' %}" alt="Hostelio logo"></a>
                                 </div>
                                 <p class="mb-20">Modern hostel booking for guests who want clear cot visibility, QR payment flow, and one-click status tracking.</p>
                                 <div class="tg-footer-form mb-30">

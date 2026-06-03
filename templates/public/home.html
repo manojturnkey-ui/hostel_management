@@ -109,33 +109,17 @@
         <div class="row">
             {% for area in areas %}
                 <div class="col-xl-4 col-lg-4 col-md-6">
-                    <div class="tg-listing-card-item tg-listing-su-card-item mb-25 hostel-feature-card">
-                        <div class="tg-listing-card-thumb fix mb-25 p-relative">
+                    <div class="hostel-area-showcase-card mb-30">
+                        <div class="hostel-area-showcase-thumb">
                             <a href="{% url 'public_area_buildings' area.pk %}">
-                                <img class="tg-card-border w-100" src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '1' '2' '3' '4' '5' '6' %}.jpg" alt="{{ area.area_name }}">
-                                <span class="tg-listing-item-price-discount">{{ area.status|title }}</span>
+                                <img src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '1' '2' '3' '4' %}.jpg" alt="{{ area.area_name }}">
                             </a>
                         </div>
-                        <div class="tg-listing-card-content">
-                            <div class="tg-listing-card-duration-tour mb-20">
-                                <span class="tg-listing-card-duration-map">
-                                    <i class="fa-solid fa-location-dot hostel-inline-icon"></i>
-                                    {{ area.area_name }}
-                                </span>
-                            </div>
-                            <h4 class="tg-listing-card-title mb-10"><a href="{% url 'public_area_buildings' area.pk %}">{{ area.area_name }}</a></h4>
-                            <p class="hostel-listing-copy">{{ area.description|default:"Open this area and continue through buildings, wings, floors, rooms, and cots." }}</p>
-                            <div class="tg-listing-card-price d-flex align-items-end justify-content-between">
-                                <div>
-                                    <span class="tg-listing-card-currency-amount d-flex align-items-center">
-                                        <span class="currency-symbol mr-5">Live</span>{{ area.buildings.count }}
-                                    </span>
-                                    <small>Buildings</small>
-                                </div>
-                                <div>
-                                    <a class="tg-btn-border" href="{% url 'public_area_buildings' area.pk %}">Open <i class="fa-solid fa-arrow-right-long"></i></a>
-                                </div>
-                            </div>
+                        <div class="hostel-area-showcase-content">
+                            <h4><a href="{% url 'public_area_buildings' area.pk %}">{{ area.area_name }}</a></h4>
+                            <a class="hostel-area-showcase-arrow" href="{% url 'public_area_buildings' area.pk %}" aria-label="Open {{ area.area_name }}">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -243,24 +227,28 @@
         <div class="row">
             {% for cot in top_cots %}
                 <div class="col-xl-4 col-lg-6 col-md-6">
-                    <div class="tg-location-3-wrap tg-location-su-wrap p-relative mb-30 tg-round-25 hostel-top-cot-card">
-                        <div class="tg-location-thumb tg-round-25">
-                            <img class="w-100 tg-round-25" src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '4' '2' '3' '1' '2' '3' %}.jpg" alt="location">
-                        </div>
-                        <div class="tg-location-content tg-location-su-content">
-                            <div class="content">
-                                <h3 class="tg-location-title mb-5"><a href="{% url 'public_booking_create' cot.pk %}">Cot {{ cot.cot_number }}</a></h3>
-                                <span class="tg-location-su-duration">{{ cot.room.room_number }} | {{ cot.room.floor.floor_name }}</span>
-                            </div>
-                            <a class="icons" href="{% url 'public_booking_create' cot.pk %}">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2 13.0969L13.0969 2M13.0969 2H2M13.0969 2V13.0969" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
+                    <div class="hostel-premium-card mb-30">
+                        <div class="hostel-premium-thumb p-relative">
+                            <img class="w-100" src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '4' '2' '3' '1' '2' '3' %}.jpg" alt="Premium cot">
+                            <span class="hostel-premium-badge">Featured</span>
+                            <a class="hostel-premium-arrow" href="{% url 'public_features' %}" aria-label="View more cots">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
-                        <div class="hostel-top-cot-overlay">
-                            <p>{{ cot.room.floor.section.building.area.area_name }} / {{ cot.room.floor.section.building.building_name }}</p>
-                            <strong>Rs. {{ cot.cot_price }}</strong>
+                        <div class="hostel-premium-content">
+                            <div class="hostel-premium-meta">
+                                <span><i class="fa-regular fa-clock"></i> Monthly</span>
+                                <span><i class="fa-regular fa-user"></i> {{ cot.get_status_display }}</span>
+                            </div>
+                            <h4><a href="{% url 'public_booking_create' cot.pk %}">Cot {{ cot.cot_number }} in Room {{ cot.room.room_number }}</a></h4>
+                            <p><i class="fa-solid fa-location-dot"></i> {{ cot.room.floor.section.building.area.area_name }}, {{ cot.room.floor.section.building.building_name }}</p>
+                            <div class="hostel-premium-bottom d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="hostel-premium-from">From</span>
+                                    <strong>Rs. {{ cot.cot_price }}</strong>
+                                </div>
+                                <span class="hostel-premium-rating"><i class="fa-sharp fa-solid fa-star"></i> Deposit Rs. {{ cot.security_deposit }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -281,21 +269,30 @@
         </div>
         <div class="row g-4">
             <div class="col-lg-4 col-md-6">
-                <div class="hostel-process-card">
+                <div class="hostel-process-card hostel-process-card-visual">
+                    <div class="hostel-process-visual mb-25">
+                        <img src="{% static 'public/tourex/img/listing/su/listing-1.jpg' %}" alt="Search hostel area">
+                    </div>
                     <span class="hostel-process-number">01</span>
                     <h4>Search Smartly</h4>
                     <p>Choose your area, building, section, and floor from the Tourex-style search bar to see matching rooms and cots.</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="hostel-process-card">
+                <div class="hostel-process-card hostel-process-card-visual">
+                    <div class="hostel-process-visual mb-25">
+                        <img src="{% static 'public/tourex/img/listing/su/listing-3.jpg' %}" alt="Submit booking request">
+                    </div>
                     <span class="hostel-process-number">02</span>
                     <h4>Submit Booking</h4>
                     <p>Select the right cot, fill your guest details, upload proof documents, and pay using the active QR code.</p>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
-                <div class="hostel-process-card">
+                <div class="hostel-process-card hostel-process-card-visual">
+                    <div class="hostel-process-visual mb-25">
+                        <img src="{% static 'public/tourex/img/listing/su/listing-5.jpg' %}" alt="Track booking status">
+                    </div>
                     <span class="hostel-process-number">03</span>
                     <h4>Track Status</h4>
                     <p>Use your guest login credentials to check booking approval, stay details, and the latest submitted payment.</p>
@@ -372,13 +369,6 @@
             const sectionSelect = document.getElementById("filterSection");
             const floorSelect = document.getElementById("filterFloor");
 
-            function resetOptions(select) {
-                Array.from(select.options).forEach(function (option, index) {
-                    option.hidden = index !== 0;
-                });
-                select.value = "";
-            }
-
             function filterDependentOptions() {
                 const selectedArea = areaSelect.value;
                 const selectedBuilding = buildingSelect.value;
@@ -428,3 +418,4 @@
         });
     </script>
 {% endblock %}
+
