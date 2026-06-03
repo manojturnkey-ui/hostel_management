@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db.models import Prefetch
@@ -285,6 +286,19 @@ class GuestLogoutView(View):
 class GuestDashboardView(GuestRequiredMixin, TemplateView):
     template_name = "public/guest_dashboard.html"
 
+    def post(self, request, *args, **kwargs):
+        password_form = GuestPasswordChangeForm(user=request.user, data=request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Your guest portal password has been updated.")
+            return redirect(f"{reverse_lazy('guest_dashboard')}#guest-change-password")
+        context = self.get_context_data(
+            password_form=password_form,
+            active_guest_section="guest-change-password-panel",
+        )
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         guest = self.request.user.guest_profile
@@ -313,6 +327,8 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
                 "current_access": current_access,
                 "latest_payment": _build_latest_guest_payment(guest),
                 "guest_login_name": self.request.user.username,
+                "password_form": kwargs.get("password_form") or GuestPasswordChangeForm(user=self.request.user),
+                "active_guest_section": kwargs.get("active_guest_section", "guest-dashboard-panel"),
             }
         )
         return context
@@ -322,6 +338,9 @@ class GuestPasswordChangeView(GuestRequiredMixin, PasswordChangeView):
     template_name = "public/guest_change_password.html"
     form_class = GuestPasswordChangeForm
     success_url = reverse_lazy("guest_dashboard")
+
+    def dispatch(self, request, *args, **kwargs):
+        return redirect(f"{reverse_lazy('guest_dashboard')}#guest-change-password")
 
     def form_valid(self, form):
         messages.success(self.request, "Your guest portal password has been updated.")

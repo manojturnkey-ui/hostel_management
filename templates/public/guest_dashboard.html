@@ -385,7 +385,7 @@
                         <a href="#guest-booking-status" class="hostel-guest-sidebar-link" data-section="guest-booking-status-panel"><i class="fa-solid fa-clipboard-check"></i>Booking Status</a>
                         <a href="#guest-previous-bookings" class="hostel-guest-sidebar-link" data-section="guest-previous-bookings-panel"><i class="fa-solid fa-clock-rotate-left"></i>Previous Booking</a>
                         <a href="#guest-payment" class="hostel-guest-sidebar-link" data-section="guest-payment-panel"><i class="fa-solid fa-wallet"></i>Payment</a>
-                        <a href="{% url 'guest_change_password' %}" class="hostel-guest-sidebar-link"><i class="fa-solid fa-key"></i>Change Password</a>
+                        <a href="#guest-change-password" class="hostel-guest-sidebar-link" data-section="guest-change-password-panel"><i class="fa-solid fa-key"></i>Change Password</a>
                         <form method="post" action="{% url 'guest_logout' %}">
                             {% csrf_token %}
                             <button type="submit" class="hostel-guest-sidebar-button hostel-logout-btn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
@@ -534,6 +534,39 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <div id="guest-change-password-panel" class="hostel-guest-tab-panel">
+                    <div class="hostel-guest-panel" id="guest-change-password">
+                        <div class="hostel-guest-panel-title">
+                            <h3>Change Password</h3>
+                        </div>
+                        <p class="hostel-guest-panel-copy">Keep your guest portal secure with a fresh password whenever you need.</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="hostel-form-group">
+                                <label for="{{ password_form.old_password.id_for_label }}">Current Password</label>
+                                {{ password_form.old_password }}
+                                {% for error in password_form.old_password.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="hostel-form-group">
+                                <label for="{{ password_form.new_password1.id_for_label }}">New Password</label>
+                                {{ password_form.new_password1 }}
+                                {% for error in password_form.new_password1.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="hostel-form-group">
+                                <label for="{{ password_form.new_password2.id_for_label }}">Confirm New Password</label>
+                                {{ password_form.new_password2 }}
+                                {% for error in password_form.new_password2.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                            </div>
+                            {% if password_form.non_field_errors %}
+                                <div class="alert alert-danger mb-20">
+                                    {% for error in password_form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <button type="submit" class="tg-btn-border hostel-submit-btn">Update Password <i class="fa-solid fa-arrow-right-long"></i></button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -572,7 +605,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const currentHash = window.location.hash;
     const currentLink = currentHash ? document.querySelector('.hostel-guest-sidebar-link[href="' + currentHash + '"]') : null;
-    activateGuestPanel(currentLink && currentLink.dataset.section ? currentLink.dataset.section : "guest-dashboard-panel");
+    activateGuestPanel(currentLink && currentLink.dataset.section ? currentLink.dataset.section : "{{ active_guest_section|default:'guest-dashboard-panel' }}");
 });
 </script>
 {% endblock %}
