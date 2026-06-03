@@ -2229,25 +2229,18 @@ body.hostel-public-body {
     margin: 0;
 }
 
-.hostel-grid-icons {
-    display: flex;
-    gap: 8px;
-}
-
-.hostel-grid-icons span {
-    width: 34px;
-    height: 34px;
-    background: #f1f1f1;
-    border-radius: 4px;
+.hostel-grid-count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #111111;
-}
-
-.hostel-grid-icons span:first-child {
-    background: #5b16e8;
-    color: #ffffff;
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: #f3ecff;
+    color: #5b16e8;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 .hostel-grid-cot-card {
@@ -2460,7 +2453,6 @@ body.hostel-public-body {
         height: 190px;
     }
 }
-
 
 
 

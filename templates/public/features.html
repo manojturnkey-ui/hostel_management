@@ -1,8 +1,92 @@
 {% extends "layouts/public_base.html" %}
 {% load static %}
 
-{% block header_theme %}hostel-normal-header{% endblock %}
-{% block hero_section %}{% endblock %}
+{% block header_theme %}tg-transparent hostel-feature-floating-header{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .hostel-feature-floating-header {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .hostel-feature-floating-header .navigation > li > a,
+        .hostel-feature-floating-header a,
+        .hostel-feature-floating-header .tgmenu__navbar-wrap ul li a,
+        .hostel-feature-floating-header .tg-header-contact-number,
+        .hostel-feature-floating-header .tg-header-contact-number a,
+        .hostel-feature-floating-header .tg-header-contact-number span,
+        .hostel-feature-floating-header .hostel-guest-login-btn,
+        .hostel-feature-floating-header .hostel-guest-login-btn span,
+        .hostel-feature-floating-header .hostel-guest-login-btn i,
+        .hostel-feature-floating-header .hostel-header-contact-label,
+        .hostel-feature-floating-header .hostel-header-contact-stack a,
+        .hostel-feature-floating-header .hostel-header-contact-stack a i,
+        .hostel-feature-floating-header .menu-tigger span {
+            color: #fff !important;
+        }
+
+        .hostel-feature-floating-header.sticky-menu,
+        .hostel-feature-floating-header.header-sticky {
+            background: #ffffff !important;
+            box-shadow: 0 10px 15px rgba(25, 25, 25, 0.1) !important;
+        }
+
+        .hostel-feature-floating-header.sticky-menu .navigation > li > a,
+        .hostel-feature-floating-header.sticky-menu a,
+        .hostel-feature-floating-header.sticky-menu .tgmenu__navbar-wrap ul li a,
+        .hostel-feature-floating-header.sticky-menu .tg-header-contact-number,
+        .hostel-feature-floating-header.sticky-menu .tg-header-contact-number a,
+        .hostel-feature-floating-header.sticky-menu .tg-header-contact-number span,
+        .hostel-feature-floating-header.sticky-menu .hostel-guest-login-btn,
+        .hostel-feature-floating-header.sticky-menu .hostel-guest-login-btn span,
+        .hostel-feature-floating-header.sticky-menu .hostel-guest-login-btn i,
+        .hostel-feature-floating-header.sticky-menu .hostel-header-contact-label,
+        .hostel-feature-floating-header.sticky-menu .hostel-header-contact-stack a,
+        .hostel-feature-floating-header.sticky-menu .hostel-header-contact-stack a i,
+        .hostel-feature-floating-header.sticky-menu .menu-tigger span,
+        .hostel-feature-floating-header.header-sticky .navigation > li > a,
+        .hostel-feature-floating-header.header-sticky a,
+        .hostel-feature-floating-header.header-sticky .tgmenu__navbar-wrap ul li a,
+        .hostel-feature-floating-header.header-sticky .tg-header-contact-number,
+        .hostel-feature-floating-header.header-sticky .tg-header-contact-number a,
+        .hostel-feature-floating-header.header-sticky .tg-header-contact-number span,
+        .hostel-feature-floating-header.header-sticky .hostel-guest-login-btn,
+        .hostel-feature-floating-header.header-sticky .hostel-guest-login-btn span,
+        .hostel-feature-floating-header.header-sticky .hostel-guest-login-btn i,
+        .hostel-feature-floating-header.header-sticky .hostel-header-contact-label,
+        .hostel-feature-floating-header.header-sticky .hostel-header-contact-stack a,
+        .hostel-feature-floating-header.header-sticky .hostel-header-contact-stack a i,
+        .hostel-feature-floating-header.header-sticky .menu-tigger span {
+            color: #111111 !important;
+        }
+
+        .hostel-feature-header-bg {
+            height: 210px;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.18) 100%), url("{% static 'public/tourex/img/hero/tu/banner.jpg' %}");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .hostel-feature-grid-page {
+            position: relative;
+            z-index: 2;
+            padding-top: 26px;
+        }
+
+        @media (max-width: 767px) {
+            .hostel-feature-header-bg {
+                height: 170px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block hero_section %}
+<div class="hostel-feature-header-bg"></div>
+{% endblock %}
 
 {% block content %}
 <section class="hostel-feature-grid-page">
@@ -93,9 +177,12 @@
                         <h3>Hostel Cots</h3>
                         <p>Choose available cot and complete booking request.</p>
                     </div>
-                    <div class="hostel-grid-icons">
-                        <span><i class="fa-solid fa-table-cells-large"></i></span>
-                        <span><i class="fa-solid fa-list"></i></span>
+                    <div class="hostel-grid-count">
+                        {% if selected_filters.area or selected_filters.building or selected_filters.section or selected_filters.floor or selected_filters.room %}
+                            {{ matching_cots|length }} Cot{{ matching_cots|length|pluralize }} Found
+                        {% else %}
+                            Total {{ matching_cots|length }} Cot{{ matching_cots|length|pluralize }}
+                        {% endif %}
                     </div>
                 </div>
 

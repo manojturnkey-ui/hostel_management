@@ -111,13 +111,13 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="hostel-area-showcase-card hostel-home-card-gap">
                         <div class="hostel-area-showcase-thumb">
-                            <a href="{% url 'public_area_buildings' area.pk %}">
+                            <a href="{% url 'public_features' %}?area={{ area.pk }}">
                                 <img src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '1' '2' '3' '4' %}.jpg" alt="{{ area.area_name }}">
                             </a>
                         </div>
                         <div class="hostel-area-showcase-content">
-                            <h4><a href="{% url 'public_area_buildings' area.pk %}">{{ area.area_name }}</a></h4>
-                            <a class="hostel-area-showcase-arrow" href="{% url 'public_area_buildings' area.pk %}" aria-label="Open {{ area.area_name }}">
+                            <h4><a href="{% url 'public_features' %}?area={{ area.pk }}">{{ area.area_name }}</a></h4>
+                            <a class="hostel-area-showcase-arrow" href="{% url 'public_features' %}?area={{ area.pk }}" aria-label="Open {{ area.area_name }}">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>

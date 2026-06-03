@@ -1,4 +1,147 @@
 {% extends "layouts/public_base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .hostel-booking-header-bg {
+            height: 150px;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.42) 0%, rgba(15, 23, 42, 0.16) 100%), url("{% static 'public/tourex/img/hero/tu/banner.jpg' %}");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .hostel-checkout-area {
+            padding-top: 40px !important;
+            padding-bottom: 64px !important;
+        }
+
+        .hostel-checkout-panel,
+        .hostel-summary-card {
+            padding: 22px;
+        }
+
+        .hostel-panel-head {
+            margin-bottom: 14px;
+        }
+
+        .hostel-panel-head .tg-section-subtitle {
+            font-size: 12px;
+        }
+
+        .hostel-panel-head h3,
+        .hostel-summary-card h3 {
+            font-size: 22px;
+            line-height: 1.22;
+        }
+
+        .hostel-panel-head p {
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .hostel-form-group {
+            margin-bottom: 10px;
+        }
+
+        .hostel-form-group label {
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .hostel-form-layout .row {
+            --bs-gutter-x: 14px;
+            --bs-gutter-y: 6px;
+        }
+
+        .hostel-public-body .form-control,
+        .hostel-public-body .form-select {
+            min-height: 36px;
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: 13px;
+            line-height: 1.25;
+        }
+
+        .hostel-public-body input[type="file"].form-control {
+            min-height: 36px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        .hostel-submit-btn {
+            min-height: 40px;
+            font-size: 13px;
+            margin-top: 16px !important;
+        }
+
+        .hostel-summary-list li {
+            padding: 7px 0;
+        }
+
+        .hostel-summary-list li span,
+        .hostel-summary-list li strong,
+        .hostel-pricing-box span,
+        .hostel-pricing-box strong {
+            font-size: 13px;
+        }
+
+        .hostel-pricing-box {
+            margin-top: 16px;
+            padding: 14px;
+        }
+
+        .hostel-qr-box {
+            padding: 14px;
+        }
+
+        .hostel-summary-card .tg-section-subtitle {
+            font-size: 12px;
+        }
+
+        .hostel-empty-panel h5 {
+            font-size: 18px;
+        }
+
+        .hostel-empty-panel p {
+            font-size: 13px;
+        }
+
+        @media (max-width: 767px) {
+            .hostel-booking-header-bg {
+                height: 120px;
+            }
+
+            .hostel-checkout-area {
+                padding-top: 26px !important;
+                padding-bottom: 44px !important;
+            }
+
+            .hostel-checkout-panel,
+            .hostel-summary-card {
+                padding: 18px;
+            }
+
+            .hostel-panel-head h3,
+            .hostel-summary-card h3 {
+                font-size: 20px;
+            }
+
+            .hostel-form-layout .row {
+                --bs-gutter-x: 10px;
+                --bs-gutter-y: 2px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block hero_section %}
+<div class="hostel-booking-header-bg"></div>
+{% endblock %}
+
 {% block content %}
 <section class="hostel-checkout-area pt-120 pb-120">
     <div class="container">
