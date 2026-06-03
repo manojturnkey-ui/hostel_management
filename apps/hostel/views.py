@@ -98,6 +98,14 @@ def _dummy_testimonials():
     ]
 
 
+def _public_contact_context():
+    system_setting = SystemSetting.get_solo()
+    return {
+        "public_contact_label": system_setting.admin_contact_label or "Need Help?",
+        "public_contact_number": system_setting.admin_contact_number or "+91 98765 43210",
+    }
+
+
 class AreaListView(PanelListView):
     model = Area
     page_title = "Areas"
@@ -403,11 +411,56 @@ class FeaturePublicView(TemplateView):
         return context
 
 
+class BlogPublicView(TemplateView):
+    template_name = "public/blogs.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "page_title": "Blogs",
+                "page_description": "Hostel tips, payment guidance, and booking best practices for guests.",
+                "blog_posts": [
+                    {
+                        "title": "How to choose the right hostel cot",
+                        "excerpt": "Compare room location, privacy, pricing, and floor access before you lock your cot request.",
+                        "category": "Cot Selection",
+                        "date": "03 Jun 2026",
+                        "image": "public/tourex/img/blog/blog-2/blog-1.jpg",
+                    },
+                    {
+                        "title": "Benefits of advance monthly rent payment",
+                        "excerpt": "Advance payment keeps access active, avoids grace-period pressure, and makes monthly planning much smoother.",
+                        "category": "Rent Planning",
+                        "date": "01 Jun 2026",
+                        "image": "public/tourex/img/blog/blog-2/blog-2.jpg",
+                    },
+                    {
+                        "title": "Why digital booking improves hostel management",
+                        "excerpt": "Live cot visibility, payment screenshots, and approval tracking reduce confusion for both admins and guests.",
+                        "category": "Operations",
+                        "date": "28 May 2026",
+                        "image": "public/tourex/img/blog/blog-2/blog-3.jpg",
+                    },
+                    {
+                        "title": "Documents required before hostel check-in",
+                        "excerpt": "Keep your photo, address proof, contact details, and payment reference ready to avoid delays after booking.",
+                        "category": "Check-in Guide",
+                        "date": "24 May 2026",
+                        "image": "public/tourex/img/listing/su/listing-6.jpg",
+                    },
+                ],
+            }
+        )
+        return context
+
+
 class ContactPublicView(TemplateView):
     template_name = "public/contact.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        contact = _public_contact_context()
         context.update(
             {
                 "page_title": "Contact Us",
@@ -420,7 +473,7 @@ class ContactPublicView(TemplateView):
                     },
                     {
                         "title": "Call Support",
-                        "value": "+91 98765 43210",
+                        "value": contact["public_contact_number"],
                         "copy": "Available for payment verification and booking assistance.",
                     },
                     {

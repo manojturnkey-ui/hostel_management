@@ -55,6 +55,18 @@ body.hostel-public-body {
     white-space: nowrap;
 }
 
+.hostel-public-body .navigation > li > a,
+.hostel-public-body .tgmobile__menu-box .navigation li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hostel-nav-icon {
+    color: var(--hostel-primary);
+    font-size: 15px;
+}
+
 .hostel-hero-actions {
     display: flex;
     justify-content: center;
@@ -183,6 +195,19 @@ body.hostel-public-body {
     box-shadow: var(--hostel-shadow);
 }
 
+.hostel-hotel-filter-shell,
+.hostel-hotel-result-shell {
+    height: 100%;
+}
+
+.hostel-feature-grid-area .hostel-search-select {
+    min-width: 100%;
+}
+
+.hostel-sidebar-filter-form .hostel-form-group:last-of-type {
+    margin-bottom: 24px;
+}
+
 .hostel-search-grid {
     gap: 0;
     flex-wrap: wrap;
@@ -237,6 +262,25 @@ body.hostel-public-body {
     background: #fff;
 }
 
+.hostel-feature-card-grid .tg-listing-card-content {
+    padding-top: 0;
+}
+
+.hostel-grid-path,
+.hostel-grid-meta {
+    line-height: 1.7;
+}
+
+.hostel-grid-price {
+    color: var(--hostel-primary);
+    font-weight: 700;
+}
+
+.hostel-grid-summary {
+    display: grid;
+    gap: 10px;
+}
+
 .hostel-feature-card .tg-listing-card-thumb img {
     min-height: 270px;
     object-fit: cover;
@@ -289,6 +333,63 @@ body.hostel-public-body {
     border-radius: 30px;
     background: #fff;
     box-shadow: var(--hostel-shadow);
+}
+
+.hostel-blog-card {
+    overflow: hidden;
+    border-radius: 30px;
+    background: #fff;
+    border: 1px solid var(--hostel-border);
+    box-shadow: var(--hostel-shadow);
+}
+
+.hostel-blog-thumb {
+    position: relative;
+}
+
+.hostel-blog-thumb img {
+    width: 100%;
+    min-height: 320px;
+    object-fit: cover;
+}
+
+.hostel-blog-badge {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--hostel-ink);
+    font-weight: 700;
+}
+
+.hostel-blog-content {
+    padding: 30px;
+}
+
+.hostel-blog-cta {
+    padding: 34px 32px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #103734 0%, #0f766e 45%, #d69a42 100%);
+    box-shadow: 0 20px 45px rgba(16, 55, 52, 0.25);
+}
+
+.hostel-blog-cta h3,
+.hostel-blog-cta p,
+.hostel-blog-cta .tg-btn {
+    color: #fff;
+}
+
+.hostel-blog-cta .tg-btn {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.hostel-blog-cta .hostel-inline-icon {
+    color: #fff;
 }
 
 .hostel-contact-card h3 {

@@ -144,6 +144,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "config.context_processors.panel_context",
+                "config.context_processors.public_settings",
             ],
         },
     }

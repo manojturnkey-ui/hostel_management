@@ -28,6 +28,8 @@ class BillingCalculationChoices(models.TextChoices):
 
 class SystemSetting(TimeStampedModel):
     site_title = models.CharField(max_length=150, default="Hostel Management")
+    admin_contact_label = models.CharField(max_length=100, blank=True, default="Need Help?")
+    admin_contact_number = models.CharField(max_length=20, blank=True, default="")
     billing_calculation_method = models.CharField(
         max_length=30,
         choices=BillingCalculationChoices.choices,

@@ -51,12 +51,13 @@
                             <nav class="tgmenu__nav tgmenu-1-space ml-140">
                                 <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                                     <ul class="navigation">
-                                        <li><a href="{% url 'public_home' %}">Home</a></li>
-                                        <li><a href="{% url 'public_features' %}">Features</a></li>
-                                        <li><a href="{% url 'public_contact' %}">Contact Us</a></li>
+                                        <li><a href="{% url 'public_home' %}"><i class="fa-solid fa-house hostel-nav-icon"></i>Home</a></li>
+                                        <li><a href="{% url 'public_features' %}"><i class="fa-solid fa-hotel hostel-nav-icon"></i>Features</a></li>
+                                        <li><a href="{% url 'public_blogs' %}"><i class="fa-solid fa-newspaper hostel-nav-icon"></i>Blogs</a></li>
+                                        <li><a href="{% url 'public_contact' %}"><i class="fa-solid fa-address-book hostel-nav-icon"></i>Contact</a></li>
                                         {% if request.user.is_authenticated and not request.user.is_staff %}
-                                            <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
-                                            <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
+                                            <li><a href="{% url 'guest_dashboard' %}"><i class="fa-solid fa-id-badge hostel-nav-icon"></i>Guest Portal</a></li>
+                                            <li><a href="{% url 'guest_change_password' %}"><i class="fa-solid fa-key hostel-nav-icon"></i>Change Password</a></li>
                                         {% endif %}
                                     </ul>
                                 </div>
@@ -67,11 +68,11 @@
                         <div class="tg-menu-right-action d-flex align-items-center justify-content-end">
                             <div class="tg-header-contact-info d-flex align-items-center">
                                 <span class="tg-header-contact-icon mr-10 d-none d-xl-block">
-                                    <i class="fa-solid fa-bed"></i>
+                                    <i class="fa-solid fa-headset"></i>
                                 </span>
                                 <div class="tg-header-contact-number d-none d-xl-block">
-                                    <span>Hostel Smart Booking</span>
-                                    <a href="{% url 'public_home' %}">Stay ready, pay by QR, track approval</a>
+                                    <span>{{ public_contact_label }}</span>
+                                    <a href="tel:{{ public_contact_number|cut:' ' }}">{{ public_contact_number }}</a>
                                 </div>
                             </div>
                             <div class="tg-header-btn ml-20 d-none d-sm-block">
@@ -85,7 +86,7 @@
                                     </form>
                                 {% else %}
                                     <a class="tg-btn-header hostel-guest-login-btn" href="{% url 'guest_login' %}">
-                                        <span><i class="fa-solid fa-user"></i></span>
+                                        <span><i class="fa-solid fa-right-to-bracket"></i></span>
                                         Guest Login
                                     </a>
                                 {% endif %}
@@ -111,15 +112,16 @@
                 </div>
                 <div class="tgmobile__menu-outer">
                     <ul class="navigation">
-                        <li><a href="{% url 'public_home' %}">Home</a></li>
-                        <li><a href="{% url 'public_features' %}">Features</a></li>
-                        <li><a href="{% url 'public_contact' %}">Contact Us</a></li>
+                        <li><a href="{% url 'public_home' %}"><i class="fa-solid fa-house hostel-nav-icon"></i>Home</a></li>
+                        <li><a href="{% url 'public_features' %}"><i class="fa-solid fa-hotel hostel-nav-icon"></i>Features</a></li>
+                        <li><a href="{% url 'public_blogs' %}"><i class="fa-solid fa-newspaper hostel-nav-icon"></i>Blogs</a></li>
+                        <li><a href="{% url 'public_contact' %}"><i class="fa-solid fa-address-book hostel-nav-icon"></i>Contact</a></li>
                         {% if request.user.is_authenticated and not request.user.is_staff %}
-                            <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
-                            <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
+                            <li><a href="{% url 'guest_dashboard' %}"><i class="fa-solid fa-id-badge hostel-nav-icon"></i>Guest Portal</a></li>
+                            <li><a href="{% url 'guest_change_password' %}"><i class="fa-solid fa-key hostel-nav-icon"></i>Change Password</a></li>
                         {% endif %}
                         {% if not request.user.is_authenticated or request.user.is_staff %}
-                            <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
+                            <li><a href="{% url 'guest_login' %}"><i class="fa-solid fa-right-to-bracket hostel-nav-icon"></i>Guest Login</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -136,17 +138,17 @@
             </div>
             <div class="offCanvas__side-info mb-30">
                 <div class="contact-list mb-30">
-                    <h4>Guest Journey</h4>
+                    <h4><i class="fa-solid fa-route hostel-inline-icon"></i>Guest Journey</h4>
                     <p>Browse area, select a cot, complete QR payment, and wait for admin confirmation.</p>
                 </div>
                 <div class="contact-list mb-30">
-                    <h4>Guest Portal</h4>
+                    <h4><i class="fa-solid fa-id-badge hostel-inline-icon"></i>Guest Portal</h4>
                     <p>Track your latest booking request, current stay details, and most recent payment in one place.</p>
                 </div>
                 <div class="contact-list mb-30">
-                    <h4>Quick Links</h4>
-                    <p><a href="{% url 'guest_login' %}">Guest Login</a></p>
-                    <p><a href="{% url 'public_contact' %}">Contact Us</a></p>
+                    <h4><i class="fa-solid fa-headset hostel-inline-icon"></i>{{ public_contact_label }}</h4>
+                    <p><a href="tel:{{ public_contact_number|cut:' ' }}">{{ public_contact_number }}</a></p>
+                    <p><a href="{% url 'public_contact' %}">Contact</a></p>
                 </div>
             </div>
         </div>
@@ -225,9 +227,9 @@
                                 <ul>
                                     <li><a href="{% url 'public_home' %}">Home</a></li>
                                     <li><a href="{% url 'public_features' %}">Features</a></li>
+                                    <li><a href="{% url 'public_blogs' %}">Blogs</a></li>
+                                    <li><a href="{% url 'public_contact' %}">Contact</a></li>
                                     <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
-                                    <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
-                                    <li><a href="{% url 'public_contact' %}">Contact Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -237,6 +239,7 @@
                                 <ul>
                                     <li><a href="{% url 'public_home' %}#area-grid">Browse Areas</a></li>
                                     <li><a href="{% url 'public_features' %}">Search Rooms & Cots</a></li>
+                                    <li><a href="{% url 'public_blogs' %}">Hostel Blogs</a></li>
                                     <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
                                     <li><a href="{% url 'public_contact' %}">Payment Help</a></li>
                                     <li><a href="{% url 'public_contact' %}">Stay Support</a></li>
@@ -259,11 +262,11 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="d-flex" href="tel:+919876543210">
+                                        <a class="d-flex" href="tel:{{ public_contact_number|cut:' ' }}">
                                             <span class="mr-15">
                                                 <i class="fa-sharp text-white fa-solid fa-phone"></i>
                                             </span>
-                                            +91 98765 43210
+                                            {{ public_contact_number }}
                                         </a>
                                     </li>
                                     <li class="d-flex">

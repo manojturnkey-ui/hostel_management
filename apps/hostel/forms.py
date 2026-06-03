@@ -54,4 +54,12 @@ class ExcelUploadForm(BaseHostelModelForm):
 class SystemSettingForm(BaseHostelModelForm):
     class Meta:
         model = SystemSetting
-        fields = ["site_title", "billing_calculation_method", "payment_window_start_day", "payment_window_end_day", "grace_period_days"]
+        fields = [
+            "site_title",
+            "admin_contact_label",
+            "admin_contact_number",
+            "billing_calculation_method",
+            "payment_window_start_day",
+            "payment_window_end_day",
+            "grace_period_days",
+        ]

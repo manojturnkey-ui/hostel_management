@@ -84,3 +84,26 @@ def panel_context(request) -> dict[str, Any]:
         pass
 
     return {"panel_menu": panel_menu, "panel_site_title": site_title}
+
+
+def public_settings(request) -> dict[str, Any]:
+    public_contact_label = "Need Help?"
+    public_contact_number = "+91 98765 43210"
+    system_setting = None
+
+    try:
+        from apps.hostel.models import SystemSetting
+
+        system_setting = SystemSetting.get_solo()
+        if system_setting.admin_contact_label:
+            public_contact_label = system_setting.admin_contact_label
+        if system_setting.admin_contact_number:
+            public_contact_number = system_setting.admin_contact_number
+    except Exception:
+        pass
+
+    return {
+        "system_setting": system_setting,
+        "public_contact_label": public_contact_label,
+        "public_contact_number": public_contact_number,
+    }
