@@ -1,45 +1,79 @@
 {% extends "layouts/public_base.html" %}
 {% block content %}
-<div class="row g-4 mt-2">
-    <div class="col-lg-5">
-        <div class="public-card public-card-highlight">
-            <span class="public-badge-soft mb-3">Rent Bill</span>
-            <h3 class="h4 mb-3">Bill Summary</h3>
-            <ul class="public-list-clean">
-                <li><strong>Guest:</strong> {{ bill.student.full_name }}</li>
-                <li><strong>Room / Cot:</strong> {{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</li>
-                <li><strong>Bill Amount:</strong> Rs. {{ bill.bill_amount }}</li>
-                <li><strong>Bill Period:</strong> {{ bill.billing_period_start }} to {{ bill.billing_period_end }}</li>
-                <li><strong>Grace Period Ends:</strong> {{ bill.grace_period_end_date }}</li>
-            </ul>
-            {% if qr_setting and qr_setting.qr_image %}
-                <div class="public-qr-frame mt-4">
-                    <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="public-qr-image mb-3">
-                    <p class="mb-1"><strong>UPI ID:</strong> {{ qr_setting.upi_id|default:"-" }}</p>
-                    <p class="mb-0"><strong>Account Name:</strong> {{ qr_setting.account_name|default:"-" }}</p>
-                </div>
-            {% else %}
-                <div class="alert alert-warning mt-4 mb-0">No active QR payment setting available yet. Please contact admin.</div>
-            {% endif %}
-        </div>
-    </div>
-    <div class="col-lg-7">
-        <div class="public-card public-card-highlight">
-            <span class="public-badge-soft mb-3">Payment Proof</span>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label">{{ field.label }}</label>
-                        {{ field }}
-                        {% for error in field.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
+<section class="hostel-checkout-area pt-120 pb-120">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-xl-7 col-lg-7">
+                <div class="hostel-checkout-panel">
+                    <div class="hostel-panel-head">
+                        <span class="tg-section-subtitle">Monthly Rent Payment</span>
+                        <h3>Submit Monthly Rent Proof</h3>
+                        <p>Use the QR code shown on this page, then upload your payment screenshot and UTR for verification.</p>
                     </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-dark btn-lg w-100">Submit Monthly Rent Payment</button>
-            </form>
+                    <form method="post" enctype="multipart/form-data" class="hostel-form-layout">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mb-25">
+                                {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="hostel-form-group">
+                                    <label for="{{ form.utr_transaction_id.id_for_label }}">Payment UTR / Transaction ID</label>
+                                    {{ form.utr_transaction_id }}
+                                    {% for error in form.utr_transaction_id.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="hostel-form-group">
+                                    <label for="{{ form.payment_screenshot.id_for_label }}">Payment Screenshot</label>
+                                    {{ form.payment_screenshot }}
+                                    {% for error in form.payment_screenshot.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="tg-btn-border hostel-submit-btn mt-35">Submit Monthly Rent Payment <i class="fa-solid fa-arrow-right-long"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-xl-5 col-lg-5">
+                <div class="hostel-checkout-summary">
+                    <div class="hostel-summary-card">
+                        <span class="tg-section-subtitle">Bill Summary</span>
+                        <h3>{{ bill.student.full_name }}</h3>
+                        <ul class="hostel-summary-list">
+                            <li><span>Room / Cot</span><strong>{{ bill.booking.cot.room.room_number }} / {{ bill.booking.cot.cot_number }}</strong></li>
+                            <li><span>Bill Month</span><strong>{{ bill.bill_month }} / {{ bill.bill_year }}</strong></li>
+                            <li><span>Bill Period</span><strong>{{ bill.billing_period_start }} to {{ bill.billing_period_end }}</strong></li>
+                            <li><span>Grace Period Ends</span><strong>{{ bill.grace_period_end_date }}</strong></li>
+                            <li><span>Payment Status</span><strong>{{ bill.get_payment_status_display }}</strong></li>
+                        </ul>
+                        <div class="hostel-pricing-box">
+                            <div class="hostel-pricing-total"><span>Bill Amount</span><strong>Rs. {{ bill.bill_amount }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="hostel-summary-card">
+                        <span class="tg-section-subtitle">Active QR</span>
+                        <h3>Pay Before Grace Ends</h3>
+                        {% if qr_setting and qr_setting.qr_image %}
+                            <div class="hostel-qr-box">
+                                <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="hostel-qr-image">
+                            </div>
+                            <ul class="hostel-summary-list hostel-summary-list-compact">
+                                <li><span>UPI ID</span><strong>{{ qr_setting.upi_id|default:"-" }}</strong></li>
+                                <li><span>Account Name</span><strong>{{ qr_setting.account_name|default:"-" }}</strong></li>
+                            </ul>
+                        {% else %}
+                            <div class="hostel-empty-panel">
+                                <h5>No active QR available</h5>
+                                <p class="mb-0">Please contact the admin before paying this bill.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

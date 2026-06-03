@@ -31,7 +31,7 @@
                 </div>
                 {% if not gateway_status.configured %}
                     <div class="alert alert-warning mb-3">
-                        WhatsApp scan integration is not configured in environment variables yet.
+                        WhatsApp scan integration is not configured yet. Check `WHATSAPP_SCAN_BASE_URL` and `WHATSAPP_SCAN_API_KEY`, or keep the local `whatsapp_scan` service folder available so Django can read its scan settings automatically.
                     </div>
                 {% endif %}
                 <div class="alert alert-info mb-0">

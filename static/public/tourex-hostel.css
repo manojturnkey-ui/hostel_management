@@ -1,0 +1,646 @@
+:root {
+    --hostel-primary: #0f766e;
+    --hostel-secondary: #f97316;
+    --hostel-ink: #162032;
+    --hostel-soft-ink: #5f6880;
+    --hostel-bg: #f7f6f1;
+    --hostel-card: #ffffff;
+    --hostel-border: rgba(15, 118, 110, 0.12);
+    --hostel-shadow: 0 22px 60px rgba(22, 32, 50, 0.12);
+}
+
+body.hostel-public-body {
+    background: var(--hostel-bg);
+    color: var(--hostel-ink);
+}
+
+.hostel-public-body p,
+.hostel-public-body li,
+.hostel-public-body span,
+.hostel-public-body label,
+.hostel-public-body small {
+    color: var(--hostel-soft-ink);
+}
+
+.hostel-public-body .logo img,
+.hostel-public-body .nav-logo img,
+.hostel-public-body .offCanvas__logo img,
+.hostel-public-body .tg-footer-logo img {
+    max-height: 54px;
+}
+
+.hostel-section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hostel-hero-copy {
+    max-width: 700px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 18px;
+    line-height: 1.85;
+}
+
+.hostel-hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+}
+
+.hostel-hero-btn {
+    background: #fff;
+    color: var(--hostel-ink);
+}
+
+.hostel-hero-btn:hover {
+    background: var(--hostel-secondary);
+    color: #fff;
+}
+
+.hostel-hero-btn-alt {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+.hostel-hero-btn-alt:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.hostel-hero-stats {
+    margin-top: 42px;
+    row-gap: 20px;
+}
+
+.hostel-hero-stat-card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 24px;
+    padding: 24px 18px;
+    backdrop-filter: blur(10px);
+}
+
+.hostel-hero-stat-card h4,
+.hostel-hero-stat-card p {
+    color: #fff;
+}
+
+.hostel-hero-stat-card h4 {
+    font-size: 32px;
+    margin-bottom: 6px;
+}
+
+.hostel-section-copy {
+    line-height: 1.85;
+}
+
+.hostel-mini-note {
+    background: #fff;
+    border: 1px solid var(--hostel-border);
+    border-radius: 20px;
+    padding: 18px 20px;
+    box-shadow: 0 18px 40px rgba(15, 118, 110, 0.08);
+}
+
+.hostel-listing-card {
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: var(--hostel-shadow);
+    background: #fff;
+}
+
+.hostel-listing-card .tg-listing-thumb img {
+    min-height: 265px;
+    object-fit: cover;
+}
+
+.hostel-listing-card .tg-listing-content {
+    padding: 28px 28px 26px;
+}
+
+.hostel-floating-pill {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(15, 118, 110, 0.92);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.hostel-card-copy {
+    min-height: 78px;
+    margin-bottom: 22px;
+    line-height: 1.8;
+}
+
+.hostel-empty-panel {
+    border-radius: 28px;
+    padding: 34px 28px;
+    background: #fff;
+    box-shadow: var(--hostel-shadow);
+    border: 1px solid var(--hostel-border);
+}
+
+.hostel-process-card {
+    height: 100%;
+    padding: 34px 30px;
+    background: linear-gradient(180deg, #ffffff 0%, #f5fbfa 100%);
+    border-radius: 28px;
+    border: 1px solid var(--hostel-border);
+    box-shadow: 0 22px 50px rgba(15, 118, 110, 0.08);
+}
+
+.hostel-process-number {
+    display: inline-flex;
+    width: 58px;
+    height: 58px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    border-radius: 18px;
+    background: rgba(249, 115, 22, 0.15);
+    color: var(--hostel-secondary);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.hostel-breadcrumb-banner::before,
+.hostel-login-shell::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: linear-gradient(120deg, rgba(9, 22, 32, 0.78) 0%, rgba(15, 118, 110, 0.66) 100%);
+}
+
+.hostel-breadcrumb-copy {
+    max-width: 620px;
+    color: rgba(255, 255, 255, 0.86);
+    line-height: 1.8;
+}
+
+.hostel-checkout-area,
+.hostel-login-shell {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.hostel-login-shell {
+    background-size: cover;
+    background-position: center;
+}
+
+.hostel-login-shell > .container,
+.hostel-checkout-area > .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hostel-auth-card,
+.hostel-checkout-panel,
+.hostel-summary-card,
+.hostel-dashboard-card,
+.hostel-success-card {
+    background: var(--hostel-card);
+    border-radius: 30px;
+    padding: 36px;
+    border: 1px solid var(--hostel-border);
+    box-shadow: var(--hostel-shadow);
+}
+
+.hostel-dashboard-highlight {
+    background: linear-gradient(135deg, #ffffff 0%, #f2faf8 100%);
+}
+
+.hostel-panel-head,
+.hostel-auth-card .text-center {
+    margin-bottom: 28px;
+}
+
+.hostel-form-layout .row {
+    row-gap: 4px;
+}
+
+.hostel-form-group {
+    margin-bottom: 18px;
+}
+
+.hostel-form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--hostel-ink);
+    font-weight: 600;
+}
+
+.hostel-public-body .form-control,
+.hostel-public-body .form-select {
+    min-height: 56px;
+    border-radius: 18px;
+    border: 1px solid rgba(22, 32, 50, 0.12);
+    background: #f9fafc;
+    color: var(--hostel-ink);
+    padding: 14px 18px;
+    box-shadow: none;
+}
+
+.hostel-public-body input[type="file"].form-control {
+    padding-top: 16px;
+}
+
+.hostel-public-body .form-control:focus,
+.hostel-public-body .form-select:focus {
+    border-color: rgba(15, 118, 110, 0.45);
+    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.12);
+    background: #fff;
+}
+
+.hostel-submit-btn,
+.hostel-secondary-btn {
+    min-height: 58px;
+    border-radius: 18px;
+    font-weight: 700;
+    justify-content: center;
+}
+
+.hostel-submit-btn {
+    background: var(--hostel-primary);
+    color: #fff;
+    border-color: var(--hostel-primary);
+}
+
+.hostel-submit-btn:hover {
+    background: var(--hostel-secondary);
+    border-color: var(--hostel-secondary);
+    color: #fff;
+}
+
+.hostel-secondary-btn {
+    background: #fff;
+    color: var(--hostel-ink);
+    border-color: rgba(22, 32, 50, 0.16);
+}
+
+.hostel-secondary-btn:hover {
+    background: #eef4f3;
+    color: var(--hostel-ink);
+}
+
+.hostel-logout-btn {
+    border: 0;
+}
+
+.hostel-checkout-summary,
+.hostel-dashboard-actions {
+    display: grid;
+    gap: 24px;
+}
+
+.hostel-summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hostel-summary-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(22, 32, 50, 0.14);
+}
+
+.hostel-summary-list li:last-child {
+    border-bottom: 0;
+}
+
+.hostel-summary-list li span {
+    color: var(--hostel-soft-ink);
+}
+
+.hostel-summary-list li strong {
+    color: var(--hostel-ink);
+    text-align: right;
+}
+
+.hostel-summary-list-spaced li {
+    padding: 15px 0;
+}
+
+.hostel-summary-list-compact li {
+    padding: 9px 0;
+}
+
+.hostel-pricing-box {
+    margin-top: 28px;
+    padding: 24px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(15, 118, 110, 0.08) 0%, rgba(249, 115, 22, 0.08) 100%);
+}
+
+.hostel-pricing-box > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.hostel-pricing-box > div:last-child {
+    margin-bottom: 0;
+}
+
+.hostel-pricing-total {
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid rgba(22, 32, 50, 0.12);
+}
+
+.hostel-qr-box {
+    padding: 22px;
+    margin: 20px 0 8px;
+    border-radius: 24px;
+    background: #f7fafb;
+    text-align: center;
+}
+
+.hostel-qr-image {
+    width: 100%;
+    max-width: 260px;
+    margin: 0 auto;
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(22, 32, 50, 0.12);
+}
+
+.hostel-cot-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.hostel-disabled-action {
+    color: var(--hostel-soft-ink);
+    font-weight: 600;
+}
+
+.hostel-cot-available .hostel-floating-pill {
+    background: rgba(22, 163, 74, 0.92);
+}
+
+.hostel-cot-pending .hostel-floating-pill {
+    background: rgba(245, 158, 11, 0.92);
+}
+
+.hostel-cot-occupied .hostel-floating-pill {
+    background: rgba(220, 38, 38, 0.92);
+}
+
+.hostel-cot-maintenance .hostel-floating-pill {
+    background: rgba(107, 114, 128, 0.92);
+}
+
+.hostel-cot-blocked .hostel-floating-pill {
+    background: rgba(23, 23, 23, 0.92);
+}
+
+.hostel-auth-foot {
+    margin-top: 26px;
+}
+
+.hostel-status-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.hostel-status-chip.pending_admin_confirmation,
+.hostel-status-chip.pending,
+.hostel-status-chip.pending_verification {
+    background: rgba(245, 158, 11, 0.16);
+    color: #b45309;
+}
+
+.hostel-status-chip.confirmed,
+.hostel-status-chip.paid,
+.hostel-status-chip.active {
+    background: rgba(22, 163, 74, 0.16);
+    color: #15803d;
+}
+
+.hostel-status-chip.rejected,
+.hostel-status-chip.overdue,
+.hostel-status-chip.blocked {
+    background: rgba(220, 38, 38, 0.16);
+    color: #b91c1c;
+}
+
+.hostel-status-chip.unpaid,
+.hostel-status-chip.cancelled,
+.hostel-status-chip.inactive {
+    background: rgba(107, 114, 128, 0.16);
+    color: #4b5563;
+}
+
+.hostel-stay-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.hostel-stay-figure {
+    display: grid;
+    gap: 16px;
+    padding: 24px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(15, 118, 110, 0.12);
+}
+
+.hostel-stay-figure small {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.hostel-booking-timeline-card {
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid var(--hostel-border);
+    background: #fbfcff;
+    margin-bottom: 20px;
+}
+
+.hostel-booking-timeline-card:last-child {
+    margin-bottom: 0;
+}
+
+.hostel-booking-timeline-card h4,
+.hostel-latest-payment h4 {
+    margin-bottom: 8px;
+}
+
+.hostel-booking-timeline-card small {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.hostel-admin-note {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(249, 115, 22, 0.1);
+}
+
+.hostel-payment-proof-box {
+    margin-top: 22px;
+}
+
+.hostel-payment-proof {
+    width: 100%;
+    border-radius: 22px;
+    box-shadow: 0 20px 40px rgba(22, 32, 50, 0.14);
+}
+
+.hostel-success-card {
+    padding: 52px 42px;
+}
+
+.hostel-success-icon {
+    display: inline-flex;
+    width: 88px;
+    height: 88px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    border-radius: 28px;
+    background: rgba(22, 163, 74, 0.12);
+    color: #15803d;
+    font-size: 40px;
+}
+
+.hostel-credentials-panel {
+    margin-top: 34px;
+    padding: 28px;
+    border-radius: 26px;
+    background: linear-gradient(180deg, rgba(15, 118, 110, 0.07) 0%, rgba(249, 115, 22, 0.07) 100%);
+    border: 1px solid rgba(15, 118, 110, 0.1);
+}
+
+.hostel-credentials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.hostel-credential-pill {
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: #fff;
+}
+
+.hostel-credential-pill span,
+.hostel-login-link-box span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.hostel-login-link-box {
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: #fff;
+    word-break: break-word;
+}
+
+.hostel-login-link-box a {
+    color: var(--hostel-primary);
+}
+
+.hostel-success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 34px;
+}
+
+.hostel-modal-card {
+    border: 0;
+    border-radius: 28px;
+}
+
+.hostel-alert {
+    border-radius: 18px;
+    border: 0;
+    box-shadow: 0 16px 30px rgba(22, 32, 50, 0.1);
+}
+
+@media (max-width: 1199px) {
+    .hostel-public-body .logo img,
+    .hostel-public-body .nav-logo img,
+    .hostel-public-body .offCanvas__logo img,
+    .hostel-public-body .tg-footer-logo img {
+        max-height: 48px;
+    }
+
+    .hostel-success-card,
+    .hostel-auth-card,
+    .hostel-checkout-panel,
+    .hostel-summary-card,
+    .hostel-dashboard-card {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .hostel-hero-copy {
+        font-size: 16px;
+    }
+
+    .hostel-credentials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hostel-summary-list li,
+    .hostel-pricing-box > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hostel-summary-list li strong {
+        text-align: left;
+    }
+
+    .hostel-success-card,
+    .hostel-auth-card,
+    .hostel-checkout-panel,
+    .hostel-summary-card,
+    .hostel-dashboard-card {
+        padding: 24px;
+        border-radius: 24px;
+    }
+}

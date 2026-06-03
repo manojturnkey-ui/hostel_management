@@ -1,34 +1,120 @@
 {% extends "layouts/public_base.html" %}
+{% load static %}
+
 {% block content %}
-<div class="row g-4 mt-2">
-    {% for item in items %}
-        <div class="col-md-6 col-lg-4">
-            <div class="public-card public-card-highlight h-100">
-                {% if item_type == "building" %}
-                    <span class="public-badge-soft mb-3">Building</span>
-                    <h3 class="h4">{{ item.building_name }}</h3>
-                    <p class="public-card-subtitle">{{ item.description|default:"Open building sections and continue to room selection." }}</p>
-                    <a href="{% url 'public_building_sections' item.pk %}" class="btn btn-dark public-action w-100">View Sections</a>
-                {% elif item_type == "section" %}
-                    <span class="public-badge-soft mb-3">Section / Wing</span>
-                    <h3 class="h4">{{ item.section_name }}</h3>
-                    <p class="public-card-subtitle">{{ item.description|default:"Open floors in this section." }}</p>
-                    <a href="{% url 'public_section_floors' item.pk %}" class="btn btn-dark public-action w-100">View Floors</a>
-                {% elif item_type == "floor" %}
-                    <span class="public-badge-soft mb-3">Floor</span>
-                    <h3 class="h4">{{ item.floor_name }}</h3>
-                    <p class="public-card-subtitle">{{ item.description|default:"Open rooms on this floor." }}</p>
-                    <a href="{% url 'public_floor_rooms' item.pk %}" class="btn btn-dark public-action w-100">View Rooms</a>
-                {% else %}
-                    <span class="public-badge-soft mb-3">Room</span>
-                    <h3 class="h4">{{ item.full_label }}</h3>
-                    <p class="public-card-subtitle">{{ item.description|default:"View cots and current availability in this room." }}</p>
-                    <a href="{% url 'public_room_cots' item.pk %}" class="btn btn-dark public-action w-100">View Cots</a>
-                {% endif %}
+<section class="tg-listing-area pt-120 pb-90">
+    <div class="container">
+        <div class="row justify-content-between align-items-end mb-50">
+            <div class="col-lg-8">
+                <div class="tg-section-title-box">
+                    <span class="tg-section-subtitle">
+                        {% if item_type == "building" %}Buildings{% elif item_type == "section" %}Sections / Wings{% elif item_type == "floor" %}Floors{% else %}Rooms{% endif %}
+                    </span>
+                    <h2 class="tg-section-title">{{ page_title }}</h2>
+                    <p class="hostel-section-copy mb-0">{{ page_description }}</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="hostel-mini-note">
+                    {% if parent %}Current path starts from {{ parent }}.{% else %}Move through the hostel structure until you reach your cot choice.{% endif %}
+                </div>
             </div>
         </div>
-    {% empty %}
-        <div class="col-12"><div class="alert alert-info public-empty-state">No records available on this level.</div></div>
-    {% endfor %}
-</div>
+        <div class="row">
+            {% for item in items %}
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="tg-listing-item tg-listing-item-three mb-30 hostel-listing-card">
+                        <div class="tg-listing-thumb tg-fix">
+                            {% if item_type == "building" %}
+                                <a href="{% url 'public_building_sections' item.pk %}">
+                                    <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '1' '2' '3' '4' '5' '6' %}.jpg" alt="{{ item.building_name }}">
+                                </a>
+                            {% elif item_type == "section" %}
+                                <a href="{% url 'public_section_floors' item.pk %}">
+                                    <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '2' '3' '4' '5' '6' '1' %}.jpg" alt="{{ item.section_name }}">
+                                </a>
+                            {% elif item_type == "floor" %}
+                                <a href="{% url 'public_floor_rooms' item.pk %}">
+                                    <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '3' '4' '5' '6' '1' '2' %}.jpg" alt="{{ item.floor_name }}">
+                                </a>
+                            {% else %}
+                                <a href="{% url 'public_room_cots' item.pk %}">
+                                    <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '4' '5' '6' '1' '2' '3' %}.jpg" alt="{{ item.full_label }}">
+                                </a>
+                            {% endif %}
+                            <div class="hostel-floating-pill">
+                                {% if item_type == "building" %}Building{% elif item_type == "section" %}Wing{% elif item_type == "floor" %}Floor{% else %}Room{% endif %}
+                            </div>
+                        </div>
+                        <div class="tg-listing-content">
+                            <div class="tg-listing-top d-flex align-items-center justify-content-between">
+                                <span class="tg-listing-location">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    {% if item_type == "building" %}
+                                        {{ item.area.area_name }}
+                                    {% elif item_type == "section" %}
+                                        {{ item.building.building_name }}
+                                    {% elif item_type == "floor" %}
+                                        {{ item.section.section_name }}
+                                    {% else %}
+                                        {{ item.floor.floor_name }}
+                                    {% endif %}
+                                </span>
+                                <span class="tg-listing-rating">{{ item.status|title }}</span>
+                            </div>
+                            <h4 class="tg-listing-title">
+                                {% if item_type == "building" %}
+                                    <a href="{% url 'public_building_sections' item.pk %}">{{ item.building_name }}</a>
+                                {% elif item_type == "section" %}
+                                    <a href="{% url 'public_section_floors' item.pk %}">{{ item.section_name }}</a>
+                                {% elif item_type == "floor" %}
+                                    <a href="{% url 'public_floor_rooms' item.pk %}">{{ item.floor_name }}</a>
+                                {% else %}
+                                    <a href="{% url 'public_room_cots' item.pk %}">{{ item.full_label }}</a>
+                                {% endif %}
+                            </h4>
+                            <p class="hostel-card-copy">
+                                {% if item.description %}
+                                    {{ item.description }}
+                                {% elif item_type == "building" %}
+                                    Open this building and continue into active sections or wings.
+                                {% elif item_type == "section" %}
+                                    Continue to the floors available inside this section.
+                                {% elif item_type == "floor" %}
+                                    Browse rooms on this floor and check current cot inventory.
+                                {% else %}
+                                    Open this room to view available, pending, and occupied cots.
+                                {% endif %}
+                            </p>
+                            <div class="tg-listing-bottom d-flex justify-content-between align-items-center">
+                                <div class="tg-listing-price">
+                                    <span>Next Step</span>
+                                    <strong>
+                                        {% if item_type == "building" %}View Sections{% elif item_type == "section" %}View Floors{% elif item_type == "floor" %}View Rooms{% else %}View Cots{% endif %}
+                                    </strong>
+                                </div>
+                                {% if item_type == "building" %}
+                                    <a class="tg-btn-border" href="{% url 'public_building_sections' item.pk %}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
+                                {% elif item_type == "section" %}
+                                    <a class="tg-btn-border" href="{% url 'public_section_floors' item.pk %}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
+                                {% elif item_type == "floor" %}
+                                    <a class="tg-btn-border" href="{% url 'public_floor_rooms' item.pk %}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
+                                {% else %}
+                                    <a class="tg-btn-border" href="{% url 'public_room_cots' item.pk %}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="hostel-empty-panel text-center">
+                        <h4>No records available at this level.</h4>
+                        <p class="mb-0">Once the hostel setup is created in the admin panel, cards will appear here automatically.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}

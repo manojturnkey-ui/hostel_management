@@ -1,64 +1,274 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{% if page_title %}{{ page_title }} | {% endif %}Hostel Management</title>
+    <meta name="description" content="Hostel Management guest booking portal">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="{% static 'mifty/images/favicon.ico' %}">
-    <link href="{% static 'mifty/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'mifty/css/icons.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'public/site.css' %}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'public/tourex/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/flatpicker.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/odometer.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/default.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'public/tourex-hostel.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="public-body">
-    <header class="public-hero">
-        <div class="container py-5">
-            <div class="public-hero-panel">
-                <div class="public-top-actions">
-                    <a href="{% url 'public_home' %}" class="btn btn-light public-mini-btn">Hostel Home</a>
-                    {% if request.user.is_authenticated and not request.user.is_staff %}
-                        <a href="{% url 'guest_dashboard' %}" class="btn btn-dark public-mini-btn">My Dashboard</a>
-                    {% else %}
-                        <a href="{% url 'guest_login' %}" class="btn btn-dark public-mini-btn">Guest Login</a>
-                    {% endif %}
-                </div>
-                <div class="row align-items-center g-4">
-                    <div class="col-lg-7">
-                        <p class="text-uppercase public-kicker mb-2">Hostel Management</p>
-                        <h1 class="public-hero-title">{{ page_title|default:"Hostel Management" }}</h1>
-                        {% if page_description %}
-                            <p class="public-hero-copy mb-0">{{ page_description }}</p>
-                        {% else %}
-                            <p class="public-hero-copy mb-0">Explore area-wise hostel availability, choose a cot, and submit your booking online with payment verification and fast admin approval.</p>
-                        {% endif %}
-                        <ul class="public-feature-list">
-                            <li class="public-feature-chip"><i class="iconoir-bed-ready"></i> Live cot availability</li>
-                            <li class="public-feature-chip"><i class="iconoir-wallet"></i> QR-based payment flow</li>
-                            <li class="public-feature-chip"><i class="iconoir-shield-check"></i> Verified booking process</li>
-                        </ul>
+<body class="hostel-public-body">
+    <div id="loading">
+        <div class="loader"></div>
+    </div>
+
+    <button class="scroll__top scroll-to-target" data-target="html">
+        <i class="fa-sharp fa-regular fa-arrow-up"></i>
+    </button>
+
+    <header class="tg-header-height">
+        <div class="tg-header__area tg-header-tu-menu tg-header-lg-space z-index-999 {% block header_theme %}tg-transparent{% endblock %}" id="header-sticky">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-xxl-8 col-xl-8 col-lg-8 col-5">
+                        <div class="tgmenu__wrap d-flex align-items-center">
+                            <div class="logo mr-25">
+                                <a class="logo-1" href="{% url 'public_home' %}">
+                                    <img src="{% static 'public/hostel-logo-full.svg' %}" alt="Hostel Management Logo">
+                                </a>
+                                <a class="logo-2 d-none" href="{% url 'public_home' %}">
+                                    <img src="{% static 'public/hostel-logo-full.svg' %}" alt="Hostel Management Logo">
+                                </a>
+                            </div>
+                            <button class="tgmenu-offcanvas-open-btn menu-tigger d-none d-xl-block">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                            <nav class="tgmenu__nav tgmenu-1-space ml-140">
+                                <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
+                                    <ul class="navigation">
+                                        <li><a href="{% url 'public_home' %}">Home</a></li>
+                                        {% if request.user.is_authenticated and not request.user.is_staff %}
+                                            <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
+                                            <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
+                                        {% else %}
+                                            <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
+                                        {% endif %}
+                                        <li><a href="{% url 'panel_login' %}">Admin Panel</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
                     </div>
-                    <div class="col-lg-5">
-                        <div class="public-hero-visual">
-                            <img src="{% static 'public/hostel-scene.svg' %}" alt="Hostel building illustration">
+                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-7">
+                        <div class="tg-menu-right-action d-flex align-items-center justify-content-end">
+                            <div class="tg-header-contact-info d-flex align-items-center">
+                                <span class="tg-header-contact-icon mr-10 d-none d-xl-block">
+                                    <i class="fa-solid fa-bed"></i>
+                                </span>
+                                <div class="tg-header-contact-number d-none d-xl-block">
+                                    <span>Smart Cot Booking</span>
+                                    <a href="{% url 'public_home' %}">Stay ready, pay by QR, track approval</a>
+                                </div>
+                            </div>
+                            <div class="tg-header-btn ml-20 d-none d-sm-block">
+                                {% if request.user.is_authenticated and not request.user.is_staff %}
+                                    <form method="post" action="{% url 'guest_logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="tg-btn-header hostel-logout-btn">
+                                            <span><i class="fa-solid fa-right-from-bracket"></i></span>
+                                            Logout
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <a class="tg-btn-header" href="{% url 'guest_login' %}">
+                                        <span><i class="fa-solid fa-user"></i></span>
+                                        Guest Login
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="tg-header-menu-bar p-relative">
+                                <button class="tgmenu-offcanvas-open-btn mobile-nav-toggler d-block d-xl-none ml-10">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="tgmobile__menu">
+            <nav class="tgmobile__menu-box">
+                <div class="close-btn"><i class="fa-solid fa-xmark"></i></div>
+                <div class="nav-logo">
+                    <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-full.svg' %}" alt="logo"></a>
+                </div>
+                <div class="tgmobile__menu-outer">
+                    <ul class="navigation">
+                        <li><a href="{% url 'public_home' %}">Home</a></li>
+                        {% if request.user.is_authenticated and not request.user.is_staff %}
+                            <li><a href="{% url 'guest_dashboard' %}">Guest Portal</a></li>
+                            <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
+                        {% else %}
+                            <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'panel_login' %}">Admin Panel</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="tgmobile__menu-backdrop"></div>
+
+        <div class="offCanvas__info">
+            <div class="offCanvas__close-icon menu-close">
+                <button><i class="fa-sharp fa-regular fa-xmark"></i></button>
+            </div>
+            <div class="offCanvas__logo mb-30">
+                <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-full.svg' %}" alt="Logo"></a>
+            </div>
+            <div class="offCanvas__side-info mb-30">
+                <div class="contact-list mb-30">
+                    <h4>Guest Journey</h4>
+                    <p>Browse area, select a cot, complete QR payment, and wait for admin confirmation.</p>
+                </div>
+                <div class="contact-list mb-30">
+                    <h4>Guest Portal</h4>
+                    <p>Track your latest booking request, current stay details, and most recent payment in one place.</p>
+                </div>
+                <div class="contact-list mb-30">
+                    <h4>Quick Links</h4>
+                    <p><a href="{% url 'guest_login' %}">Guest Login</a></p>
+                    <p><a href="{% url 'panel_login' %}">Admin Panel</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="offCanvas__overly"></div>
     </header>
-    <main class="public-section">
-        <div class="container">
-            {% if messages %}
-                <div class="mt-4">
+
+    {% block hero_section %}
+        <div class="tg-breadcrumb-area tg-breadcrumb-spacing include-bg p-relative fix hostel-breadcrumb-banner" data-background="{% static 'public/tourex/img/breadcrumb/breadcrumb.jpg' %}">
+            <div class="container">
+                <div class="row align-items-end">
+                    <div class="col-lg-8">
+                        <div class="tg-breadcrumb-content z-index-3">
+                            <span class="hostel-section-label">Hostel Journey</span>
+                            <h2 class="tg-breadcrumb-title text-capitalize">{{ page_title|default:"Hostel Management" }}</h2>
+                            <div class="tg-breadcrumb-list">
+                                <span><a href="{% url 'public_home' %}">Hostel Home</a></span>
+                                <span class="dvdr"><i class="fa-sharp fa-solid fa-angle-right"></i></span>
+                                <span>{{ page_title|default:"Hostel Management" }}</span>
+                            </div>
+                            {% if page_description %}
+                                <p class="hostel-breadcrumb-copy mt-15 mb-0">{{ page_description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    <main>
+        {% if messages %}
+            <section class="pt-30">
+                <div class="container">
                     {% for message in messages %}
-                        <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+                        <div class="alert alert-{{ message.tags|default:'info' }} hostel-alert mb-20">{{ message }}</div>
                     {% endfor %}
                 </div>
-            {% endif %}
-            {% block content %}{% endblock %}
-        </div>
+            </section>
+        {% endif %}
+        {% block content %}{% endblock %}
     </main>
-    <script src="{% static 'mifty/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <footer>
+        <div class="tg-footer-area include-bg pt-120" data-background="{% static 'public/tourex/img/footer/footer.jpg' %}">
+            <div class="container">
+                <div class="tg-footer-top mb-40">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-md-6">
+                            <div class="tg-footer-widget mb-40">
+                                <div class="tg-footer-logo mb-20">
+                                    <a href="{% url 'public_home' %}"><img src="{% static 'public/hostel-logo-full.svg' %}" alt=""></a>
+                                </div>
+                                <p class="mb-20">A polished guest-facing booking experience for selecting cots, paying securely, and checking approvals from a single portal.</p>
+                                <div class="tg-footer-social">
+                                    <a href="{% url 'public_home' %}"><i class="fa-solid fa-house"></i></a>
+                                    <a href="{% url 'guest_login' %}"><i class="fa-solid fa-user"></i></a>
+                                    <a href="{% url 'panel_login' %}"><i class="fa-solid fa-lock"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-6">
+                            <div class="tg-footer-widget tg-footer-link ml-40 mb-40">
+                                <h3 class="tg-footer-widget-title mb-25">Guest Actions</h3>
+                                <ul>
+                                    <li><a href="{% url 'public_home' %}">Browse Hostel Areas</a></li>
+                                    <li><a href="{% url 'guest_login' %}">Login to Guest Portal</a></li>
+                                    {% if request.user.is_authenticated and not request.user.is_staff %}
+                                        <li><a href="{% url 'guest_dashboard' %}">View My Stay</a></li>
+                                        <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-12">
+                            <div class="tg-footer-widget tg-footer-info mb-40">
+                                <h3 class="tg-footer-widget-title mb-25">Booking Promise</h3>
+                                <ul>
+                                    <li class="d-flex">
+                                        <span class="mr-15"><i class="fa-solid fa-bed text-white"></i></span>
+                                        <p class="mb-0">Area-to-cot navigation with real availability and pricing.</p>
+                                    </li>
+                                    <li class="d-flex">
+                                        <span class="mr-15"><i class="fa-solid fa-qrcode text-white"></i></span>
+                                        <p class="mb-0">UPI QR payment submission with screenshot and UTR proof.</p>
+                                    </li>
+                                    <li class="d-flex">
+                                        <span class="mr-15"><i class="fa-solid fa-circle-check text-white"></i></span>
+                                        <p class="mb-0">Guest dashboard for approval status, stay details, and latest payment.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tg-footer-copyright text-center">
+                <span>Copyright <a href="{% url 'public_home' %}">Hostel Management</a> | All rights reserved</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'public/tourex/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'public/tourex/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/jquery.odometer.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/jquery.appear.js' %}"></script>
+    <script src="{% static 'public/tourex/js/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/flatpickr.js' %}"></script>
+    <script src="{% static 'public/tourex/js/nice-select.js' %}"></script>
+    <script src="{% static 'public/tourex/js/ajax-form.js' %}"></script>
+    <script src="{% static 'public/tourex/js/wow.min.js' %}"></script>
+    <script src="{% static 'public/tourex/js/main.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('input[type="date"]').forEach(function (element) {
+                if (window.flatpickr) {
+                    flatpickr(element, { dateFormat: "Y-m-d" });
+                }
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,100 +1,141 @@
 {% extends "layouts/public_base.html" %}
 {% block content %}
-<div class="row g-4 mt-2">
-    <div class="col-lg-4">
-        <div class="public-card public-card-highlight h-100">
-            <span class="public-badge-soft mb-3">Guest Profile</span>
-            <h3 class="h4 mb-3">{{ guest.full_name }}</h3>
-            <ul class="public-list-clean mb-4">
-                <li><strong>Guest Login:</strong> {{ guest_login_name }}</li>
-                <li><strong>Mobile:</strong> {{ guest.mobile_number }}</li>
-                <li><strong>WhatsApp:</strong> {{ guest.whatsapp_number }}</li>
-                <li><strong>Relative Contact:</strong> {{ guest.relative_contact_number|default:"-" }}</li>
-                <li><strong>State:</strong> {{ guest.state }}</li>
-            </ul>
-            <div class="d-grid gap-2">
-                <a href="{% url 'guest_change_password' %}" class="btn btn-dark">Change Password</a>
-                <form method="post" action="{% url 'guest_logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-secondary w-100">Logout</button>
-                </form>
+<section class="pt-120 pb-70">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-xl-4 col-lg-5">
+                <div class="hostel-dashboard-card">
+                    <span class="tg-section-subtitle">Guest Profile</span>
+                    <h3>{{ guest.full_name }}</h3>
+                    <ul class="hostel-summary-list hostel-summary-list-spaced">
+                        <li><span>Guest Username</span><strong>{{ guest_login_name }}</strong></li>
+                        <li><span>Mobile</span><strong>{{ guest.mobile_number }}</strong></li>
+                        <li><span>WhatsApp</span><strong>{{ guest.whatsapp_number }}</strong></li>
+                        <li><span>Relative Contact</span><strong>{{ guest.relative_contact_number|default:"-" }}</strong></li>
+                        <li><span>State</span><strong>{{ guest.state }}</strong></li>
+                    </ul>
+                    <div class="hostel-dashboard-actions">
+                        <a href="{% url 'guest_change_password' %}" class="tg-btn-border hostel-secondary-btn">Change Password</a>
+                        <form method="post" action="{% url 'guest_logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="tg-btn-border hostel-secondary-btn hostel-danger-btn">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8 col-lg-7">
+                <div class="hostel-dashboard-card hostel-dashboard-highlight">
+                    <span class="tg-section-subtitle">Current Stay</span>
+                    {% if highlighted_booking %}
+                        <div class="row g-4 align-items-center">
+                            <div class="col-md-7">
+                                <h3>{{ highlighted_booking.cot.room.room_number }} / Cot {{ highlighted_booking.cot.cot_number }}</h3>
+                                <p class="hostel-section-copy">{{ highlighted_booking.cot.get_location_path }}</p>
+                                <div class="hostel-stay-meta">
+                                    <span class="hostel-status-chip {{ highlighted_booking.booking_status }}">{{ highlighted_booking.get_booking_status_display }}</span>
+                                    {% if current_access %}
+                                        <span class="hostel-status-chip {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="hostel-stay-figure">
+                                    <div>
+                                        <small>Stay Start</small>
+                                        <strong>{{ highlighted_booking.booking_from_date }}</strong>
+                                    </div>
+                                    <div>
+                                        <small>Monthly Rent</small>
+                                        <strong>Rs. {{ highlighted_booking.monthly_rent }}</strong>
+                                    </div>
+                                    <div>
+                                        <small>Security Deposit</small>
+                                        <strong>Rs. {{ highlighted_booking.security_deposit }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="hostel-empty-panel">
+                            <h5>No booking request found yet</h5>
+                            <p class="mb-0">Once you submit a cot booking request, your stay summary will appear here.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-xl-7">
+                <div class="hostel-dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-30">
+                        <div>
+                            <span class="tg-section-subtitle">Booking Requests</span>
+                            <h3 class="mb-0">Your Guest Request Timeline</h3>
+                        </div>
+                    </div>
+                    {% for booking in guest_bookings %}
+                        <div class="hostel-booking-timeline-card">
+                            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                                <div>
+                                    <h4>{{ booking.cot.room.room_number }} / Cot {{ booking.cot.cot_number }}</h4>
+                                    <p class="mb-0">{{ booking.cot.get_location_path }}</p>
+                                </div>
+                                <span class="hostel-status-chip {{ booking.booking_status }}">{{ booking.get_booking_status_display }}</span>
+                            </div>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <small>Staying Start Date</small>
+                                    <strong>{{ booking.booking_from_date }}</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <small>Submitted On</small>
+                                    <strong>{{ booking.created_at|date:"d M Y, h:i A" }}</strong>
+                                </div>
+                            </div>
+                            {% if booking.admin_remark %}
+                                <div class="hostel-admin-note">
+                                    <strong>Admin Remark:</strong> {{ booking.admin_remark }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="hostel-empty-panel">
+                            <h5>No booking requests yet</h5>
+                            <p class="mb-0">Start from the hostel home page to create your first booking request.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-xl-5">
+                <div class="hostel-dashboard-card">
+                    <span class="tg-section-subtitle">Latest Payment</span>
+                    <h3>Most Recent Payment Record</h3>
+                    {% if latest_payment %}
+                        <div class="hostel-latest-payment">
+                            <span class="hostel-status-chip {{ latest_payment.status }}">{{ latest_payment.status_display }}</span>
+                            <ul class="hostel-summary-list hostel-summary-list-spaced mt-25">
+                                <li><span>Payment Type</span><strong>{{ latest_payment.kind }}</strong></li>
+                                <li><span>Amount</span><strong>Rs. {{ latest_payment.amount }}</strong></li>
+                                <li><span>UTR</span><strong>{{ latest_payment.utr|default:"-" }}</strong></li>
+                                <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
+                                <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
+                            </ul>
+                            {% if latest_payment.screenshot %}
+                                <div class="hostel-payment-proof-box">
+                                    <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="hostel-payment-proof">
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="hostel-empty-panel">
+                            <h5>No payment record yet</h5>
+                            <p class="mb-0">Your latest booking or rent payment will appear here after submission.</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-8">
-        <div class="public-card public-card-highlight h-100">
-            <span class="public-badge-soft mb-3">Current Stay</span>
-            {% if highlighted_booking %}
-                <h3 class="h4 mb-3">{{ highlighted_booking.cot.room.room_number }} / Cot {{ highlighted_booking.cot.cot_number }}</h3>
-                <ul class="public-list-clean mb-4">
-                    <li><strong>Location:</strong> {{ highlighted_booking.cot.get_location_path }}</li>
-                    <li><strong>Stay Start:</strong> {{ highlighted_booking.booking_from_date }}</li>
-                    <li><strong>Status:</strong> <span class="guest-status-pill {{ highlighted_booking.booking_status }}">{{ highlighted_booking.get_booking_status_display }}</span></li>
-                    <li><strong>Monthly Rent:</strong> Rs. {{ highlighted_booking.monthly_rent }}</li>
-                    {% if current_access %}
-                        <li><strong>Gate Access:</strong> <span class="guest-status-pill {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span></li>
-                    {% endif %}
-                </ul>
-            {% else %}
-                <div class="alert alert-info mb-0">No booking request has been found for this guest account yet.</div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<div class="row g-4 mt-1">
-    <div class="col-lg-6">
-        <div class="public-card public-card-highlight h-100">
-            <span class="public-badge-soft mb-3">Booking Requests</span>
-            {% for booking in guest_bookings %}
-                <div class="guest-booking-card">
-                    <div class="d-flex justify-content-between align-items-start gap-3">
-                        <div>
-                            <h4 class="h6 mb-1">{{ booking.cot.room.room_number }} / Cot {{ booking.cot.cot_number }}</h4>
-                            <p class="mb-2 text-muted">{{ booking.cot.get_location_path }}</p>
-                        </div>
-                        <span class="guest-status-pill {{ booking.booking_status }}">{{ booking.get_booking_status_display }}</span>
-                    </div>
-                    <div class="row g-3 mt-1">
-                        <div class="col-sm-6">
-                            <small class="text-muted d-block">Staying Start Date</small>
-                            <strong>{{ booking.booking_from_date }}</strong>
-                        </div>
-                        <div class="col-sm-6">
-                            <small class="text-muted d-block">Submitted</small>
-                            <strong>{{ booking.created_at|date:"d M Y, h:i A" }}</strong>
-                        </div>
-                    </div>
-                    {% if booking.admin_remark %}
-                        <p class="mb-0 mt-3"><strong>Admin Remark:</strong> {{ booking.admin_remark }}</p>
-                    {% endif %}
-                </div>
-            {% empty %}
-                <div class="alert alert-info mb-0">No booking requests available.</div>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="public-card public-card-highlight h-100">
-            <span class="public-badge-soft mb-3">Latest Payment</span>
-            {% if latest_payment %}
-                <div class="guest-payment-card">
-                    <h4 class="h5 mb-3">{{ latest_payment.kind }}</h4>
-                    <ul class="public-list-clean mb-3">
-                        <li><strong>Amount:</strong> Rs. {{ latest_payment.amount }}</li>
-                        <li><strong>Status:</strong> <span class="guest-status-pill {{ latest_payment.status }}">{{ latest_payment.status_display }}</span></li>
-                        <li><strong>UTR:</strong> {{ latest_payment.utr|default:"-" }}</li>
-                        <li><strong>Submitted At:</strong> {{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</li>
-                        <li><strong>For:</strong> {{ latest_payment.location }}</li>
-                    </ul>
-                    {% if latest_payment.screenshot %}
-                        <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="public-qr-image">
-                    {% endif %}
-                </div>
-            {% else %}
-                <div class="alert alert-info mb-0">No payment record is available yet.</div>
-            {% endif %}
-        </div>
-    </div>
-</div>
+</section>
 {% endblock %}

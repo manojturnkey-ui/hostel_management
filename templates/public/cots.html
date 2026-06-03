@@ -1,26 +1,63 @@
 {% extends "layouts/public_base.html" %}
+{% load static %}
+
 {% block content %}
-<div class="row g-4 mt-2">
-    {% for cot in cots %}
-        <div class="col-md-6 col-lg-4">
-            <div class="public-card public-card-highlight h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="badge bg-{{ cot.status_badge_class }}">{{ cot.status|title }}</span>
-                    <strong>Cot {{ cot.cot_number }}</strong>
+<section class="tg-listing-area pt-120 pb-90">
+    <div class="container">
+        <div class="row justify-content-between align-items-end mb-50">
+            <div class="col-lg-8">
+                <div class="tg-section-title-box">
+                    <span class="tg-section-subtitle">Room Selection</span>
+                    <h2 class="tg-section-title">{{ room.full_label }}</h2>
+                    <p class="hostel-section-copy mb-0">Check the live status of each cot in this room before you submit your booking request.</p>
                 </div>
-                {% if cot.status == cot_available %}
-                    <p class="mb-2"><strong>Price:</strong> Rs. {{ cot.cot_price }}</p>
-                    <p class="mb-2"><strong>Deposit:</strong> Rs. {{ cot.security_deposit }}</p>
-                    <p class="public-card-subtitle">{{ cot.public_status_text }}</p>
-                    <a href="{% url 'public_booking_create' cot.pk %}" class="btn btn-dark public-action w-100">Book Now</a>
-                {% else %}
-                    <p class="mb-2 public-card-subtitle">{{ cot.public_status_text }}</p>
-                    <button class="btn btn-outline-secondary w-100" disabled>{{ cot.public_status_text }}</button>
-                {% endif %}
+            </div>
+            <div class="col-lg-4">
+                <div class="hostel-mini-note">Room path: {{ room.floor.section.building.area.area_name }} / {{ room.floor.section.building.building_name }} / {{ room.floor.section.section_name }} / {{ room.floor.floor_name }}</div>
             </div>
         </div>
-    {% empty %}
-        <div class="col-12"><div class="alert alert-info public-empty-state">No cots available in this room.</div></div>
-    {% endfor %}
-</div>
+        <div class="row">
+            {% for cot in cots %}
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="tg-listing-item tg-listing-item-three mb-30 hostel-listing-card hostel-cot-card hostel-cot-{{ cot.status }}">
+                        <div class="tg-listing-thumb tg-fix">
+                            <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '1' '2' '3' '4' '5' '6' %}.jpg" alt="Cot {{ cot.cot_number }}">
+                            <div class="hostel-floating-pill">{{ cot.get_status_display }}</div>
+                        </div>
+                        <div class="tg-listing-content">
+                            <div class="tg-listing-top d-flex align-items-center justify-content-between">
+                                <span class="tg-listing-location"><i class="fa-solid fa-bed"></i>Cot {{ cot.cot_number }}</span>
+                                <span class="tg-listing-rating">Rs. {{ cot.cot_price }}</span>
+                            </div>
+                            <h4 class="tg-listing-title">Room {{ room.room_number }} / Cot {{ cot.cot_number }}</h4>
+                            <p class="hostel-card-copy">{{ cot.public_status_text }}</p>
+                            <div class="hostel-cot-meta">
+                                <span><strong>Monthly Rent:</strong> Rs. {{ cot.cot_price }}</span>
+                                <span><strong>Deposit:</strong> Rs. {{ cot.security_deposit }}</span>
+                            </div>
+                            <div class="tg-listing-bottom d-flex justify-content-between align-items-center">
+                                <div class="tg-listing-price">
+                                    <span>Status</span>
+                                    <strong>{{ cot.get_status_display }}</strong>
+                                </div>
+                                {% if cot.status == cot_available %}
+                                    <a class="tg-btn-border" href="{% url 'public_booking_create' cot.pk %}">Book Now <i class="fa-solid fa-arrow-right-long"></i></a>
+                                {% else %}
+                                    <span class="hostel-disabled-action">{{ cot.public_status_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="hostel-empty-panel text-center">
+                        <h4>No cots available in this room.</h4>
+                        <p class="mb-0">The cot list will appear here once the admin adds inventory for this room.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}

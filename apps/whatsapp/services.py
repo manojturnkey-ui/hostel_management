@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from pathlib import Path
 from string import Formatter
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from config.settings import env
+from config.settings import BASE_DIR, env
 
 from .models import WhatsAppLog, WhatsAppLogStatusChoices, WhatsAppMessageTemplate, WhatsAppSetting
 
@@ -63,9 +64,30 @@ def ensure_default_templates() -> None:
         )
 
 
+def read_env_file(path: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    if not path.exists():
+        return values
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        values[key.strip()] = value.strip().strip("'").strip('"')
+    return values
+
+
+def get_local_scan_folder_env() -> dict[str, str]:
+    primary_path = BASE_DIR / "whatsapp_scan" / "whatsapp scan" / ".env"
+    fallback_path = BASE_DIR / "whatsapp_scan" / "whatsapp scan" / ".env.example"
+    return read_env_file(primary_path) or read_env_file(fallback_path)
+
+
 def get_active_setting() -> WhatsAppSetting | None:
-    service_url = (env("WHATSAPP_SCAN_BASE_URL", "") or "").strip().rstrip("/")
-    api_key = env("WHATSAPP_SCAN_API_KEY", "") or ""
+    local_scan_env = get_local_scan_folder_env()
+    port = local_scan_env.get("PORT", "3001")
+    service_url = (env("WHATSAPP_SCAN_BASE_URL", "") or f"http://127.0.0.1:{port}").strip().rstrip("/")
+    api_key = (env("WHATSAPP_SCAN_API_KEY", "") or local_scan_env.get("WHATSAPP_SCAN_API_KEY", "")).strip()
     if not service_url or not api_key:
         return None
 
@@ -73,8 +95,8 @@ def get_active_setting() -> WhatsAppSetting | None:
         service_name="Integrated WhatsApp Scan",
         service_url=service_url,
         api_key=api_key,
-        default_country_code=env("WHATSAPP_SCAN_DEFAULT_COUNTRY_CODE", "91") or "91",
-        session_name=env("WHATSAPP_SCAN_SESSION_NAME", "") or "",
+        default_country_code=env("WHATSAPP_SCAN_DEFAULT_COUNTRY_CODE", local_scan_env.get("DEFAULT_COUNTRY_CODE", "91")) or "91",
+        session_name=env("WHATSAPP_SCAN_SESSION_NAME", local_scan_env.get("SESSION_NAME", "")) or "",
         is_active=True,
     )
     fallback.pk = None

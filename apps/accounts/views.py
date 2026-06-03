@@ -170,24 +170,26 @@ class DashboardView(PanelTemplateView):
         context["dashboard_cards"] = [
             {"label": "Total Areas", "value": Area.objects.count(), "icon": "iconoir-map", "theme": "sunrise"},
             {"label": "Total Buildings", "value": Building.objects.count(), "icon": "iconoir-building", "theme": "azure"},
-            {"label": "Total Rooms", "value": Room.objects.count(), "icon": "iconoir-home", "theme": "peach"},
-            {"label": "Total Cots", "value": Cot.objects.count(), "icon": "iconoir-bed", "theme": "violet"},
-            {"label": "Available Cots", "value": Cot.objects.filter(status=CotStatusChoices.AVAILABLE).count(), "icon": "iconoir-check-circle", "theme": "mint"},
-            {"label": "Occupied Cots", "value": Cot.objects.filter(status=CotStatusChoices.OCCUPIED).count(), "icon": "iconoir-user", "theme": "rose"},
+            {"label": "Total Sections / Wings", "value": Section.objects.count(), "icon": "iconoir-view-columns-3", "theme": "peach"},
+            {"label": "Total Floors", "value": Floor.objects.count(), "icon": "iconoir-multiple-pages", "theme": "violet"},
+            {"label": "Total Rooms", "value": Room.objects.count(), "icon": "iconoir-home", "theme": "mint"},
+            {"label": "Total Cots", "value": Cot.objects.count(), "icon": "iconoir-bed", "theme": "rose"},
+            {"label": "Available Cots", "value": Cot.objects.filter(status=CotStatusChoices.AVAILABLE).count(), "icon": "iconoir-check-circle", "theme": "amber"},
+            {"label": "Occupied Cots", "value": Cot.objects.filter(status=CotStatusChoices.OCCUPIED).count(), "icon": "iconoir-user", "theme": "ocean"},
             {
                 "label": "Pending Bookings",
                 "value": Booking.objects.filter(booking_status=BookingStatusChoices.PENDING_ADMIN_CONFIRMATION).count(),
                 "icon": "iconoir-clock",
-                "theme": "amber",
+                "theme": "emerald",
             },
-            {"label": "Pending Payments", "value": pending_payments + pending_bill_payments, "icon": "iconoir-wallet", "theme": "ocean"},
+            {"label": "Pending Payments", "value": pending_payments + pending_bill_payments, "icon": "iconoir-wallet", "theme": "coral"},
             {
                 "label": "Confirmed Bookings",
                 "value": Booking.objects.filter(booking_status=BookingStatusChoices.CONFIRMED).count(),
                 "icon": "iconoir-check",
-                "theme": "emerald",
+                "theme": "sunrise",
             },
-            {"label": "Monthly Due Guests", "value": monthly_due_students, "icon": "iconoir-dollar-circle", "theme": "coral"},
+            {"label": "Monthly Due Guests", "value": monthly_due_students, "icon": "iconoir-dollar-circle", "theme": "azure"},
         ]
 
         areas = Area.objects.order_by("area_name")

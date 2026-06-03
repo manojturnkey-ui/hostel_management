@@ -1,49 +1,74 @@
 {% extends "layouts/public_base.html" %}
+
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-lg-8">
-        <div class="public-card text-center public-card-highlight">
-            <div class="mb-3"><i class="iconoir-check-circle fs-1 text-success"></i></div>
-            <h2 class="mb-3">Your booking request is submitted.</h2>
-            <p class="lead text-muted">Admin will verify payment and confirm your cot.</p>
-
-            {% if guest_credentials %}
-                <div class="public-credentials mt-4 text-start">
-                    <h4 class="mb-3">Guest Login Details</h4>
-                    <p class="mb-3">These credentials are created for <strong>{{ guest_credentials.guest_name }}</strong>. Use them to check booking approval, stay details, and your latest payment.</p>
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="credential-pill">Username: {{ guest_credentials.username }}</span>
-                        <span class="credential-pill">Password: {{ guest_credentials.password }}</span>
+<section class="pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10">
+                <div class="hostel-success-card text-center">
+                    <div class="hostel-success-icon">
+                        <i class="fa-solid fa-circle-check"></i>
                     </div>
-                    <p class="mb-2"><strong>Guest Login URL:</strong></p>
-                    <a href="{{ guest_login_url }}" class="btn btn-dark public-action">{{ guest_login_url }}</a>
-                </div>
-            {% endif %}
+                    <span class="tg-section-subtitle">Booking Submitted</span>
+                    <h2>Your booking request is submitted.</h2>
+                    <p class="hostel-section-copy">Admin will verify your payment and confirm your cot after review.</p>
 
-            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
-                {% if guest_credentials %}
-                    <a href="{% url 'guest_login' %}" class="btn btn-dark">Open Guest Login</a>
-                {% endif %}
-                <a href="{% url 'public_home' %}" class="btn btn-outline-secondary">Back to Home</a>
+                    {% if guest_credentials %}
+                        <div class="hostel-credentials-panel text-start">
+                            <h4>Guest Login Details</h4>
+                            <p>These credentials are created for <strong>{{ guest_credentials.guest_name }}</strong>. Use them to check booking approval, stay details, and your latest payment.</p>
+                            <div class="hostel-credentials-grid">
+                                <div class="hostel-credential-pill">
+                                    <span>Username</span>
+                                    <strong>{{ guest_credentials.username }}</strong>
+                                </div>
+                                <div class="hostel-credential-pill">
+                                    <span>Password</span>
+                                    <strong>{{ guest_credentials.password }}</strong>
+                                </div>
+                            </div>
+                            <div class="hostel-login-link-box">
+                                <span>Guest Login URL</span>
+                                <a href="{{ guest_login_url }}">{{ guest_login_url }}</a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="hostel-success-actions">
+                        {% if guest_credentials %}
+                            <a href="{% url 'guest_login' %}" class="tg-btn-border hostel-submit-btn">Open Guest Login <i class="fa-solid fa-arrow-right-long"></i></a>
+                        {% endif %}
+                        <a href="{% url 'public_home' %}" class="tg-btn-border hostel-secondary-btn">Back to Home</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 {% if guest_credentials %}
 <div class="modal fade" id="guestCredentialModal" tabindex="-1" aria-labelledby="guestCredentialLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 overflow-hidden">
-            <div class="modal-header border-0 pb-0">
+        <div class="modal-content hostel-modal-card">
+            <div class="modal-header border-0">
                 <h5 class="modal-title" id="guestCredentialLabel">Guest Portal Login</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pt-2">
-                <p class="text-muted">Keep these credentials safe. You can use them immediately after the admin reviews your booking.</p>
-                <div class="public-credentials">
-                    <p class="mb-2"><strong>Username:</strong> {{ guest_credentials.username }}</p>
-                    <p class="mb-2"><strong>Password:</strong> {{ guest_credentials.password }}</p>
-                    <p class="mb-0"><strong>Login URL:</strong><br><a href="{{ guest_login_url }}">{{ guest_login_url }}</a></p>
+            <div class="modal-body">
+                <p class="hostel-section-copy">Keep these credentials safe. You can use them as soon as you want to check your booking status.</p>
+                <div class="hostel-credentials-panel mb-0">
+                    <div class="hostel-credential-pill mb-15">
+                        <span>Username</span>
+                        <strong>{{ guest_credentials.username }}</strong>
+                    </div>
+                    <div class="hostel-credential-pill mb-15">
+                        <span>Password</span>
+                        <strong>{{ guest_credentials.password }}</strong>
+                    </div>
+                    <div class="hostel-login-link-box">
+                        <span>Login URL</span>
+                        <a href="{{ guest_login_url }}">{{ guest_login_url }}</a>
+                    </div>
                 </div>
             </div>
         </div>
