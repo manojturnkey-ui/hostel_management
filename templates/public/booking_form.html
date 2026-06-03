@@ -57,19 +57,32 @@
             --bs-gutter-y: 6px;
         }
 
-        .hostel-public-body .form-control,
-        .hostel-public-body .form-select {
-            min-height: 36px;
+        .hostel-form-layout .form-control,
+        .hostel-form-layout .form-select {
+            height: 36px !important;
+            min-height: 36px !important;
             border-radius: 12px;
-            padding: 6px 12px;
+            padding: 4px 12px !important;
             font-size: 13px;
-            line-height: 1.25;
+            line-height: 1.2 !important;
         }
 
-        .hostel-public-body input[type="file"].form-control {
+        .hostel-form-layout input[type="file"].form-control {
+            height: 36px !important;
             min-height: 36px;
-            padding-top: 6px;
-            padding-bottom: 6px;
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
+        }
+
+        .hostel-form-layout input[type="date"].form-control,
+        .hostel-form-layout input[type="text"].form-control,
+        .hostel-form-layout input[type="number"].form-control,
+        .hostel-form-layout input[type="tel"].form-control,
+        .hostel-form-layout input[type="email"].form-control,
+        .hostel-form-layout input[type="password"].form-control,
+        .hostel-form-layout select.form-select {
+            height: 36px !important;
+            min-height: 36px !important;
         }
 
         .hostel-submit-btn {
