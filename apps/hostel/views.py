@@ -33,10 +33,16 @@ def _build_filter_collections():
         "buildings": Building.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related("area").order_by("building_name"),
         "sections": Section.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related("building", "building__area").order_by("section_name"),
         "floors": Floor.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related("section", "section__building").order_by("floor_name"),
+        "rooms": Room.objects.filter(status=ActiveStatusChoices.ACTIVE).select_related(
+            "floor",
+            "floor__section",
+            "floor__section__building",
+            "floor__section__building__area",
+        ).order_by("room_number"),
     }
 
 
-def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=None):
+def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=None, room_id=None):
     queryset = Cot.objects.select_related("room__floor__section__building__area").order_by(
         "room__floor__section__building__area__area_name",
         "room__floor__section__building__building_name",
@@ -53,6 +59,8 @@ def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=Non
         queryset = queryset.filter(room__floor__section_id=section_id)
     if floor_id:
         queryset = queryset.filter(room__floor_id=floor_id)
+    if room_id:
+        queryset = queryset.filter(room_id=room_id)
     return queryset
 
 
@@ -372,6 +380,7 @@ class AreaHomeView(TemplateView):
         context["all_buildings"] = filters["buildings"]
         context["all_sections"] = filters["sections"]
         context["all_floors"] = filters["floors"]
+        context["all_rooms"] = filters["rooms"]
         context["top_cots"] = Cot.objects.select_related("room__floor__section__building__area").order_by("-cot_price", "cot_number")[:6]
         context["who_we_are_testimonials"] = _dummy_testimonials()[:2]
         context["guest_testimonials"] = _dummy_testimonials()
@@ -388,7 +397,8 @@ class FeaturePublicView(TemplateView):
         selected_building = _safe_int(self.request.GET.get("building"))
         selected_section = _safe_int(self.request.GET.get("section"))
         selected_floor = _safe_int(self.request.GET.get("floor"))
-        matching_cots = list(_filtered_cots(selected_area, selected_building, selected_section, selected_floor))
+        selected_room = _safe_int(self.request.GET.get("room"))
+        matching_cots = list(_filtered_cots(selected_area, selected_building, selected_section, selected_floor, selected_room))
         context.update(
             {
                 "page_title": "Features",
@@ -397,11 +407,13 @@ class FeaturePublicView(TemplateView):
                 "all_buildings": filters["buildings"],
                 "all_sections": filters["sections"],
                 "all_floors": filters["floors"],
+                "all_rooms": filters["rooms"],
                 "selected_filters": {
                     "area": selected_area,
                     "building": selected_building,
                     "section": selected_section,
                     "floor": selected_floor,
+                    "room": selected_room,
                 },
                 "matching_cots": matching_cots,
                 "room_groups": _group_room_results(matching_cots),
