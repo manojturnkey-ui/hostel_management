@@ -1,132 +1,509 @@
 {% extends "layouts/public_base.html" %}
+{% load static %}
+
+{% block header_theme %}tg-transparent hostel-guest-floating-header{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .hostel-guest-floating-header {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .hostel-guest-floating-header .navigation > li > a,
+        .hostel-guest-floating-header a,
+        .hostel-guest-floating-header .tgmenu__navbar-wrap ul li a,
+        .hostel-guest-floating-header .tg-header-contact-number,
+        .hostel-guest-floating-header .tg-header-contact-number a,
+        .hostel-guest-floating-header .tg-header-contact-number span,
+        .hostel-guest-floating-header .hostel-guest-login-btn,
+        .hostel-guest-floating-header .hostel-guest-login-btn span,
+        .hostel-guest-floating-header .hostel-guest-login-btn i,
+        .hostel-guest-floating-header .hostel-header-contact-label,
+        .hostel-guest-floating-header .hostel-header-contact-stack a,
+        .hostel-guest-floating-header .hostel-header-contact-stack a i,
+        .hostel-guest-floating-header .menu-tigger span {
+            color: #fff !important;
+        }
+
+        .hostel-guest-floating-header.sticky-menu,
+        .hostel-guest-floating-header.header-sticky {
+            background: rgba(255, 255, 255, 0.97) !important;
+            box-shadow: 0 14px 34px rgba(12, 22, 38, 0.12) !important;
+        }
+
+        .hostel-guest-floating-header.sticky-menu .navigation > li > a,
+        .hostel-guest-floating-header.sticky-menu a,
+        .hostel-guest-floating-header.sticky-menu .tgmenu__navbar-wrap ul li a,
+        .hostel-guest-floating-header.sticky-menu .tg-header-contact-number,
+        .hostel-guest-floating-header.sticky-menu .tg-header-contact-number a,
+        .hostel-guest-floating-header.sticky-menu .tg-header-contact-number span,
+        .hostel-guest-floating-header.sticky-menu .hostel-guest-login-btn,
+        .hostel-guest-floating-header.sticky-menu .hostel-guest-login-btn span,
+        .hostel-guest-floating-header.sticky-menu .hostel-guest-login-btn i,
+        .hostel-guest-floating-header.sticky-menu .hostel-header-contact-label,
+        .hostel-guest-floating-header.sticky-menu .hostel-header-contact-stack a,
+        .hostel-guest-floating-header.sticky-menu .hostel-header-contact-stack a i,
+        .hostel-guest-floating-header.sticky-menu .menu-tigger span,
+        .hostel-guest-floating-header.header-sticky .navigation > li > a,
+        .hostel-guest-floating-header.header-sticky a,
+        .hostel-guest-floating-header.header-sticky .tgmenu__navbar-wrap ul li a,
+        .hostel-guest-floating-header.header-sticky .tg-header-contact-number,
+        .hostel-guest-floating-header.header-sticky .tg-header-contact-number a,
+        .hostel-guest-floating-header.header-sticky .tg-header-contact-number span,
+        .hostel-guest-floating-header.header-sticky .hostel-guest-login-btn,
+        .hostel-guest-floating-header.header-sticky .hostel-guest-login-btn span,
+        .hostel-guest-floating-header.header-sticky .hostel-guest-login-btn i,
+        .hostel-guest-floating-header.header-sticky .hostel-header-contact-label,
+        .hostel-guest-floating-header.header-sticky .hostel-header-contact-stack a,
+        .hostel-guest-floating-header.header-sticky .hostel-header-contact-stack a i,
+        .hostel-guest-floating-header.header-sticky .menu-tigger span {
+            color: #111111 !important;
+        }
+
+        .hostel-guest-header-bg {
+            height: 150px;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.18) 100%), url("{% static 'public/tourex/img/hero/tu/banner.jpg' %}");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .hostel-guest-portal {
+            padding-top: 34px;
+            padding-bottom: 56px;
+        }
+
+        .hostel-guest-sidebar,
+        .hostel-guest-panel,
+        .hostel-guest-mini-card {
+            background: #fff;
+            border-radius: 24px;
+            border: 1px solid rgba(22, 32, 50, 0.08);
+            box-shadow: 0 16px 40px rgba(12, 22, 38, 0.08);
+        }
+
+        .hostel-guest-sidebar {
+            padding: 18px;
+            position: sticky;
+            top: 110px;
+        }
+
+        .hostel-guest-panel {
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .hostel-guest-panel:last-child {
+            margin-bottom: 0;
+        }
+
+        .hostel-guest-sidebar-head {
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(22, 32, 50, 0.08);
+        }
+
+        .hostel-guest-sidebar-head h3 {
+            font-size: 20px;
+            line-height: 1.18;
+            margin-bottom: 6px;
+        }
+
+        .hostel-guest-sidebar-head p,
+        .hostel-guest-panel-copy,
+        .hostel-guest-meta,
+        .hostel-guest-mini-card small,
+        .hostel-guest-row span,
+        .hostel-guest-payment-list li span,
+        .hostel-guest-payment-list li strong,
+        .hostel-guest-status-row small,
+        .hostel-guest-status-row strong,
+        .hostel-guest-booking-meta small,
+        .hostel-guest-booking-meta strong {
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .hostel-guest-sidebar-menu {
+            display: grid;
+            gap: 8px;
+        }
+
+        .hostel-guest-sidebar-link,
+        .hostel-guest-sidebar-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            border: 0;
+            background: #f8f9fd;
+            color: #172033;
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .hostel-guest-sidebar-link:hover,
+        .hostel-guest-sidebar-button:hover {
+            background: rgba(94, 44, 237, 0.1);
+            color: #5e2ced;
+        }
+
+        .hostel-guest-sidebar-button.hostel-logout-btn {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b42318;
+        }
+
+        .hostel-guest-content-head {
+            margin-bottom: 18px;
+        }
+
+        .hostel-guest-content-head h2 {
+            font-size: 24px;
+            line-height: 1.15;
+            margin-bottom: 6px;
+        }
+
+        .hostel-guest-content-head p {
+            font-size: 13px;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .hostel-guest-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .hostel-guest-mini-card {
+            padding: 16px;
+        }
+
+        .hostel-guest-mini-card h4 {
+            font-size: 17px;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .hostel-guest-panel-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .hostel-guest-panel-title h3 {
+            font-size: 20px;
+            line-height: 1.18;
+            margin-bottom: 0;
+        }
+
+        .hostel-guest-profile-grid,
+        .hostel-guest-status-grid,
+        .hostel-guest-booking-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .hostel-guest-row,
+        .hostel-guest-status-row {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #f8f9fd;
+        }
+
+        .hostel-guest-row span,
+        .hostel-guest-status-row small,
+        .hostel-guest-payment-list li span {
+            display: block;
+            color: #6d6988;
+            margin-bottom: 3px;
+        }
+
+        .hostel-guest-row strong,
+        .hostel-guest-status-row strong {
+            font-size: 14px;
+            line-height: 1.35;
+            color: #172033;
+        }
+
+        .hostel-guest-status-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .hostel-guest-booking-card {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(22, 32, 50, 0.08);
+            background: #fbfcff;
+            margin-bottom: 12px;
+        }
+
+        .hostel-guest-booking-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .hostel-guest-booking-card h4 {
+            font-size: 18px;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .hostel-guest-booking-card p {
+            font-size: 13px;
+            line-height: 1.45;
+            margin-bottom: 10px;
+        }
+
+        .hostel-guest-payment-list {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .hostel-guest-payment-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(22, 32, 50, 0.08);
+        }
+
+        .hostel-guest-payment-list li:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .hostel-guest-payment-list li strong {
+            font-size: 13px;
+            color: #172033;
+            text-align: right;
+        }
+
+        .hostel-guest-payment-proof-box {
+            margin-top: 10px;
+        }
+
+        .hostel-guest-payment-proof {
+            width: 100%;
+            max-width: 280px;
+            border-radius: 18px;
+            border: 1px solid rgba(22, 32, 50, 0.08);
+        }
+
+        @media (max-width: 1199px) {
+            .hostel-guest-mini-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 991px) {
+            .hostel-guest-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hostel-guest-header-bg {
+                height: 120px;
+            }
+
+            .hostel-guest-portal {
+                padding-top: 22px;
+                padding-bottom: 40px;
+            }
+
+            .hostel-guest-mini-grid,
+            .hostel-guest-profile-grid,
+            .hostel-guest-status-grid,
+            .hostel-guest-booking-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .hostel-guest-panel,
+            .hostel-guest-sidebar,
+            .hostel-guest-mini-card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .hostel-guest-content-head h2 {
+                font-size: 22px;
+            }
+
+            .hostel-guest-panel-title h3,
+            .hostel-guest-sidebar-head h3 {
+                font-size: 18px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block hero_section %}
+<div class="hostel-guest-header-bg"></div>
+{% endblock %}
+
 {% block content %}
-<section class="pt-120 pb-70">
+<section class="hostel-guest-portal">
     <div class="container">
         <div class="row g-4">
-            <div class="col-xl-4 col-lg-5">
-                <div class="hostel-dashboard-card">
-                    <span class="tg-section-subtitle">Guest Profile</span>
-                    <h3>{{ guest.full_name }}</h3>
-                    <ul class="hostel-summary-list hostel-summary-list-spaced">
-                        <li><span>Guest Username</span><strong>{{ guest_login_name }}</strong></li>
-                        <li><span>Mobile</span><strong>{{ guest.mobile_number }}</strong></li>
-                        <li><span>WhatsApp</span><strong>{{ guest.whatsapp_number }}</strong></li>
-                        <li><span>Relative Contact</span><strong>{{ guest.relative_contact_number|default:"-" }}</strong></li>
-                        <li><span>State</span><strong>{{ guest.state }}</strong></li>
-                    </ul>
-                    <div class="hostel-dashboard-actions">
-                        <a href="{% url 'guest_change_password' %}" class="tg-btn-border hostel-secondary-btn">Change Password</a>
+            <div class="col-xl-3 col-lg-4">
+                <aside class="hostel-guest-sidebar">
+                    <div class="hostel-guest-sidebar-head">
+                        <h3>{{ guest.full_name }}</h3>
+                        <p class="mb-0">{{ guest_login_name }}</p>
+                    </div>
+
+                    <nav class="hostel-guest-sidebar-menu">
+                        <a href="#guest-dashboard" class="hostel-guest-sidebar-link"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+                        <a href="#guest-profile" class="hostel-guest-sidebar-link"><i class="fa-solid fa-user"></i>Profile</a>
+                        <a href="#guest-booking-status" class="hostel-guest-sidebar-link"><i class="fa-solid fa-clipboard-check"></i>Booking Status</a>
+                        <a href="#guest-previous-bookings" class="hostel-guest-sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i>Previous Booking</a>
+                        <a href="#guest-payment" class="hostel-guest-sidebar-link"><i class="fa-solid fa-wallet"></i>Payment</a>
+                        <a href="{% url 'guest_change_password' %}" class="hostel-guest-sidebar-link"><i class="fa-solid fa-key"></i>Change Password</a>
                         <form method="post" action="{% url 'guest_logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="tg-btn-border hostel-secondary-btn hostel-danger-btn">Logout</button>
+                            <button type="submit" class="hostel-guest-sidebar-button hostel-logout-btn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
                         </form>
+                    </nav>
+                </aside>
+            </div>
+
+            <div class="col-xl-9 col-lg-8">
+                <div class="hostel-guest-content-head" id="guest-dashboard">
+                    <h2>Guest Dashboard</h2>
+                    <p>Review your live booking progress, latest payment, and current stay details from one compact portal.</p>
+                </div>
+
+                <div class="hostel-guest-mini-grid">
+                    <div class="hostel-guest-mini-card">
+                        <small>Current Booking Status</small>
+                        <h4>{% if highlighted_booking %}{{ highlighted_booking.get_booking_status_display }}{% else %}No Request{% endif %}</h4>
+                    </div>
+                    <div class="hostel-guest-mini-card">
+                        <small>Current Cot</small>
+                        <h4>{% if highlighted_booking %}{{ highlighted_booking.cot.room.room_number }} / {{ highlighted_booking.cot.cot_number }}{% else %}-{% endif %}</h4>
+                    </div>
+                    <div class="hostel-guest-mini-card">
+                        <small>Latest Payment</small>
+                        <h4>{% if latest_payment %}{{ latest_payment.status_display }}{% else %}No Payment{% endif %}</h4>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-8 col-lg-7">
-                <div class="hostel-dashboard-card hostel-dashboard-highlight">
-                    <span class="tg-section-subtitle">Current Stay</span>
+
+                <div class="hostel-guest-panel" id="guest-profile">
+                    <div class="hostel-guest-panel-title">
+                        <h3>Profile</h3>
+                    </div>
+                    <div class="hostel-guest-profile-grid">
+                        <div class="hostel-guest-row"><span>Guest Username</span><strong>{{ guest_login_name }}</strong></div>
+                        <div class="hostel-guest-row"><span>Full Name</span><strong>{{ guest.full_name }}</strong></div>
+                        <div class="hostel-guest-row"><span>Mobile</span><strong>{{ guest.mobile_number }}</strong></div>
+                        <div class="hostel-guest-row"><span>WhatsApp</span><strong>{{ guest.whatsapp_number }}</strong></div>
+                        <div class="hostel-guest-row"><span>Relative Contact</span><strong>{{ guest.relative_contact_number|default:"-" }}</strong></div>
+                        <div class="hostel-guest-row"><span>State</span><strong>{{ guest.state|default:"-" }}</strong></div>
+                    </div>
+                </div>
+
+                <div class="hostel-guest-panel" id="guest-booking-status">
+                    <div class="hostel-guest-panel-title">
+                        <h3>Booking Status</h3>
+                    </div>
                     {% if highlighted_booking %}
-                        <div class="row g-4 align-items-center">
-                            <div class="col-md-7">
-                                <h3>{{ highlighted_booking.cot.room.room_number }} / Cot {{ highlighted_booking.cot.cot_number }}</h3>
-                                <p class="hostel-section-copy">{{ highlighted_booking.cot.get_location_path }}</p>
-                                <div class="hostel-stay-meta">
-                                    <span class="hostel-status-chip {{ highlighted_booking.booking_status }}">{{ highlighted_booking.get_booking_status_display }}</span>
-                                    {% if current_access %}
-                                        <span class="hostel-status-chip {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="hostel-stay-figure">
-                                    <div>
-                                        <small>Stay Start</small>
-                                        <strong>{{ highlighted_booking.booking_from_date }}</strong>
-                                    </div>
-                                    <div>
-                                        <small>Monthly Rent</small>
-                                        <strong>Rs. {{ highlighted_booking.monthly_rent }}</strong>
-                                    </div>
-                                    <div>
-                                        <small>Security Deposit</small>
-                                        <strong>Rs. {{ highlighted_booking.security_deposit }}</strong>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="hostel-guest-status-chips">
+                            <span class="hostel-status-chip {{ highlighted_booking.booking_status }}">{{ highlighted_booking.get_booking_status_display }}</span>
+                            {% if current_access %}
+                                <span class="hostel-status-chip {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span>
+                            {% endif %}
                         </div>
+                        <p class="hostel-guest-panel-copy">{{ highlighted_booking.cot.get_location_path }}</p>
+                        <div class="hostel-guest-status-grid">
+                            <div class="hostel-guest-status-row"><small>Staying Start Date</small><strong>{{ highlighted_booking.booking_from_date }}</strong></div>
+                            <div class="hostel-guest-status-row"><small>Submitted On</small><strong>{{ highlighted_booking.created_at|date:"d M Y, h:i A" }}</strong></div>
+                            <div class="hostel-guest-status-row"><small>Monthly Rent</small><strong>Rs. {{ highlighted_booking.monthly_rent }}</strong></div>
+                            <div class="hostel-guest-status-row"><small>Security Deposit</small><strong>Rs. {{ highlighted_booking.security_deposit }}</strong></div>
+                        </div>
+                        {% if highlighted_booking.admin_remark %}
+                            <div class="hostel-admin-note mt-15">
+                                <strong>Admin Remark:</strong> {{ highlighted_booking.admin_remark }}
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="hostel-empty-panel">
                             <h5>No booking request found yet</h5>
-                            <p class="mb-0">Once you submit a cot booking request, your stay summary will appear here.</p>
+                            <p class="mb-0">Once you submit a cot booking request, the current status will appear here.</p>
                         </div>
                     {% endif %}
                 </div>
-            </div>
-        </div>
 
-        <div class="row g-4 mt-1">
-            <div class="col-xl-7">
-                <div class="hostel-dashboard-card">
-                    <div class="d-flex justify-content-between align-items-center mb-30">
-                        <div>
-                            <span class="tg-section-subtitle">Booking Requests</span>
-                            <h3 class="mb-0">Your Guest Request Timeline</h3>
-                        </div>
+                <div class="hostel-guest-panel" id="guest-previous-bookings">
+                    <div class="hostel-guest-panel-title">
+                        <h3>Previous Booking</h3>
                     </div>
                     {% for booking in guest_bookings %}
-                        <div class="hostel-booking-timeline-card">
-                            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-                                <div>
-                                    <h4>{{ booking.cot.room.room_number }} / Cot {{ booking.cot.cot_number }}</h4>
-                                    <p class="mb-0">{{ booking.cot.get_location_path }}</p>
+                        {% if not highlighted_booking or booking.pk != highlighted_booking.pk %}
+                            <div class="hostel-guest-booking-card">
+                                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                                    <div>
+                                        <h4>{{ booking.cot.room.room_number }} / Cot {{ booking.cot.cot_number }}</h4>
+                                        <p>{{ booking.cot.get_location_path }}</p>
+                                    </div>
+                                    <span class="hostel-status-chip {{ booking.booking_status }}">{{ booking.get_booking_status_display }}</span>
                                 </div>
-                                <span class="hostel-status-chip {{ booking.booking_status }}">{{ booking.get_booking_status_display }}</span>
+                                <div class="hostel-guest-booking-meta">
+                                    <div><small>Start Date</small><strong>{{ booking.booking_from_date }}</strong></div>
+                                    <div><small>Submitted</small><strong>{{ booking.created_at|date:"d M Y, h:i A" }}</strong></div>
+                                </div>
+                                {% if booking.admin_remark %}
+                                    <div class="hostel-admin-note mt-15">
+                                        <strong>Admin Remark:</strong> {{ booking.admin_remark }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="row g-3 mt-2">
-                                <div class="col-md-6">
-                                    <small>Staying Start Date</small>
-                                    <strong>{{ booking.booking_from_date }}</strong>
-                                </div>
-                                <div class="col-md-6">
-                                    <small>Submitted On</small>
-                                    <strong>{{ booking.created_at|date:"d M Y, h:i A" }}</strong>
-                                </div>
-                            </div>
-                            {% if booking.admin_remark %}
-                                <div class="hostel-admin-note">
-                                    <strong>Admin Remark:</strong> {{ booking.admin_remark }}
-                                </div>
-                            {% endif %}
-                        </div>
+                        {% endif %}
                     {% empty %}
                         <div class="hostel-empty-panel">
-                            <h5>No booking requests yet</h5>
-                            <p class="mb-0">Start from the hostel home page to create your first booking request.</p>
+                            <h5>No previous booking yet</h5>
+                            <p class="mb-0">Your earlier guest requests will appear here once more than one booking exists.</p>
                         </div>
                     {% endfor %}
-                </div>
-            </div>
-            <div class="col-xl-5">
-                <div class="hostel-dashboard-card">
-                    <span class="tg-section-subtitle">Latest Payment</span>
-                    <h3>Most Recent Payment Record</h3>
-                    {% if latest_payment %}
-                        <div class="hostel-latest-payment">
-                            <span class="hostel-status-chip {{ latest_payment.status }}">{{ latest_payment.status_display }}</span>
-                            <ul class="hostel-summary-list hostel-summary-list-spaced mt-25">
-                                <li><span>Payment Type</span><strong>{{ latest_payment.kind }}</strong></li>
-                                <li><span>Amount</span><strong>Rs. {{ latest_payment.amount }}</strong></li>
-                                <li><span>UTR</span><strong>{{ latest_payment.utr|default:"-" }}</strong></li>
-                                <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
-                                <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
-                            </ul>
-                            {% if latest_payment.screenshot %}
-                                <div class="hostel-payment-proof-box">
-                                    <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="hostel-payment-proof">
-                                </div>
-                            {% endif %}
+                    {% if guest_bookings and highlighted_booking and guest_bookings|length == 1 %}
+                        <div class="hostel-empty-panel">
+                            <h5>No previous booking yet</h5>
+                            <p class="mb-0">Only your latest booking is available right now.</p>
                         </div>
+                    {% endif %}
+                </div>
+
+                <div class="hostel-guest-panel" id="guest-payment">
+                    <div class="hostel-guest-panel-title">
+                        <h3>Payment</h3>
+                    </div>
+                    {% if latest_payment %}
+                        <span class="hostel-status-chip {{ latest_payment.status }}">{{ latest_payment.status_display }}</span>
+                        <ul class="hostel-guest-payment-list mt-15">
+                            <li><span>Payment Type</span><strong>{{ latest_payment.kind }}</strong></li>
+                            <li><span>Amount</span><strong>Rs. {{ latest_payment.amount }}</strong></li>
+                            <li><span>UTR</span><strong>{{ latest_payment.utr|default:"-" }}</strong></li>
+                            <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
+                            <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
+                        </ul>
+                        {% if latest_payment.screenshot %}
+                            <div class="hostel-guest-payment-proof-box">
+                                <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="hostel-guest-payment-proof">
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="hostel-empty-panel">
                             <h5>No payment record yet</h5>
