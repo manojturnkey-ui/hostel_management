@@ -307,13 +307,24 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
             .prefetch_related("monthly_dues")
             .order_by("-created_at")
         )
+        pending_dashboard_booking = next(
+            (item for item in bookings if item.booking_status == BookingStatusChoices.PENDING_ADMIN_CONFIRMATION),
+            None,
+        )
         current_booking = next((item for item in bookings if item.booking_status == BookingStatusChoices.CONFIRMED), None)
-        latest_booking = bookings[0] if bookings else None
-        highlighted_booking = current_booking or latest_booking
+        latest_verified_booking = next(
+            (item for item in bookings if item.booking_status != BookingStatusChoices.PENDING_ADMIN_CONFIRMATION),
+            None,
+        )
+        booking_status_booking = current_booking or latest_verified_booking
+        excluded_booking_ids = {
+            booking.pk for booking in [pending_dashboard_booking, booking_status_booking] if booking is not None
+        }
+        booking_history = [booking for booking in bookings if booking.pk not in excluded_booking_ids]
         current_access = None
-        if highlighted_booking:
+        if booking_status_booking and booking_status_booking.booking_status == BookingStatusChoices.CONFIRMED:
             try:
-                current_access = highlighted_booking.student_access
+                current_access = booking_status_booking.student_access
             except StudentAccess.DoesNotExist:
                 current_access = None
 
@@ -323,7 +334,9 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
                 "page_description": "Track your booking status, stay details, and latest payment in one place.",
                 "guest": guest,
                 "guest_bookings": bookings,
-                "highlighted_booking": highlighted_booking,
+                "dashboard_pending_booking": pending_dashboard_booking,
+                "booking_status_booking": booking_status_booking,
+                "booking_history": booking_history,
                 "current_access": current_access,
                 "latest_payment": _build_latest_guest_payment(guest),
                 "guest_login_name": self.request.user.username,
