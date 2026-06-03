@@ -231,7 +231,7 @@
                         <div class="hostel-premium-thumb p-relative">
                             <img class="w-100" src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '4' '2' '3' '1' '2' '3' %}.jpg" alt="Premium cot">
                             <span class="hostel-premium-badge">Featured</span>
-                            <a class="hostel-premium-arrow" href="{% url 'public_features' %}" aria-label="View more cots">
+                            <a class="hostel-premium-arrow" href="{% url 'public_booking_create' cot.pk %}" aria-label="Book this cot">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
@@ -254,6 +254,9 @@
                                     <span>Deposit</span>
                                     <strong>Rs. {{ cot.security_deposit }}</strong>
                                 </div>
+                            </div>
+                            <div class="hostel-premium-action mt-15">
+                                <a class="tg-btn tg-btn-hover hostel-premium-book-btn" href="{% url 'public_booking_create' cot.pk %}">Book Now <i class="fa-solid fa-arrow-right-long"></i></a>
                             </div>
                         </div>
                     </div>
