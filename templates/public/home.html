@@ -18,9 +18,72 @@
                         </span>
                         <span class="tg-hero-tu-avatar-text d-inline-block mr-10 p-relative mb-15">
                             Guest-friendly hostel booking <br>with QR payment and live cot status
+                            <span class="tg-hero-tu-svg d-none d-md-block">
+                                <svg width="176" height="47" viewBox="0 0 176 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.2 7.99977C0.2 10.6507 2.34903 12.7998 5 12.7998C7.65097 12.7998 9.8 10.6507 9.8 7.99977C9.8 5.3488 7.65097 3.19977 5 3.19977C2.34903 3.19977 0.2 5.3488 0.2 7.99977ZM171.655 46.8313C172.114 47.022 172.64 46.8045 172.831 46.3454L175.938 38.8651C176.129 38.4061 175.911 37.8794 175.452 37.6887C174.993 37.4981 174.467 37.7156 174.276 38.1746L171.514 44.8238L164.865 42.0618C164.406 41.8712 163.879 42.0887 163.689 42.5477C163.498 43.0068 163.715 43.5335 164.174 43.7241L171.655 46.8313Z" fill="white"/>
+                                    <path d="M5 8C48 2 110 1 172 46" stroke="white" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/>
+                                </svg>
+                            </span>
                         </span>
                     </div>
-                    <div class="hostel-hero-stats row justify-content-center wow fadeInUp" data-wow-delay=".5s" data-wow-duration="1.1s">
+                    <div class="tg-booking-form-item tg-booking-tu-wrapper hostel-home-search mt-25 wow fadeInUp" data-wow-delay=".5s" data-wow-duration="1.2s">
+                        <form method="get" action="{% url 'public_features' %}" id="hostelFilterForm">
+                            <div class="tg-booking-form-input-group d-flex align-items-end justify-content-between hostel-home-search-grid">
+                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15">
+                                    <span class="tg-booking-form-title">Area:</span>
+                                    <div class="hostel-home-select-wrap">
+                                        <span class="hostel-home-select-icon"><i class="fa-solid fa-location-dot"></i></span>
+                                        <select name="area" id="filterArea" class="hostel-home-search-select">
+                                            <option value="">All Areas</option>
+                                            {% for area in all_areas %}
+                                                <option value="{{ area.pk }}">{{ area.area_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15">
+                                    <span class="tg-booking-form-title">Building:</span>
+                                    <div class="hostel-home-select-wrap">
+                                        <span class="hostel-home-select-icon"><i class="fa-solid fa-building"></i></span>
+                                        <select name="building" id="filterBuilding" class="hostel-home-search-select">
+                                            <option value="">All Buildings</option>
+                                            {% for building in all_buildings %}
+                                                <option value="{{ building.pk }}" data-area="{{ building.area_id }}">{{ building.building_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15">
+                                    <span class="tg-booking-form-title">Section / Wing:</span>
+                                    <div class="hostel-home-select-wrap">
+                                        <span class="hostel-home-select-icon"><i class="fa-solid fa-layer-group"></i></span>
+                                        <select name="section" id="filterSection" class="hostel-home-search-select">
+                                            <option value="">All Sections</option>
+                                            {% for section in all_sections %}
+                                                <option value="{{ section.pk }}" data-building="{{ section.building_id }}">{{ section.section_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15">
+                                    <span class="tg-booking-form-title">Floor:</span>
+                                    <div class="hostel-home-select-wrap">
+                                        <span class="hostel-home-select-icon"><i class="fa-solid fa-stairs"></i></span>
+                                        <select name="floor" id="filterFloor" class="hostel-home-search-select">
+                                            <option value="">All Floors</option>
+                                            {% for floor in all_floors %}
+                                                <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}">{{ floor.floor_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="tg-booking-form-btn hostel-home-search-btn">
+                                    <button type="submit" class="tg-btn tg-btn-hover hostel-search-submit">Search <i class="fa-solid fa-magnifying-glass"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="hostel-hero-stats row justify-content-center wow fadeInUp" data-wow-delay=".55s" data-wow-duration="1.1s">
                         <div class="col-md-4 col-sm-6">
                             <div class="hostel-hero-stat-card">
                                 <h4>{{ areas|length }}</h4>
@@ -39,64 +102,6 @@
                                 <p>Portal Access</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="tg-booking-form-item tg-booking-tu-wrapper mt-15 wow fadeInUp" data-wow-delay=".5s" data-wow-duration="1.2s">
-                        <form method="get" action="{% url 'public_features' %}" id="hostelFilterForm">
-                            <div class="tg-booking-form-input-group d-flex align-items-end justify-content-between hostel-search-grid">
-                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15 mb-10">
-                                    <span class="tg-booking-form-title">Area:</span>
-                                    <div class="hostel-select-field">
-                                        <span class="hostel-select-icon"><i class="fa-solid fa-location-dot"></i></span>
-                                        <select name="area" id="filterArea" class="hostel-search-select">
-                                            <option value="">All Areas</option>
-                                            {% for area in all_areas %}
-                                                <option value="{{ area.pk }}">{{ area.area_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15 mb-10">
-                                    <span class="tg-booking-form-title">Building:</span>
-                                    <div class="hostel-select-field">
-                                        <span class="hostel-select-icon"><i class="fa-solid fa-building"></i></span>
-                                        <select name="building" id="filterBuilding" class="hostel-search-select">
-                                            <option value="">All Buildings</option>
-                                            {% for building in all_buildings %}
-                                                <option value="{{ building.pk }}" data-area="{{ building.area_id }}">{{ building.building_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15 mb-10">
-                                    <span class="tg-booking-form-title">Section / Wing:</span>
-                                    <div class="hostel-select-field">
-                                        <span class="hostel-select-icon"><i class="fa-solid fa-layer-group"></i></span>
-                                        <select name="section" id="filterSection" class="hostel-search-select">
-                                            <option value="">All Sections</option>
-                                            {% for section in all_sections %}
-                                                <option value="{{ section.pk }}" data-building="{{ section.building_id }}">{{ section.section_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15 mb-10">
-                                    <span class="tg-booking-form-title">Floor:</span>
-                                    <div class="hostel-select-field">
-                                        <span class="hostel-select-icon"><i class="fa-solid fa-stairs"></i></span>
-                                        <select name="floor" id="filterFloor" class="hostel-search-select">
-                                            <option value="">All Floors</option>
-                                            {% for floor in all_floors %}
-                                                <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}">{{ floor.floor_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="tg-booking-form-btn mb-10">
-                                    <button type="submit" class="tg-btn tg-btn-hover hostel-search-submit">Search Rooms & Cots</button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
