@@ -99,6 +99,14 @@
             margin-bottom: 0;
         }
 
+        .hostel-guest-tab-panel {
+            display: none;
+        }
+
+        .hostel-guest-tab-panel.is-active {
+            display: block;
+        }
+
         .hostel-guest-sidebar-head {
             padding-bottom: 14px;
             margin-bottom: 14px;
@@ -146,6 +154,11 @@
             font-weight: 600;
             text-align: left;
             transition: all 0.2s ease;
+        }
+
+        .hostel-guest-sidebar-link.is-active {
+            background: rgba(94, 44, 237, 0.12);
+            color: #5e2ced;
         }
 
         .hostel-guest-sidebar-link:hover,
@@ -367,11 +380,11 @@
                     </div>
 
                     <nav class="hostel-guest-sidebar-menu">
-                        <a href="#guest-dashboard" class="hostel-guest-sidebar-link"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
-                        <a href="#guest-profile" class="hostel-guest-sidebar-link"><i class="fa-solid fa-user"></i>Profile</a>
-                        <a href="#guest-booking-status" class="hostel-guest-sidebar-link"><i class="fa-solid fa-clipboard-check"></i>Booking Status</a>
-                        <a href="#guest-previous-bookings" class="hostel-guest-sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i>Previous Booking</a>
-                        <a href="#guest-payment" class="hostel-guest-sidebar-link"><i class="fa-solid fa-wallet"></i>Payment</a>
+                        <a href="#guest-dashboard" class="hostel-guest-sidebar-link is-active" data-section="guest-dashboard-panel"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+                        <a href="#guest-profile" class="hostel-guest-sidebar-link" data-section="guest-profile-panel"><i class="fa-solid fa-user"></i>Profile</a>
+                        <a href="#guest-booking-status" class="hostel-guest-sidebar-link" data-section="guest-booking-status-panel"><i class="fa-solid fa-clipboard-check"></i>Booking Status</a>
+                        <a href="#guest-previous-bookings" class="hostel-guest-sidebar-link" data-section="guest-previous-bookings-panel"><i class="fa-solid fa-clock-rotate-left"></i>Previous Booking</a>
+                        <a href="#guest-payment" class="hostel-guest-sidebar-link" data-section="guest-payment-panel"><i class="fa-solid fa-wallet"></i>Payment</a>
                         <a href="{% url 'guest_change_password' %}" class="hostel-guest-sidebar-link"><i class="fa-solid fa-key"></i>Change Password</a>
                         <form method="post" action="{% url 'guest_logout' %}">
                             {% csrf_token %}
@@ -382,137 +395,184 @@
             </div>
 
             <div class="col-xl-9 col-lg-8">
-                <div class="hostel-guest-content-head" id="guest-dashboard">
-                    <h2>Guest Dashboard</h2>
-                    <p>Review your live booking progress, latest payment, and current stay details from one compact portal.</p>
-                </div>
+                <div id="guest-dashboard-panel" class="hostel-guest-tab-panel is-active">
+                    <div class="hostel-guest-content-head" id="guest-dashboard">
+                        <h2>Guest Dashboard</h2>
+                        <p>Review your live booking progress, latest payment, and current stay details from one compact portal.</p>
+                    </div>
 
-                <div class="hostel-guest-mini-grid">
-                    <div class="hostel-guest-mini-card">
-                        <small>Current Booking Status</small>
-                        <h4>{% if highlighted_booking %}{{ highlighted_booking.get_booking_status_display }}{% else %}No Request{% endif %}</h4>
-                    </div>
-                    <div class="hostel-guest-mini-card">
-                        <small>Current Cot</small>
-                        <h4>{% if highlighted_booking %}{{ highlighted_booking.cot.room.room_number }} / {{ highlighted_booking.cot.cot_number }}{% else %}-{% endif %}</h4>
-                    </div>
-                    <div class="hostel-guest-mini-card">
-                        <small>Latest Payment</small>
-                        <h4>{% if latest_payment %}{{ latest_payment.status_display }}{% else %}No Payment{% endif %}</h4>
-                    </div>
-                </div>
-
-                <div class="hostel-guest-panel" id="guest-profile">
-                    <div class="hostel-guest-panel-title">
-                        <h3>Profile</h3>
-                    </div>
-                    <div class="hostel-guest-profile-grid">
-                        <div class="hostel-guest-row"><span>Guest Username</span><strong>{{ guest_login_name }}</strong></div>
-                        <div class="hostel-guest-row"><span>Full Name</span><strong>{{ guest.full_name }}</strong></div>
-                        <div class="hostel-guest-row"><span>Mobile</span><strong>{{ guest.mobile_number }}</strong></div>
-                        <div class="hostel-guest-row"><span>WhatsApp</span><strong>{{ guest.whatsapp_number }}</strong></div>
-                        <div class="hostel-guest-row"><span>Relative Contact</span><strong>{{ guest.relative_contact_number|default:"-" }}</strong></div>
-                        <div class="hostel-guest-row"><span>State</span><strong>{{ guest.state|default:"-" }}</strong></div>
-                    </div>
-                </div>
-
-                <div class="hostel-guest-panel" id="guest-booking-status">
-                    <div class="hostel-guest-panel-title">
-                        <h3>Booking Status</h3>
-                    </div>
-                    {% if highlighted_booking %}
-                        <div class="hostel-guest-status-chips">
-                            <span class="hostel-status-chip {{ highlighted_booking.booking_status }}">{{ highlighted_booking.get_booking_status_display }}</span>
-                            {% if current_access %}
-                                <span class="hostel-status-chip {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span>
-                            {% endif %}
+                    <div class="hostel-guest-mini-grid">
+                        <div class="hostel-guest-mini-card">
+                            <small>Current Booking Status</small>
+                            <h4>{% if highlighted_booking %}{{ highlighted_booking.get_booking_status_display }}{% else %}No Request{% endif %}</h4>
                         </div>
-                        <p class="hostel-guest-panel-copy">{{ highlighted_booking.cot.get_location_path }}</p>
-                        <div class="hostel-guest-status-grid">
-                            <div class="hostel-guest-status-row"><small>Staying Start Date</small><strong>{{ highlighted_booking.booking_from_date }}</strong></div>
-                            <div class="hostel-guest-status-row"><small>Submitted On</small><strong>{{ highlighted_booking.created_at|date:"d M Y, h:i A" }}</strong></div>
-                            <div class="hostel-guest-status-row"><small>Monthly Rent</small><strong>Rs. {{ highlighted_booking.monthly_rent }}</strong></div>
-                            <div class="hostel-guest-status-row"><small>Security Deposit</small><strong>Rs. {{ highlighted_booking.security_deposit }}</strong></div>
+                        <div class="hostel-guest-mini-card">
+                            <small>Current Cot</small>
+                            <h4>{% if highlighted_booking %}{{ highlighted_booking.cot.room.room_number }} / {{ highlighted_booking.cot.cot_number }}{% else %}-{% endif %}</h4>
                         </div>
-                        {% if highlighted_booking.admin_remark %}
-                            <div class="hostel-admin-note mt-15">
-                                <strong>Admin Remark:</strong> {{ highlighted_booking.admin_remark }}
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        <div class="hostel-empty-panel">
-                            <h5>No booking request found yet</h5>
-                            <p class="mb-0">Once you submit a cot booking request, the current status will appear here.</p>
+                        <div class="hostel-guest-mini-card">
+                            <small>Latest Payment</small>
+                            <h4>{% if latest_payment %}{{ latest_payment.status_display }}{% else %}No Payment{% endif %}</h4>
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
 
-                <div class="hostel-guest-panel" id="guest-previous-bookings">
-                    <div class="hostel-guest-panel-title">
-                        <h3>Previous Booking</h3>
+                <div id="guest-profile-panel" class="hostel-guest-tab-panel">
+                    <div class="hostel-guest-panel" id="guest-profile">
+                        <div class="hostel-guest-panel-title">
+                            <h3>Profile</h3>
+                        </div>
+                        <div class="hostel-guest-profile-grid">
+                            <div class="hostel-guest-row"><span>Guest Username</span><strong>{{ guest_login_name }}</strong></div>
+                            <div class="hostel-guest-row"><span>Full Name</span><strong>{{ guest.full_name }}</strong></div>
+                            <div class="hostel-guest-row"><span>Mobile</span><strong>{{ guest.mobile_number }}</strong></div>
+                            <div class="hostel-guest-row"><span>WhatsApp</span><strong>{{ guest.whatsapp_number }}</strong></div>
+                            <div class="hostel-guest-row"><span>Relative Contact</span><strong>{{ guest.relative_contact_number|default:"-" }}</strong></div>
+                            <div class="hostel-guest-row"><span>State</span><strong>{{ guest.state|default:"-" }}</strong></div>
+                        </div>
                     </div>
-                    {% for booking in guest_bookings %}
-                        {% if not highlighted_booking or booking.pk != highlighted_booking.pk %}
-                            <div class="hostel-guest-booking-card">
-                                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-                                    <div>
-                                        <h4>{{ booking.cot.room.room_number }} / Cot {{ booking.cot.cot_number }}</h4>
-                                        <p>{{ booking.cot.get_location_path }}</p>
-                                    </div>
-                                    <span class="hostel-status-chip {{ booking.booking_status }}">{{ booking.get_booking_status_display }}</span>
-                                </div>
-                                <div class="hostel-guest-booking-meta">
-                                    <div><small>Start Date</small><strong>{{ booking.booking_from_date }}</strong></div>
-                                    <div><small>Submitted</small><strong>{{ booking.created_at|date:"d M Y, h:i A" }}</strong></div>
-                                </div>
-                                {% if booking.admin_remark %}
-                                    <div class="hostel-admin-note mt-15">
-                                        <strong>Admin Remark:</strong> {{ booking.admin_remark }}
-                                    </div>
+                </div>
+
+                <div id="guest-booking-status-panel" class="hostel-guest-tab-panel">
+                    <div class="hostel-guest-panel" id="guest-booking-status">
+                        <div class="hostel-guest-panel-title">
+                            <h3>Booking Status</h3>
+                        </div>
+                        {% if highlighted_booking %}
+                            <div class="hostel-guest-status-chips">
+                                <span class="hostel-status-chip {{ highlighted_booking.booking_status }}">{{ highlighted_booking.get_booking_status_display }}</span>
+                                {% if current_access %}
+                                    <span class="hostel-status-chip {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span>
                                 {% endif %}
                             </div>
-                        {% endif %}
-                    {% empty %}
-                        <div class="hostel-empty-panel">
-                            <h5>No previous booking yet</h5>
-                            <p class="mb-0">Your earlier guest requests will appear here once more than one booking exists.</p>
-                        </div>
-                    {% endfor %}
-                    {% if guest_bookings and highlighted_booking and guest_bookings|length == 1 %}
-                        <div class="hostel-empty-panel">
-                            <h5>No previous booking yet</h5>
-                            <p class="mb-0">Only your latest booking is available right now.</p>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="hostel-guest-panel" id="guest-payment">
-                    <div class="hostel-guest-panel-title">
-                        <h3>Payment</h3>
-                    </div>
-                    {% if latest_payment %}
-                        <span class="hostel-status-chip {{ latest_payment.status }}">{{ latest_payment.status_display }}</span>
-                        <ul class="hostel-guest-payment-list mt-15">
-                            <li><span>Payment Type</span><strong>{{ latest_payment.kind }}</strong></li>
-                            <li><span>Amount</span><strong>Rs. {{ latest_payment.amount }}</strong></li>
-                            <li><span>UTR</span><strong>{{ latest_payment.utr|default:"-" }}</strong></li>
-                            <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
-                            <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
-                        </ul>
-                        {% if latest_payment.screenshot %}
-                            <div class="hostel-guest-payment-proof-box">
-                                <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="hostel-guest-payment-proof">
+                            <p class="hostel-guest-panel-copy">{{ highlighted_booking.cot.get_location_path }}</p>
+                            <div class="hostel-guest-status-grid">
+                                <div class="hostel-guest-status-row"><small>Staying Start Date</small><strong>{{ highlighted_booking.booking_from_date }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Submitted On</small><strong>{{ highlighted_booking.created_at|date:"d M Y, h:i A" }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Monthly Rent</small><strong>Rs. {{ highlighted_booking.monthly_rent }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Security Deposit</small><strong>Rs. {{ highlighted_booking.security_deposit }}</strong></div>
+                            </div>
+                            {% if highlighted_booking.admin_remark %}
+                                <div class="hostel-admin-note mt-15">
+                                    <strong>Admin Remark:</strong> {{ highlighted_booking.admin_remark }}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="hostel-empty-panel">
+                                <h5>No booking request found yet</h5>
+                                <p class="mb-0">Once you submit a cot booking request, the current status will appear here.</p>
                             </div>
                         {% endif %}
-                    {% else %}
-                        <div class="hostel-empty-panel">
-                            <h5>No payment record yet</h5>
-                            <p class="mb-0">Your latest booking or rent payment will appear here after submission.</p>
+                    </div>
+                </div>
+
+                <div id="guest-previous-bookings-panel" class="hostel-guest-tab-panel">
+                    <div class="hostel-guest-panel" id="guest-previous-bookings">
+                        <div class="hostel-guest-panel-title">
+                            <h3>Previous Booking</h3>
                         </div>
-                    {% endif %}
+                        {% for booking in guest_bookings %}
+                            {% if not highlighted_booking or booking.pk != highlighted_booking.pk %}
+                                <div class="hostel-guest-booking-card">
+                                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                                        <div>
+                                            <h4>{{ booking.cot.room.room_number }} / Cot {{ booking.cot.cot_number }}</h4>
+                                            <p>{{ booking.cot.get_location_path }}</p>
+                                        </div>
+                                        <span class="hostel-status-chip {{ booking.booking_status }}">{{ booking.get_booking_status_display }}</span>
+                                    </div>
+                                    <div class="hostel-guest-booking-meta">
+                                        <div><small>Start Date</small><strong>{{ booking.booking_from_date }}</strong></div>
+                                        <div><small>Submitted</small><strong>{{ booking.created_at|date:"d M Y, h:i A" }}</strong></div>
+                                    </div>
+                                    {% if booking.admin_remark %}
+                                        <div class="hostel-admin-note mt-15">
+                                            <strong>Admin Remark:</strong> {{ booking.admin_remark }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="hostel-empty-panel">
+                                <h5>No previous booking yet</h5>
+                                <p class="mb-0">Your earlier guest requests will appear here once more than one booking exists.</p>
+                            </div>
+                        {% endif %}
+                        {% if guest_bookings and highlighted_booking and guest_bookings|length == 1 %}
+                            <div class="hostel-empty-panel">
+                                <h5>No previous booking yet</h5>
+                                <p class="mb-0">Only your latest booking is available right now.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div id="guest-payment-panel" class="hostel-guest-tab-panel">
+                    <div class="hostel-guest-panel" id="guest-payment">
+                        <div class="hostel-guest-panel-title">
+                            <h3>Payment</h3>
+                        </div>
+                        {% if latest_payment %}
+                            <span class="hostel-status-chip {{ latest_payment.status }}">{{ latest_payment.status_display }}</span>
+                            <ul class="hostel-guest-payment-list mt-15">
+                                <li><span>Payment Type</span><strong>{{ latest_payment.kind }}</strong></li>
+                                <li><span>Amount</span><strong>Rs. {{ latest_payment.amount }}</strong></li>
+                                <li><span>UTR</span><strong>{{ latest_payment.utr|default:"-" }}</strong></li>
+                                <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
+                                <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
+                            </ul>
+                            {% if latest_payment.screenshot %}
+                                <div class="hostel-guest-payment-proof-box">
+                                    <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="hostel-guest-payment-proof">
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="hostel-empty-panel">
+                                <h5>No payment record yet</h5>
+                                <p class="mb-0">Your latest booking or rent payment will appear here after submission.</p>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebarLinks = document.querySelectorAll(".hostel-guest-sidebar-link[data-section]");
+    const panels = document.querySelectorAll(".hostel-guest-tab-panel");
+
+    if (!sidebarLinks.length || !panels.length) return;
+
+    function activateGuestPanel(sectionId) {
+        panels.forEach(function (panel) {
+            panel.classList.toggle("is-active", panel.id === sectionId);
+        });
+
+        sidebarLinks.forEach(function (link) {
+            link.classList.toggle("is-active", link.dataset.section === sectionId);
+        });
+    }
+
+    sidebarLinks.forEach(function (link) {
+        link.addEventListener("click", function (event) {
+            event.preventDefault();
+            const sectionId = link.dataset.section;
+            activateGuestPanel(sectionId);
+            if (history.replaceState) {
+                history.replaceState(null, "", link.getAttribute("href"));
+            }
+        });
+    });
+
+    const currentHash = window.location.hash;
+    const currentLink = currentHash ? document.querySelector('.hostel-guest-sidebar-link[href="' + currentHash + '"]') : null;
+    activateGuestPanel(currentLink && currentLink.dataset.section ? currentLink.dataset.section : "guest-dashboard-panel");
+});
+</script>
 {% endblock %}

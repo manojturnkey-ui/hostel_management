@@ -2,7 +2,6 @@ from django.urls import path
 
 from .views import (
     AreaHomeView,
-    BlogPublicView,
     BuildingPublicView,
     ContactPublicView,
     CotPublicView,
@@ -16,7 +15,6 @@ from .views import (
 urlpatterns = [
     path("", AreaHomeView.as_view(), name="public_home"),
     path("features/", FeaturePublicView.as_view(), name="public_features"),
-    path("blogs/", BlogPublicView.as_view(), name="public_blogs"),
     path("contact/", ContactPublicView.as_view(), name="public_contact"),
     path("areas/<int:area_id>/", BuildingPublicView.as_view(), name="public_area_buildings"),
     path("buildings/<int:building_id>/", SectionPublicView.as_view(), name="public_building_sections"),

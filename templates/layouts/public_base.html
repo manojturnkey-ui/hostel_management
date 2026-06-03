@@ -53,7 +53,6 @@
                                     <ul class="navigation">
                                         <li><a href="{% url 'public_home' %}"><i class="fa-solid fa-house hostel-desktop-nav-icon"></i>Home</a></li>
                                         <li><a href="{% url 'public_features' %}"><i class="fa-solid fa-hotel hostel-desktop-nav-icon"></i>Features</a></li>
-                                        <li><a href="{% url 'public_blogs' %}"><i class="fa-solid fa-newspaper hostel-desktop-nav-icon"></i>Blogs</a></li>
                                         <li><a href="{% url 'public_contact' %}"><i class="fa-solid fa-address-book hostel-desktop-nav-icon"></i>Contact</a></li>
                                     </ul>
                                 </div>
@@ -104,7 +103,6 @@
                     <ul class="navigation">
                         <li><a href="{% url 'public_home' %}"><i class="fa-solid fa-house hostel-nav-icon"></i>Home</a></li>
                         <li><a href="{% url 'public_features' %}"><i class="fa-solid fa-hotel hostel-nav-icon"></i>Features</a></li>
-                        <li><a href="{% url 'public_blogs' %}"><i class="fa-solid fa-newspaper hostel-nav-icon"></i>Blogs</a></li>
                         <li><a href="{% url 'public_contact' %}"><i class="fa-solid fa-address-book hostel-nav-icon"></i>Contact</a></li>
                         {% if request.user.is_authenticated and not request.user.is_staff %}
                             <li><a href="{% url 'guest_dashboard' %}"><i class="fa-solid fa-id-badge hostel-nav-icon"></i>Guest Portal</a></li>
@@ -223,7 +221,6 @@
                                 <ul>
                                     <li><a href="{% url 'public_home' %}">Home</a></li>
                                     <li><a href="{% url 'public_features' %}">Features</a></li>
-                                    <li><a href="{% url 'public_blogs' %}">Blogs</a></li>
                                     <li><a href="{% url 'public_contact' %}">Contact</a></li>
                                     <li><a href="{% url 'guest_login' %}">Guest Login</a></li>
                                 </ul>
@@ -235,7 +232,6 @@
                                 <ul>
                                     <li><a href="{% url 'public_home' %}#area-grid">Browse Areas</a></li>
                                     <li><a href="{% url 'public_features' %}">Search Rooms & Cots</a></li>
-                                    <li><a href="{% url 'public_blogs' %}">Hostel Blogs</a></li>
                                     <li><a href="{% url 'guest_change_password' %}">Change Password</a></li>
                                     <li><a href="{% url 'public_contact' %}">Payment Help</a></li>
                                     <li><a href="{% url 'public_contact' %}">Stay Support</a></li>
@@ -315,5 +311,4 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
-
 

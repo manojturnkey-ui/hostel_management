@@ -1,8 +1,97 @@
 {% extends "layouts/public_base.html" %}
 {% load static %}
 
+{% block header_theme %}tg-transparent hostel-contact-floating-header{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .hostel-contact-floating-header {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .hostel-contact-floating-header .navigation > li > a,
+        .hostel-contact-floating-header a,
+        .hostel-contact-floating-header .tgmenu__navbar-wrap ul li a,
+        .hostel-contact-floating-header .tg-header-contact-number,
+        .hostel-contact-floating-header .tg-header-contact-number a,
+        .hostel-contact-floating-header .tg-header-contact-number span,
+        .hostel-contact-floating-header .hostel-guest-login-btn,
+        .hostel-contact-floating-header .hostel-guest-login-btn span,
+        .hostel-contact-floating-header .hostel-guest-login-btn i,
+        .hostel-contact-floating-header .hostel-header-contact-label,
+        .hostel-contact-floating-header .hostel-header-contact-stack a,
+        .hostel-contact-floating-header .hostel-header-contact-stack a i,
+        .hostel-contact-floating-header .menu-tigger span {
+            color: #fff !important;
+        }
+
+        .hostel-contact-floating-header.sticky-menu,
+        .hostel-contact-floating-header.header-sticky {
+            background: rgba(255, 255, 255, 0.97) !important;
+            box-shadow: 0 14px 34px rgba(12, 22, 38, 0.12) !important;
+        }
+
+        .hostel-contact-floating-header.sticky-menu .navigation > li > a,
+        .hostel-contact-floating-header.sticky-menu a,
+        .hostel-contact-floating-header.sticky-menu .tgmenu__navbar-wrap ul li a,
+        .hostel-contact-floating-header.sticky-menu .tg-header-contact-number,
+        .hostel-contact-floating-header.sticky-menu .tg-header-contact-number a,
+        .hostel-contact-floating-header.sticky-menu .tg-header-contact-number span,
+        .hostel-contact-floating-header.sticky-menu .hostel-guest-login-btn,
+        .hostel-contact-floating-header.sticky-menu .hostel-guest-login-btn span,
+        .hostel-contact-floating-header.sticky-menu .hostel-guest-login-btn i,
+        .hostel-contact-floating-header.sticky-menu .hostel-header-contact-label,
+        .hostel-contact-floating-header.sticky-menu .hostel-header-contact-stack a,
+        .hostel-contact-floating-header.sticky-menu .hostel-header-contact-stack a i,
+        .hostel-contact-floating-header.sticky-menu .menu-tigger span,
+        .hostel-contact-floating-header.header-sticky .navigation > li > a,
+        .hostel-contact-floating-header.header-sticky a,
+        .hostel-contact-floating-header.header-sticky .tgmenu__navbar-wrap ul li a,
+        .hostel-contact-floating-header.header-sticky .tg-header-contact-number,
+        .hostel-contact-floating-header.header-sticky .tg-header-contact-number a,
+        .hostel-contact-floating-header.header-sticky .tg-header-contact-number span,
+        .hostel-contact-floating-header.header-sticky .hostel-guest-login-btn,
+        .hostel-contact-floating-header.header-sticky .hostel-guest-login-btn span,
+        .hostel-contact-floating-header.header-sticky .hostel-guest-login-btn i,
+        .hostel-contact-floating-header.header-sticky .hostel-header-contact-label,
+        .hostel-contact-floating-header.header-sticky .hostel-header-contact-stack a,
+        .hostel-contact-floating-header.header-sticky .hostel-header-contact-stack a i,
+        .hostel-contact-floating-header.header-sticky .menu-tigger span {
+            color: #111111 !important;
+        }
+
+        .hostel-contact-header-bg {
+            height: 150px;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.48) 0%, rgba(15, 23, 42, 0.16) 100%), url("{% static 'public/tourex/img/hero/tu/banner.jpg' %}");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .hostel-contact-page {
+            padding-top: 34px;
+        }
+
+        @media (max-width: 767px) {
+            .hostel-contact-header-bg {
+                height: 120px;
+            }
+
+            .hostel-contact-page {
+                padding-top: 22px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block hero_section %}
+<div class="hostel-contact-header-bg"></div>
+{% endblock %}
+
 {% block content %}
-<section class="pt-120 pb-80">
+<section class="pt-120 pb-80 hostel-contact-page">
     <div class="container">
         <div class="row g-4 mb-60">
             {% for card in contact_cards %}
