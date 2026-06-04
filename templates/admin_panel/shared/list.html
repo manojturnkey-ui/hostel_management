@@ -64,7 +64,17 @@
                                     {% for column in columns %}
                                         {% with value=object|get_attr:column.value %}
                                             <td>
-                                                {% if "status" in column.value or column.value == "is_active" %}
+                                                {% if column.type == "image" %}
+                                                    {% if value %}
+                                                        <img
+                                                            src="{{ value.url }}"
+                                                            alt="{{ column.label }}"
+                                                            style="width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(0,0,0,0.08);"
+                                                        >
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                {% elif "status" in column.value or column.value == "is_active" %}
                                                     <span class="badge bg-{{ value|badge_class }}">{{ value|display_value }}</span>
                                                 {% else %}
                                                     {{ value|display_value }}

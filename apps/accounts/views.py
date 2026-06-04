@@ -67,14 +67,60 @@ def _build_cot_cards(queryset):
 def _build_latest_guest_payment(guest):
     latest_booking_payment = (
         Payment.objects.filter(booking__student=guest)
-        .select_related("booking__cot__room")
+        .select_related("booking__cot__room__floor__section__building__area")
+        .only(
+            "pk",
+            "amount",
+            "payment_status",
+            "utr_transaction_id",
+            "confirmed_at",
+            "created_at",
+            "payment_screenshot",
+            "booking__pk",
+            "booking__cot__pk",
+            "booking__cot__cot_number",
+            "booking__cot__room__pk",
+            "booking__cot__room__room_number",
+            "booking__cot__room__floor__pk",
+            "booking__cot__room__floor__floor_name",
+            "booking__cot__room__floor__section__pk",
+            "booking__cot__room__floor__section__section_name",
+            "booking__cot__room__floor__section__building__pk",
+            "booking__cot__room__floor__section__building__building_name",
+            "booking__cot__room__floor__section__building__area__pk",
+            "booking__cot__room__floor__section__building__area__area_name",
+        )
         .order_by("-confirmed_at", "-created_at")
         .first()
     )
     latest_bill_payment = (
         MonthlyRentDue.objects.filter(student=guest)
         .exclude(payment_status=BillPaymentStatusChoices.UNPAID)
-        .select_related("booking__cot__room")
+        .select_related("booking__cot__room__floor__section__building__area")
+        .only(
+            "pk",
+            "bill_amount",
+            "payment_status",
+            "utr_transaction_id",
+            "payment_date",
+            "confirmed_at",
+            "created_at",
+            "updated_at",
+            "payment_screenshot",
+            "booking__pk",
+            "booking__cot__pk",
+            "booking__cot__cot_number",
+            "booking__cot__room__pk",
+            "booking__cot__room__room_number",
+            "booking__cot__room__floor__pk",
+            "booking__cot__room__floor__floor_name",
+            "booking__cot__room__floor__section__pk",
+            "booking__cot__room__floor__section__section_name",
+            "booking__cot__room__floor__section__building__pk",
+            "booking__cot__room__floor__section__building__building_name",
+            "booking__cot__room__floor__section__building__area__pk",
+            "booking__cot__room__floor__section__building__area__area_name",
+        )
         .order_by("-payment_date", "-confirmed_at", "-updated_at", "-created_at")
         .first()
     )
@@ -354,6 +400,33 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
         bookings = list(
             guest.bookings.select_related("cot__room__floor__section__building__area", "payment", "student_access")
             .prefetch_related("monthly_dues")
+            .only(
+                "pk",
+                "created_at",
+                "booking_status",
+                "booking_from_date",
+                "booking_to_date",
+                "monthly_rent",
+                "security_deposit",
+                "admin_remark",
+                "cot__pk",
+                "cot__cot_number",
+                "cot__room__pk",
+                "cot__room__room_number",
+                "cot__room__floor__pk",
+                "cot__room__floor__floor_name",
+                "cot__room__floor__section__pk",
+                "cot__room__floor__section__section_name",
+                "cot__room__floor__section__building__pk",
+                "cot__room__floor__section__building__building_name",
+                "cot__room__floor__section__building__area__pk",
+                "cot__room__floor__section__building__area__area_name",
+                "student_access__pk",
+                "student_access__access_status",
+                "student_access__reason",
+                "student_access__valid_from",
+                "student_access__valid_to",
+            )
             .order_by("-created_at")
         )
         pending_dashboard_booking = next(

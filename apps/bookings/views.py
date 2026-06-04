@@ -56,7 +56,7 @@ class BookingStatusListView(PanelListView):
     status_filter = None
 
     def get_queryset(self):
-        queryset = super().get_queryset().select_related("student", "cot", "cot__room")
+        queryset = super().get_queryset().select_related("student", "cot", "cot__room", "payment")
         if self.status_filter:
             queryset = queryset.filter(booking_status=self.status_filter)
         return queryset
@@ -66,6 +66,17 @@ class PendingBookingListView(BookingStatusListView):
     page_title = "Pending Bookings"
     page_subtitle = "Bookings waiting for payment verification"
     status_filter = BookingStatusChoices.PENDING_ADMIN_CONFIRMATION
+    columns = [
+        {"label": "Guest", "value": "student.full_name"},
+        {"label": "Guest Photo", "value": "student.student_photo", "type": "image"},
+        {"label": "Aadhaar / Proof", "value": "student.address_proof_front", "type": "image"},
+        {"label": "Payment Photo", "value": "payment.payment_screenshot", "type": "image"},
+        {"label": "Cot", "value": "cot.cot_number"},
+        {"label": "Room", "value": "cot.room.room_number"},
+        {"label": "Monthly Rent", "value": "monthly_rent"},
+        {"label": "Status", "value": "booking_status"},
+        {"label": "Created", "value": "created_at"},
+    ]
 
 
 class ConfirmedBookingListView(BookingStatusListView):
