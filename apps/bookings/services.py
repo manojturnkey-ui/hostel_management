@@ -32,24 +32,18 @@ def generate_simple_credential(length: int = 8) -> str:
     return "".join(chooser.choice(characters) for _ in range(length))
 
 
-def generate_guest_username() -> str:
-    User = get_user_model()
-    while True:
-        candidate = f"g{generate_simple_credential(7)}"
-        if not User.objects.filter(username=candidate).exists():
-            return candidate
-
-
 def ensure_guest_user_for_student(student: Student):
     User = get_user_model()
     raw_password = generate_simple_credential(8)
+    desired_username = student.mobile_number
     if student.guest_user_id:
         guest_user = student.guest_user
+        guest_user.username = desired_username
         guest_user.display_name = student.full_name
         guest_user.mobile_number = student.mobile_number
     else:
         guest_user = User(
-            username=generate_guest_username(),
+            username=desired_username,
             display_name=student.full_name,
             mobile_number=student.mobile_number,
             is_staff=False,
@@ -141,7 +135,11 @@ def get_or_create_student_from_public_form(cleaned_data: dict) -> Student:
 
 @transaction.atomic
 def create_public_booking(cot, cleaned_data: dict) -> dict:
-    from apps.whatsapp.services import send_booking_submitted_message, send_payment_pending_message
+    from apps.whatsapp.services import (
+        send_booking_submitted_message,
+        send_guest_portal_credentials_message,
+        send_payment_pending_message,
+    )
 
     cot = cot.__class__.objects.select_for_update().select_related("room__floor__section__building__area").get(pk=cot.pk)
     if cot.status != CotStatusChoices.AVAILABLE:
@@ -173,6 +171,7 @@ def create_public_booking(cot, cleaned_data: dict) -> dict:
     cot.status = CotStatusChoices.PENDING
     cot.save(update_fields=["status", "updated_at"])
     send_booking_submitted_message(booking)
+    send_guest_portal_credentials_message(booking, guest_user.username, raw_password)
     send_payment_pending_message(booking)
     return {
         "booking": booking,

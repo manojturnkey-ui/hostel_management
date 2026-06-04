@@ -38,7 +38,7 @@
                                     <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '3' '4' '5' '6' '1' '2' %}.jpg" alt="{{ item.floor_name }}">
                                 </a>
                             {% else %}
-                                <a href="{% url 'public_room_cots' item.pk %}">
+                                <a href="{% url 'public_features' %}?room={{ item.pk }}">
                                     <img src="{% static 'public/tourex/img/listing/su/listing-' %}{% cycle '4' '5' '6' '1' '2' '3' %}.jpg" alt="{{ item.full_label }}">
                                 </a>
                             {% endif %}
@@ -70,7 +70,7 @@
                                 {% elif item_type == "floor" %}
                                     <a href="{% url 'public_floor_rooms' item.pk %}">{{ item.floor_name }}</a>
                                 {% else %}
-                                    <a href="{% url 'public_room_cots' item.pk %}">{{ item.full_label }}</a>
+                                    <a href="{% url 'public_features' %}?room={{ item.pk }}">{{ item.full_label }}</a>
                                 {% endif %}
                             </h4>
                             <p class="hostel-card-copy">
@@ -100,7 +100,7 @@
                                 {% elif item_type == "floor" %}
                                     <a class="tg-btn-border" href="{% url 'public_floor_rooms' item.pk %}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
                                 {% else %}
-                                    <a class="tg-btn-border" href="{% url 'public_room_cots' item.pk %}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
+                                    <a class="tg-btn-border" href="{% url 'public_features' %}?room={{ item.pk }}">Continue <i class="fa-solid fa-arrow-right-long"></i></a>
                                 {% endif %}
                             </div>
                         </div>

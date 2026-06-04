@@ -27,6 +27,37 @@
                 </div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-header"><h4 class="card-title mb-0">Guest Documents</h4></div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <h6 class="mb-2">Guest Photo</h6>
+                        {% if booking.student.student_photo %}
+                            <img src="{{ booking.student.student_photo.url }}" alt="Guest photo" class="preview-image">
+                        {% else %}
+                            <p class="text-muted mb-0">No guest photo uploaded.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="mb-2">Address Proof Front</h6>
+                        {% if booking.student.address_proof_front %}
+                            <img src="{{ booking.student.address_proof_front.url }}" alt="Address proof front" class="preview-image">
+                        {% else %}
+                            <p class="text-muted mb-0">No front proof uploaded.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="mb-2">Address Proof Back</h6>
+                        {% if booking.student.address_proof_back %}
+                            <img src="{{ booking.student.address_proof_back.url }}" alt="Address proof back" class="preview-image">
+                        {% else %}
+                            <p class="text-muted mb-0">No back proof uploaded.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-lg-4">
         <div class="card">

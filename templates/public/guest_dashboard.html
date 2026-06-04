@@ -316,6 +316,21 @@
             border: 1px solid rgba(22, 32, 50, 0.08);
         }
 
+        .hostel-guest-renewal-note {
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(94, 44, 237, 0.08);
+            border: 1px solid rgba(94, 44, 237, 0.14);
+        }
+
+        .hostel-guest-renewal-note p {
+            font-size: 13px;
+            line-height: 1.55;
+            margin-bottom: 0;
+            color: #172033;
+        }
+
         @media (max-width: 1199px) {
             .hostel-guest-mini-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -408,7 +423,7 @@
                         </div>
                         <div class="hostel-guest-mini-card">
                             <small>Current Cot</small>
-                            <h4>{% if dashboard_pending_booking %}{{ dashboard_pending_booking.cot.room.room_number }} / {{ dashboard_pending_booking.cot.cot_number }}{% else %}-{% endif %}</h4>
+                            <h4>{% if dashboard_current_booking %}{{ dashboard_current_booking.cot.room.room_number }} / {{ dashboard_current_booking.cot.cot_number }}{% else %}-{% endif %}</h4>
                         </div>
                         <div class="hostel-guest-mini-card">
                             <small>Latest Payment</small>
@@ -443,6 +458,45 @@
                             <div class="hostel-empty-panel">
                                 <h5>No pending or unverified booking</h5>
                                 <p class="mb-0">Once you submit a new request and it is under review, it will appear here until verification is completed.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="hostel-guest-panel">
+                        <div class="hostel-guest-panel-title">
+                            <h3>Current Booking</h3>
+                        </div>
+                        {% if dashboard_current_booking %}
+                            <div class="hostel-guest-status-chips">
+                                <span class="hostel-status-chip {{ dashboard_current_booking.booking_status }}">{{ dashboard_current_booking.get_booking_status_display }}</span>
+                                {% if current_access and dashboard_current_booking.booking_status == 'confirmed' %}
+                                    <span class="hostel-status-chip {{ current_access.access_status }}">{{ current_access.get_access_status_display }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="hostel-guest-status-grid">
+                                <div class="hostel-guest-status-row"><small>Area</small><strong>{{ dashboard_current_booking.cot.room.floor.section.building.area.area_name }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Society</small><strong>{{ dashboard_current_booking.cot.room.floor.section.building.building_name }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Building / Wing</small><strong>{{ dashboard_current_booking.cot.room.floor.section.section_name }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Floor</small><strong>{{ dashboard_current_booking.cot.room.floor.floor_name }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Room</small><strong>{{ dashboard_current_booking.cot.room.room_number }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Cot</small><strong>{{ dashboard_current_booking.cot.cot_number }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Staying Start Date</small><strong>{{ dashboard_current_booking.booking_from_date }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Submitted On</small><strong>{{ dashboard_current_booking.created_at|date:"d M Y, h:i A" }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Rent Expiry Date</small><strong>{% if dashboard_current_booking_billing %}{{ dashboard_current_booking_billing.rent_expiry_date|date:"d M Y" }}{% else %}-{% endif %}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Renewal Date</small><strong>{% if dashboard_current_booking_billing %}{{ dashboard_current_booking_billing.renewal_window_label }}{% else %}1 to 5 every month{% endif %}</strong></div>
+                            </div>
+                            <div class="hostel-guest-renewal-note">
+                                <p>{% if dashboard_current_booking_billing %}{{ dashboard_current_booking_billing.blocked_note }}{% else %}Please renew your stay between the 1st and 5th of every month to avoid check-in restrictions after the grace period.{% endif %}</p>
+                            </div>
+                            {% if dashboard_current_booking.admin_remark %}
+                                <div class="hostel-admin-note mt-15">
+                                    <strong>Admin Remark:</strong> {{ dashboard_current_booking.admin_remark }}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="hostel-empty-panel">
+                                <h5>No current booking yet</h5>
+                                <p class="mb-0">Your active or latest verified booking will appear here once it is available.</p>
                             </div>
                         {% endif %}
                     </div>
@@ -488,6 +542,11 @@
                                 <div class="hostel-guest-status-row"><small>Submitted On</small><strong>{{ booking_status_booking.created_at|date:"d M Y, h:i A" }}</strong></div>
                                 <div class="hostel-guest-status-row"><small>Monthly Rent</small><strong>Rs. {{ booking_status_booking.monthly_rent }}</strong></div>
                                 <div class="hostel-guest-status-row"><small>Security Deposit</small><strong>Rs. {{ booking_status_booking.security_deposit }}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Rent Expiry Date</small><strong>{% if booking_status_billing %}{{ booking_status_billing.rent_expiry_date|date:"d M Y" }}{% else %}-{% endif %}</strong></div>
+                                <div class="hostel-guest-status-row"><small>Renewal Date</small><strong>{% if booking_status_billing %}{{ booking_status_billing.renewal_window_label }}{% else %}1 to 5 every month{% endif %}</strong></div>
+                            </div>
+                            <div class="hostel-guest-renewal-note">
+                                <p>{% if booking_status_billing %}{{ booking_status_billing.blocked_note }}{% else %}Please renew your stay between the 1st and 5th of every month to avoid check-in restrictions after the grace period.{% endif %}</p>
                             </div>
                             {% if booking_status_booking.admin_remark %}
                                 <div class="hostel-admin-note mt-15">

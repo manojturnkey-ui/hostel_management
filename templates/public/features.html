@@ -92,7 +92,6 @@
 <section class="hostel-feature-grid-page">
     <div class="container">
         <div class="row g-4">
-
             <div class="col-xl-3 col-lg-4">
                 <aside class="hostel-grid-sidebar">
                     <div class="hostel-grid-filter-box">
@@ -107,9 +106,7 @@
                                 <select name="area" id="featureArea">
                                     <option value="">All Areas</option>
                                     {% for area in all_areas %}
-                                        <option value="{{ area.pk }}" {% if selected_filters.area == area.pk %}selected{% endif %}>
-                                            {{ area.area_name }}
-                                        </option>
+                                        <option value="{{ area.pk }}" {% if selected_filters.area == area.pk %}selected{% endif %}>{{ area.area_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -119,9 +116,7 @@
                                 <select name="building" id="featureBuilding">
                                     <option value="">All Society</option>
                                     {% for building in all_buildings %}
-                                        <option value="{{ building.pk }}" data-area="{{ building.area_id }}" {% if selected_filters.building == building.pk %}selected{% endif %}>
-                                            {{ building.building_name }}
-                                        </option>
+                                        <option value="{{ building.pk }}" data-area="{{ building.area_id }}" {% if selected_filters.building == building.pk %}selected{% endif %}>{{ building.building_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -131,9 +126,7 @@
                                 <select name="section" id="featureSection">
                                     <option value="">All Buildings / Wings</option>
                                     {% for section in all_sections %}
-                                        <option value="{{ section.pk }}" data-building="{{ section.building_id }}" {% if selected_filters.section == section.pk %}selected{% endif %}>
-                                            {{ section.section_name }}
-                                        </option>
+                                        <option value="{{ section.pk }}" data-building="{{ section.building_id }}" {% if selected_filters.section == section.pk %}selected{% endif %}>{{ section.section_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -143,9 +136,7 @@
                                 <select name="floor" id="featureFloor">
                                     <option value="">All Floors</option>
                                     {% for floor in all_floors %}
-                                        <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}" {% if selected_filters.floor == floor.pk %}selected{% endif %}>
-                                            {{ floor.floor_name }}
-                                        </option>
+                                        <option value="{{ floor.pk }}" data-section="{{ floor.section_id }}" {% if selected_filters.floor == floor.pk %}selected{% endif %}>{{ floor.floor_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -155,9 +146,7 @@
                                 <select name="room" id="featureRoom">
                                     <option value="">All Rooms</option>
                                     {% for room in all_rooms %}
-                                        <option value="{{ room.pk }}" data-floor="{{ room.floor_id }}" {% if selected_filters.room == room.pk %}selected{% endif %}>
-                                            {{ room.room_number }}
-                                        </option>
+                                        <option value="{{ room.pk }}" data-floor="{{ room.floor_id }}" {% if selected_filters.room == room.pk %}selected{% endif %}>{{ room.room_number }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -200,106 +189,155 @@
             <div class="col-xl-9 col-lg-8">
                 <div class="hostel-grid-page-head">
                     <div>
-                        <h3>Hostel Cots</h3>
-                        <p>Choose available cot and complete booking request.</p>
+                        <h3>{{ explorer_state.heading }}</h3>
+                        <p>{{ explorer_state.subtitle }}</p>
                     </div>
                     <div class="hostel-grid-count">
-                        {% if selected_filters.area or selected_filters.building or selected_filters.section or selected_filters.floor or selected_filters.room %}
+                        {% if explorer_state.level == "cot" %}
                             {{ matching_cots|length }} Cot{{ matching_cots|length|pluralize }} Found
                         {% else %}
-                            Total {{ matching_cots|length }} Cot{{ matching_cots|length|pluralize }}
+                            {{ explorer_items|length }} Result{{ explorer_items|length|pluralize }}
                         {% endif %}
                     </div>
                 </div>
 
-                <div class="row g-4">
-                    {% for group in room_groups %}
-                        {% for cot in group.cots %}
-                            <div class="col-xl-4 col-md-6">
-                                <div class="hostel-grid-cot-card">
-                                    <div class="hostel-grid-cot-image">
-                                        <a href="{% if cot.status == 'available' %}{% url 'public_booking_create' cot.pk %}{% else %}{% url 'public_room_cots' cot.room_id %}{% endif %}">
-                                            {% if cot.images.all %}
-                                                {% with first_image=cot.images.all.0 %}
-                                                    <img src="{{ first_image.image.url }}" alt="Cot Image">
-                                                {% endwith %}
-                                            {% else %}
-                                                <img src="{% static 'public/tourex/img/listing/su/listing-1.jpg' %}" alt="Cot Image">
-                                            {% endif %}
-                                        </a>
-
-                                        <span class="hostel-grid-status {% if cot.status == 'available' %}status-available{% elif cot.status == 'pending' %}status-pending{% elif cot.status == 'occupied' %}status-occupied{% else %}status-blocked{% endif %}">
-                                            {{ cot.get_status_display }}
-                                        </span>
-                                    </div>
-
-                                    <div class="hostel-grid-cot-content">
-                                        <h4>
-                                            <a href="{% url 'public_room_cots' cot.room_id %}">
-                                                Cot {{ cot.cot_number }}
+                {% if explorer_state.level == "cot" %}
+                    <div class="row g-4">
+                        {% for group in room_groups %}
+                            {% for cot in group.cots %}
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="hostel-grid-cot-card">
+                                        <div class="hostel-grid-cot-image">
+                                            <a href="{% if cot.status == 'available' %}{% url 'public_booking_create' cot.pk %}{% else %}{% url 'public_features' %}?room={{ cot.room_id }}{% endif %}">
+                                                {% if cot.image %}
+                                                    <img src="{{ cot.image.url }}" alt="Cot Image">
+                                                {% else %}
+                                                    <img src="{% static 'public/tourex/img/listing/su/listing-1.jpg' %}" alt="Cot Image">
+                                                {% endif %}
                                             </a>
-                                        </h4>
-
-                                        <ul class="hostel-cot-info-list">
-                                            <li>
-                                                <i class="fa-solid fa-location-dot"></i>
-                                                <span>
-                                                    {{ cot.room.floor.section.building.area.area_name }} |
-                                                    {{ cot.room.floor.section.building.building_name }}
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <i class="fa-solid fa-layer-group"></i>
-                                                <span>
-                                                    {{ cot.room.floor.section.section_name }} |
-                                                    {{ cot.room.floor.floor_name }}
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <i class="fa-solid fa-bed"></i>
-                                                <span>
-                                                    Room {{ cot.room.room_number }} |
-                                                    Cot {{ cot.cot_number }}
-                                                </span>
-                                            </li>
-                                        </ul>
-
-                                        <div class="hostel-grid-price-row">
-                                            <div>
-                                                <span>Rent</span>
-                                                <strong>₹{{ cot.cot_price }}</strong>
-                                            </div>
-                                            <div>
-                                                <span>Deposit</span>
-                                                <strong>₹{{ cot.security_deposit }}</strong>
-                                            </div>
-                                        </div>
-
-                                        {% if cot.status == 'available' %}
-                                            <a href="{% url 'public_booking_create' cot.pk %}" class="hostel-book-now-btn">
-                                                Book Now
-                                            </a>
-                                        {% else %}
-                                            <span class="hostel-disabled-status-btn">
+                                            <span class="hostel-grid-status {% if cot.status == 'available' %}status-available{% elif cot.status == 'pending' %}status-pending{% elif cot.status == 'occupied' %}status-occupied{% else %}status-blocked{% endif %}">
                                                 {{ cot.get_status_display }}
                                             </span>
-                                        {% endif %}
+                                        </div>
+
+                                        <div class="hostel-grid-cot-content">
+                                            <h4>
+                                                <a href="{% if cot.status == 'available' %}{% url 'public_booking_create' cot.pk %}{% else %}{% url 'public_features' %}?room={{ cot.room_id }}{% endif %}">Cot {{ cot.cot_number }}</a>
+                                            </h4>
+                                            <ul class="hostel-cot-info-list">
+                                                <li><i class="fa-solid fa-location-dot"></i><span>{{ cot.room.floor.section.building.area.area_name }} | {{ cot.room.floor.section.building.building_name }}</span></li>
+                                                <li><i class="fa-solid fa-layer-group"></i><span>{{ cot.room.floor.section.section_name }} | {{ cot.room.floor.floor_name }}</span></li>
+                                                <li><i class="fa-solid fa-bed"></i><span>Room {{ cot.room.room_number }} | Cot {{ cot.cot_number }}</span></li>
+                                            </ul>
+                                            <div class="hostel-grid-price-row">
+                                                <div>
+                                                    <span>Rent</span>
+                                                    <strong>Rs. {{ cot.cot_price }}</strong>
+                                                </div>
+                                                <div>
+                                                    <span>Deposit</span>
+                                                    <strong>Rs. {{ cot.security_deposit }}</strong>
+                                                </div>
+                                            </div>
+                                            {% if cot.status == 'available' %}
+                                                <a href="{% url 'public_booking_create' cot.pk %}" class="hostel-book-now-btn">Book Now</a>
+                                            {% else %}
+                                                <span class="hostel-disabled-status-btn">{{ cot.get_status_display }}</span>
+                                            {% endif %}
+                                        </div>
                                     </div>
+                                </div>
+                            {% endfor %}
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="hostel-no-data">
+                                    <i class="fa-solid fa-bed"></i>
+                                    <h4>No cots found</h4>
+                                    <p>Try changing area, society, building or wing, floor, room, room type, or cot-count filter.</p>
                                 </div>
                             </div>
                         {% endfor %}
-                    {% empty %}
-                        <div class="col-12">
-                            <div class="hostel-no-data">
-                                <i class="fa-solid fa-bed"></i>
-                                <h4>No cots found</h4>
-                                <p>Try changing area, society, building or wing, floor, room, room type, or cot-count filter.</p>
+                    </div>
+                {% else %}
+                    <div class="row g-4">
+                        {% for item in explorer_items %}
+                            <div class="col-xl-4 col-md-6">
+                                <div class="hostel-explorer-card">
+                                    <div class="hostel-explorer-thumb">
+                                        {% if explorer_state.level == "area" %}
+                                            <a href="{% url 'public_features' %}?area={{ item.pk }}">
+                                        {% elif explorer_state.level == "building" %}
+                                            <a href="{% url 'public_features' %}?area={{ item.area_id }}&building={{ item.pk }}">
+                                        {% elif explorer_state.level == "section" %}
+                                            <a href="{% url 'public_features' %}?area={{ item.building.area_id }}&building={{ item.building_id }}&section={{ item.pk }}">
+                                        {% elif explorer_state.level == "floor" %}
+                                            <a href="{% url 'public_features' %}?area={{ item.section.building.area_id }}&building={{ item.section.building_id }}&section={{ item.section_id }}&floor={{ item.pk }}">
+                                        {% else %}
+                                            <a href="{% url 'public_features' %}?area={{ item.floor.section.building.area_id }}&building={{ item.floor.section.building_id }}&section={{ item.floor.section_id }}&floor={{ item.floor_id }}&room={{ item.pk }}">
+                                        {% endif %}
+                                            {% if item.image %}
+                                                <img src="{{ item.image.url }}" alt="{{ item }}">
+                                            {% else %}
+                                                <img src="{% static 'public/tourex/img/listing/su/listing-1.jpg' %}" alt="{{ item }}">
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="hostel-explorer-content">
+                                        <span class="hostel-explorer-chip">{{ explorer_state.heading|cut:"Choose " }}</span>
+                                        <h4>
+                                            {% if explorer_state.level == "area" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.pk }}">{{ item.area_name }}</a>
+                                            {% elif explorer_state.level == "building" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.area_id }}&building={{ item.pk }}">{{ item.building_name }}</a>
+                                            {% elif explorer_state.level == "section" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.building.area_id }}&building={{ item.building_id }}&section={{ item.pk }}">{{ item.section_name }}</a>
+                                            {% elif explorer_state.level == "floor" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.section.building.area_id }}&building={{ item.section.building_id }}&section={{ item.section_id }}&floor={{ item.pk }}">{{ item.floor_name }}</a>
+                                            {% else %}
+                                                <a href="{% url 'public_features' %}?area={{ item.floor.section.building.area_id }}&building={{ item.floor.section.building_id }}&section={{ item.floor.section_id }}&floor={{ item.floor_id }}&room={{ item.pk }}">{{ item.full_label }}</a>
+                                            {% endif %}
+                                        </h4>
+                                        <p>
+                                            {% if explorer_state.level == "area" %}
+                                                {{ item.description|default:"Open this area to see the available society options." }}
+                                            {% elif explorer_state.level == "building" %}
+                                                {{ item.description|default:"Open this society to continue into buildings or wings." }}
+                                            {% elif explorer_state.level == "section" %}
+                                                {{ item.description|default:"Open this building or wing to see its floors." }}
+                                            {% elif explorer_state.level == "floor" %}
+                                                {{ item.description|default:"Open this floor to see the available rooms." }}
+                                            {% else %}
+                                                {{ item.description|default:"Open this room to see the final cot selection." }}
+                                            {% endif %}
+                                        </p>
+                                        <div class="hostel-explorer-action">
+                                            {% if explorer_state.level == "area" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.pk }}">View Society <i class="fa-solid fa-arrow-right-long"></i></a>
+                                            {% elif explorer_state.level == "building" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.area_id }}&building={{ item.pk }}">View Buildings / Wings <i class="fa-solid fa-arrow-right-long"></i></a>
+                                            {% elif explorer_state.level == "section" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.building.area_id }}&building={{ item.building_id }}&section={{ item.pk }}">View Floors <i class="fa-solid fa-arrow-right-long"></i></a>
+                                            {% elif explorer_state.level == "floor" %}
+                                                <a href="{% url 'public_features' %}?area={{ item.section.building.area_id }}&building={{ item.section.building_id }}&section={{ item.section_id }}&floor={{ item.pk }}">View Rooms <i class="fa-solid fa-arrow-right-long"></i></a>
+                                            {% else %}
+                                                <a href="{% url 'public_features' %}?area={{ item.floor.section.building.area_id }}&building={{ item.floor.section.building_id }}&section={{ item.floor.section_id }}&floor={{ item.floor_id }}&room={{ item.pk }}">View Cots <i class="fa-solid fa-arrow-right-long"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="hostel-no-data">
+                                    <i class="fa-solid fa-building"></i>
+                                    <h4>No records found</h4>
+                                    <p>Try changing the selection in the sidebar search to continue the hostel flow.</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
-
         </div>
     </div>
 </section>

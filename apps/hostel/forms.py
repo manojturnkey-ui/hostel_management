@@ -48,13 +48,13 @@ class BaseHostelModelForm(StyledFormMixin, forms.ModelForm):
 class AreaForm(BaseHostelModelForm):
     class Meta:
         model = Area
-        fields = ["area_name", "description", "status"]
+        fields = ["area_name", "description", "image", "status"]
 
 
 class BuildingForm(BaseHostelModelForm):
     class Meta:
         model = Building
-        fields = ["area", "building_name", "description", "status"]
+        fields = ["area", "building_name", "description", "image", "status"]
         labels = {
             "building_name": "Society Name",
         }
@@ -63,7 +63,7 @@ class BuildingForm(BaseHostelModelForm):
 class SectionForm(BaseHostelModelForm):
     class Meta:
         model = Section
-        fields = ["building", "section_name", "description", "status"]
+        fields = ["building", "section_name", "description", "image", "status"]
         labels = {
             "building": "Society",
             "section_name": "Building / Wing Name",
@@ -76,7 +76,7 @@ class FloorForm(BaseHostelModelForm):
 
     class Meta:
         model = Floor
-        fields = ["section", "floor_name", "description", "status"]
+        fields = ["section", "floor_name", "description", "image", "status"]
         labels = {
             "section": "Building / Wing",
         }
@@ -104,7 +104,7 @@ class FloorForm(BaseHostelModelForm):
         else:
             self.fields["section"].queryset = self.fields["section"].queryset.none()
 
-        self.order_fields(["area", "building", "section", "floor_name", "description", "status"])
+        self.order_fields(["area", "building", "section", "floor_name", "description", "image", "status"])
 
 
 class RoomForm(BaseHostelModelForm):
@@ -115,7 +115,7 @@ class RoomForm(BaseHostelModelForm):
 
     class Meta:
         model = Room
-        fields = ["floor", "room_number", "room_name", "room_type", "description", "status"]
+        fields = ["floor", "room_number", "room_name", "room_type", "description", "image", "status"]
         labels = {
             "floor": "Floor",
         }
@@ -154,7 +154,7 @@ class RoomForm(BaseHostelModelForm):
         else:
             self.fields["floor"].queryset = self.fields["floor"].queryset.none()
 
-        self.order_fields(["area", "building", "section", "floor", "room_number", "room_name", "room_type", "description", "status"])
+        self.order_fields(["area", "building", "section", "floor", "room_number", "room_name", "room_type", "description", "image", "status"])
 
     def clean_room_type(self):
         return (self.cleaned_data.get("room_type") or "").strip().lower()
@@ -168,7 +168,7 @@ class CotForm(BaseHostelModelForm):
 
     class Meta:
         model = Cot
-        fields = ["room", "cot_number", "cot_price", "security_deposit", "status", "remarks"]
+        fields = ["room", "cot_number", "cot_price", "security_deposit", "status", "remarks", "image"]
         labels = {
             "room": "Room",
         }
@@ -212,7 +212,7 @@ class CotForm(BaseHostelModelForm):
         else:
             self.fields["room"].queryset = self.fields["room"].queryset.none()
 
-        self.order_fields(["area", "building", "section", "floor", "room", "cot_number", "cot_price", "security_deposit", "status", "remarks"])
+        self.order_fields(["area", "building", "section", "floor", "room", "cot_number", "cot_price", "security_deposit", "status", "remarks", "image"])
 
 
 class ExcelUploadForm(BaseHostelModelForm):

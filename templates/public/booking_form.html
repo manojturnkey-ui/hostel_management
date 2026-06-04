@@ -1,5 +1,4 @@
 {% extends "layouts/public_base.html" %}
-
 {% load static %}
 
 {% block extra_css %}
@@ -14,7 +13,7 @@
         }
 
         .hostel-checkout-area {
-            padding-top: 40px !important;
+            padding-top: 38px !important;
             padding-bottom: 64px !important;
         }
 
@@ -27,19 +26,55 @@
             margin-bottom: 14px;
         }
 
-        .hostel-panel-head .tg-section-subtitle {
+        .hostel-panel-head .tg-section-subtitle,
+        .hostel-step-kicker {
             font-size: 12px;
         }
 
         .hostel-panel-head h3,
-        .hostel-summary-card h3 {
+        .hostel-summary-card h3,
+        .hostel-step-panel h3 {
             font-size: 22px;
             line-height: 1.22;
         }
 
-        .hostel-panel-head p {
+        .hostel-panel-head p,
+        .hostel-step-panel p {
             font-size: 13px;
             line-height: 1.55;
+        }
+
+        .hostel-stepper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .hostel-step-pill {
+            min-height: 34px;
+            padding: 0 14px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f4f5fa;
+            color: #6d6988;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hostel-step-pill.is-active {
+            background: #5b16e8;
+            color: #fff;
+        }
+
+        .hostel-step-panel {
+            display: none;
+        }
+
+        .hostel-step-panel.is-active {
+            display: block;
         }
 
         .hostel-form-group {
@@ -50,6 +85,8 @@
             margin-bottom: 6px;
             font-size: 13px;
             line-height: 1.35;
+            font-weight: 600;
+            color: #111111;
         }
 
         .hostel-form-layout .row {
@@ -69,9 +106,24 @@
 
         .hostel-form-layout input[type="file"].form-control {
             height: 36px !important;
-            min-height: 36px;
-            padding-top: 4px !important;
-            padding-bottom: 4px !important;
+            min-height: 36px !important;
+            padding: 4px 10px !important;
+            display: block;
+            text-align: center;
+            line-height: 26px !important;
+        }
+
+        .hostel-form-layout input[type="file"].form-control::file-selector-button {
+            height: 26px;
+            margin-right: 12px;
+            padding: 0 12px;
+            border: 0;
+            border-radius: 8px;
+            background: #eef0f6;
+            color: #111111;
+            font-size: 12px;
+            font-weight: 600;
+            vertical-align: middle;
         }
 
         .hostel-form-layout input[type="date"].form-control,
@@ -85,14 +137,26 @@
             min-height: 36px !important;
         }
 
-        .hostel-submit-btn {
+        .hostel-step-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .hostel-submit-btn,
+        .hostel-secondary-btn {
             min-height: 40px;
             font-size: 13px;
-            margin-top: 16px !important;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 18px;
         }
 
         .hostel-summary-list li {
-            padding: 7px 0;
+            padding: 8px 0;
         }
 
         .hostel-summary-list li span,
@@ -111,8 +175,27 @@
             padding: 14px;
         }
 
-        .hostel-summary-card .tg-section-subtitle {
+        .hostel-summary-card .tg-section-subtitle,
+        .hostel-summary-note {
             font-size: 12px;
+        }
+
+        .hostel-summary-note {
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f5f0ff;
+            color: #5b16e8;
+            font-weight: 600;
+            line-height: 1.55;
+        }
+
+        .hostel-booking-summary-meta {
+            display: grid;
+            gap: 10px;
+        }
+
+        .hostel-booking-summary-meta strong {
+            color: #111111;
         }
 
         .hostel-empty-panel h5 {
@@ -139,7 +222,8 @@
             }
 
             .hostel-panel-head h3,
-            .hostel-summary-card h3 {
+            .hostel-summary-card h3,
+            .hostel-step-panel h3 {
                 font-size: 20px;
             }
 
@@ -160,128 +244,221 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-xl-7 col-lg-7">
-                <div class="hostel-checkout-panel">
+                <div
+                    class="hostel-checkout-panel"
+                    id="bookingWizard"
+                    data-monthly-rent="{{ cot.cot_price }}"
+                    data-security-deposit="{{ cot.security_deposit }}"
+                    data-calculation-method="{{ billing_calculation_method }}"
+                >
                     <div class="hostel-panel-head">
                         <span class="tg-section-subtitle">Guest Booking Form</span>
                         <h3>Complete Your Cot Booking Request</h3>
-                        <p>Fill in your guest details, upload proof documents, and submit payment evidence to send your request for admin review.</p>
+                        <p>First fill the guest details, then review the booking summary, and finally confirm payment on the same page.</p>
                     </div>
-                    <form method="post" enctype="multipart/form-data" class="hostel-form-layout">
+
+                    <div class="hostel-stepper">
+                        <span class="hostel-step-pill is-active" data-step-pill="1"><i class="fa-solid fa-user"></i> Guest Details</span>
+                        <span class="hostel-step-pill" data-step-pill="2"><i class="fa-solid fa-file-invoice"></i> Booking Summary</span>
+                        <span class="hostel-step-pill" data-step-pill="3"><i class="fa-solid fa-qrcode"></i> Confirm & Pay</span>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data" class="hostel-form-layout" id="publicBookingForm">
                         {% csrf_token %}
                         {% if form.non_field_errors %}
-                            <div class="alert alert-danger mb-25">
+                            <div class="alert alert-danger mb-3">
                                 {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
                             </div>
                         {% endif %}
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.full_name.id_for_label }}">Guest Full Name</label>
-                                    {{ form.full_name }}
-                                    {% for error in form.full_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+
+                        <div class="hostel-step-panel is-active" data-step-panel="1">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.full_name.id_for_label }}">Guest Full Name</label>
+                                        {{ form.full_name }}
+                                        {% for error in form.full_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.mobile_number.id_for_label }}">Mobile Number</label>
+                                        {{ form.mobile_number }}
+                                        {% for error in form.mobile_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.whatsapp_number.id_for_label }}">WhatsApp Number</label>
+                                        {{ form.whatsapp_number }}
+                                        {% for error in form.whatsapp_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.relative_contact_number.id_for_label }}">Relative Contact Number</label>
+                                        {{ form.relative_contact_number }}
+                                        {% for error in form.relative_contact_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.address.id_for_label }}">Address</label>
+                                        {{ form.address }}
+                                        {% for error in form.address.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.state.id_for_label }}">State</label>
+                                        {{ form.state }}
+                                        {% for error in form.state.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.pincode.id_for_label }}">Pincode</label>
+                                        {{ form.pincode }}
+                                        {% for error in form.pincode.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.address_proof_type.id_for_label }}">Address Proof Type</label>
+                                        {{ form.address_proof_type }}
+                                        {% for error in form.address_proof_type.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.booking_from_date.id_for_label }}">Staying Start Date</label>
+                                        {{ form.booking_from_date }}
+                                        {% for error in form.booking_from_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.student_photo.id_for_label }}">Guest Photo</label>
+                                        {{ form.student_photo }}
+                                        {% for error in form.student_photo.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.address_proof_front.id_for_label }}">Address Proof Front</label>
+                                        {{ form.address_proof_front }}
+                                        {% for error in form.address_proof_front.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.address_proof_back.id_for_label }}">Address Proof Back</label>
+                                        {{ form.address_proof_back }}
+                                        {% for error in form.address_proof_back.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.mobile_number.id_for_label }}">Mobile Number</label>
-                                    {{ form.mobile_number }}
-                                    {% for error in form.mobile_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.whatsapp_number.id_for_label }}">WhatsApp Number</label>
-                                    {{ form.whatsapp_number }}
-                                    {% for error in form.whatsapp_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.relative_contact_number.id_for_label }}">Relative Contact Number</label>
-                                    {{ form.relative_contact_number }}
-                                    {% for error in form.relative_contact_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.address.id_for_label }}">Address</label>
-                                    {{ form.address }}
-                                    {% for error in form.address.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.state.id_for_label }}">State</label>
-                                    {{ form.state }}
-                                    {% for error in form.state.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.pincode.id_for_label }}">Pincode</label>
-                                    {{ form.pincode }}
-                                    {% for error in form.pincode.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.address_proof_type.id_for_label }}">Address Proof Type</label>
-                                    {{ form.address_proof_type }}
-                                    {% for error in form.address_proof_type.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.booking_from_date.id_for_label }}">Staying Start Date</label>
-                                    {{ form.booking_from_date }}
-                                    {% for error in form.booking_from_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.student_photo.id_for_label }}">Guest Photo</label>
-                                    {{ form.student_photo }}
-                                    {% for error in form.student_photo.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.utr_transaction_id.id_for_label }}">Payment UTR / Transaction ID</label>
-                                    {{ form.utr_transaction_id }}
-                                    {% for error in form.utr_transaction_id.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.address_proof_front.id_for_label }}">Address Proof Front</label>
-                                    {{ form.address_proof_front }}
-                                    {% for error in form.address_proof_front.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.address_proof_back.id_for_label }}">Address Proof Back</label>
-                                    {{ form.address_proof_back }}
-                                    {% for error in form.address_proof_back.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="hostel-form-group">
-                                    <label for="{{ form.payment_screenshot.id_for_label }}">Payment Screenshot</label>
-                                    {{ form.payment_screenshot }}
-                                    {% for error in form.payment_screenshot.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                                </div>
+
+                            <div class="hostel-step-actions">
+                                <button type="button" class="tg-btn-border hostel-submit-btn" data-step-next="2">
+                                    Next <i class="fa-solid fa-arrow-right-long ms-2"></i>
+                                </button>
                             </div>
                         </div>
-                        <button type="submit" class="tg-btn-border hostel-submit-btn mt-35">Submit Booking Request <i class="fa-solid fa-arrow-right-long"></i></button>
+
+                        <div class="hostel-step-panel" data-step-panel="2">
+                            <div class="hostel-step-panel-head mb-3">
+                                <span class="hostel-step-kicker">Booking Summary</span>
+                                <h3>Review Before Payment</h3>
+                                <p>Check your stay details carefully before moving to QR payment confirmation.</p>
+                            </div>
+
+                            <ul class="hostel-summary-list">
+                                <li><span>Area</span><strong>{{ cot.room.floor.section.building.area.area_name }}</strong></li>
+                                <li><span>Society</span><strong>{{ cot.room.floor.section.building.building_name }}</strong></li>
+                                <li><span>Building / Wing</span><strong>{{ cot.room.floor.section.section_name }}</strong></li>
+                                <li><span>Floor</span><strong>{{ cot.room.floor.floor_name }}</strong></li>
+                                <li><span>Room</span><strong>{{ cot.room.room_number }}</strong></li>
+                                <li><span>Cot</span><strong>{{ cot.cot_number }}</strong></li>
+                                <li><span>Staying Start Date</span><strong id="summaryStartDate">{{ form.booking_from_date.value|default:"-" }}</strong></li>
+                                <li><span>Rent Expiry Date</span><strong id="summaryRentExpiryDate">-</strong></li>
+                            </ul>
+
+                            <div class="hostel-pricing-box">
+                                <div><span>Monthly Rent</span><strong id="summaryMonthlyRent">Rs. {{ estimates.monthly_rent }}</strong></div>
+                                <div><span>First Rent Amount</span><strong id="summaryFirstRent">Rs. {{ estimates.first_rent_amount }}</strong></div>
+                                <div><span>Security Deposit</span><strong id="summarySecurityDeposit">Rs. {{ estimates.security_deposit }}</strong></div>
+                                <div class="hostel-pricing-total"><span>Estimated Payable Now</span><strong id="summaryTotalAmount">Rs. {{ estimates.total_amount }}</strong></div>
+                            </div>
+
+                            <div class="hostel-summary-note mt-3">
+                                The payable amount is calculated from your selected staying start date up to the last day of that month, then combined with the security deposit for this booking.
+                            </div>
+
+                            <div class="hostel-step-actions">
+                                <button type="button" class="tg-btn-border hostel-secondary-btn" data-step-back="1">Back</button>
+                                <button type="button" class="tg-btn-border hostel-submit-btn" data-step-next="3">
+                                    Confirm and Pay <i class="fa-solid fa-arrow-right-long ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="hostel-step-panel" data-step-panel="3">
+                            <div class="hostel-step-panel-head mb-3">
+                                <span class="hostel-step-kicker">UPI Payment</span>
+                                <h3>Scan QR and Upload Payment Proof</h3>
+                                <p>Scan the active QR code, complete your transfer, then upload the UTR and payment screenshot below.</p>
+                            </div>
+
+                            {% if qr_setting and qr_setting.qr_image %}
+                                <div class="hostel-qr-box mb-3">
+                                    <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="hostel-qr-image">
+                                </div>
+                                <ul class="hostel-summary-list hostel-summary-list-compact mb-3">
+                                    <li><span>Title</span><strong>{{ qr_setting.title }}</strong></li>
+                                    <li><span>UPI ID</span><strong>{{ qr_setting.upi_id|default:"-" }}</strong></li>
+                                    <li><span>Account Name</span><strong>{{ qr_setting.account_name|default:"-" }}</strong></li>
+                                </ul>
+                            {% else %}
+                                <div class="hostel-empty-panel mb-3">
+                                    <h5>No active QR available</h5>
+                                    <p class="mb-0">Please contact the admin before submitting your booking request.</p>
+                                </div>
+                            {% endif %}
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.utr_transaction_id.id_for_label }}">Payment UTR / Transaction ID</label>
+                                        {{ form.utr_transaction_id }}
+                                        {% for error in form.utr_transaction_id.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="hostel-form-group">
+                                        <label for="{{ form.payment_screenshot.id_for_label }}">Payment Screenshot</label>
+                                        {{ form.payment_screenshot }}
+                                        {% for error in form.payment_screenshot.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="hostel-step-actions">
+                                <button type="button" class="tg-btn-border hostel-secondary-btn" data-step-back="2">Back</button>
+                                <button type="submit" class="tg-btn-border hostel-submit-btn">
+                                    Submit Booking Request <i class="fa-solid fa-arrow-right-long ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
+
             <div class="col-xl-5 col-lg-5">
                 <div class="hostel-checkout-summary">
                     <div class="hostel-summary-card">
                         <span class="tg-section-subtitle">Selected Cot</span>
-                        <h3>Booking Summary</h3>
+                        <h3>Quick Booking Summary</h3>
                         <ul class="hostel-summary-list">
                             <li><span>Area</span><strong>{{ cot.room.floor.section.building.area.area_name }}</strong></li>
                             <li><span>Society</span><strong>{{ cot.room.floor.section.building.building_name }}</strong></li>
@@ -296,28 +473,128 @@
                             <div class="hostel-pricing-total"><span>Estimated Payable Now</span><strong>Rs. {{ estimates.total_amount }}</strong></div>
                         </div>
                     </div>
-                    <div class="hostel-summary-card">
-                        <span class="tg-section-subtitle">UPI Payment</span>
-                        <h3>Scan QR Before Submit</h3>
-                        {% if qr_setting and qr_setting.qr_image %}
-                            <div class="hostel-qr-box">
-                                <img src="{{ qr_setting.qr_image.url }}" alt="UPI QR" class="hostel-qr-image">
-                            </div>
-                            <ul class="hostel-summary-list hostel-summary-list-compact">
-                                <li><span>Title</span><strong>{{ qr_setting.title }}</strong></li>
-                                <li><span>UPI ID</span><strong>{{ qr_setting.upi_id|default:"-" }}</strong></li>
-                                <li><span>Account Name</span><strong>{{ qr_setting.account_name|default:"-" }}</strong></li>
-                            </ul>
-                        {% else %}
-                            <div class="hostel-empty-panel">
-                                <h5>No active QR available</h5>
-                                <p class="mb-0">Please contact the admin before submitting your booking request.</p>
-                            </div>
-                        {% endif %}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const wizard = document.getElementById("bookingWizard");
+            const bookingForm = document.getElementById("publicBookingForm");
+            if (!wizard || !bookingForm) return;
+
+            const panels = Array.from(document.querySelectorAll("[data-step-panel]"));
+            const pills = Array.from(document.querySelectorAll("[data-step-pill]"));
+            const bookingDateInput = document.getElementById("{{ form.booking_from_date.id_for_label }}");
+            const monthlyRent = parseFloat(wizard.dataset.monthlyRent || "0");
+            const securityDeposit = parseFloat(wizard.dataset.securityDeposit || "0");
+            const calculationMethod = wizard.dataset.calculationMethod || "inclusive";
+
+            const summaryStartDate = document.getElementById("summaryStartDate");
+            const summaryRentExpiryDate = document.getElementById("summaryRentExpiryDate");
+            const summaryFirstRent = document.getElementById("summaryFirstRent");
+            const summarySecurityDeposit = document.getElementById("summarySecurityDeposit");
+            const summaryTotalAmount = document.getElementById("summaryTotalAmount");
+
+            function showStep(step) {
+                panels.forEach(function (panel) {
+                    panel.classList.toggle("is-active", panel.dataset.stepPanel === String(step));
+                });
+                pills.forEach(function (pill) {
+                    pill.classList.toggle("is-active", pill.dataset.stepPill === String(step));
+                });
+            }
+
+            function formatMoney(value) {
+                return "Rs. " + (Math.round(value * 100) / 100).toFixed(2);
+            }
+
+            function formatDateLabel(dateObj) {
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+                const day = String(dateObj.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+
+            function updateSummary() {
+                if (!bookingDateInput || !bookingDateInput.value) return;
+                const startDate = new Date(bookingDateInput.value + "T00:00:00");
+                if (Number.isNaN(startDate.getTime())) return;
+
+                const year = startDate.getFullYear();
+                const month = startDate.getMonth();
+                const monthEnd = new Date(year, month + 1, 0);
+                const totalDaysInMonth = monthEnd.getDate();
+
+                let effectiveStart = new Date(startDate);
+                if (calculationMethod === "exclusive_start") {
+                    effectiveStart.setDate(effectiveStart.getDate() + 1);
+                }
+
+                let billableDays = Math.floor((monthEnd - effectiveStart) / (1000 * 60 * 60 * 24)) + 1;
+                if (billableDays < 0) {
+                    billableDays = 0;
+                }
+
+                let firstRentAmount = monthlyRent;
+                if (startDate.getDate() !== 1) {
+                    const dailyRent = monthlyRent / totalDaysInMonth;
+                    firstRentAmount = dailyRent * billableDays;
+                }
+
+                const totalAmount = firstRentAmount + securityDeposit;
+
+                if (summaryStartDate) summaryStartDate.textContent = formatDateLabel(startDate);
+                if (summaryRentExpiryDate) summaryRentExpiryDate.textContent = formatDateLabel(monthEnd);
+                if (summaryFirstRent) summaryFirstRent.textContent = formatMoney(firstRentAmount);
+                if (summarySecurityDeposit) summarySecurityDeposit.textContent = formatMoney(securityDeposit);
+                if (summaryTotalAmount) summaryTotalAmount.textContent = formatMoney(totalAmount);
+            }
+
+            bookingForm.querySelectorAll("[data-step-next]").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    const nextStep = button.getAttribute("data-step-next");
+                    const currentPanel = button.closest("[data-step-panel]");
+                    if (currentPanel) {
+                        const currentInputs = Array.from(currentPanel.querySelectorAll("input, select, textarea")).filter(function (field) {
+                            return field.type !== "hidden" && !field.disabled;
+                        });
+                        for (const field of currentInputs) {
+                            if (!field.reportValidity()) {
+                                return;
+                            }
+                        }
+                    }
+                    updateSummary();
+                    showStep(nextStep);
+                });
+            });
+
+            bookingForm.querySelectorAll("[data-step-back]").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    showStep(button.getAttribute("data-step-back"));
+                });
+            });
+
+            if (bookingDateInput) {
+                bookingDateInput.addEventListener("change", updateSummary);
+            }
+
+            updateSummary();
+
+            const hasPaymentErrors = {{ form.utr_transaction_id.errors|length|yesno:"true,false" }} || {{ form.payment_screenshot.errors|length|yesno:"true,false" }};
+            const hasGuestErrors = {{ form.full_name.errors|length|yesno:"true,false" }} || {{ form.mobile_number.errors|length|yesno:"true,false" }} || {{ form.whatsapp_number.errors|length|yesno:"true,false" }} || {{ form.relative_contact_number.errors|length|yesno:"true,false" }} || {{ form.address.errors|length|yesno:"true,false" }} || {{ form.state.errors|length|yesno:"true,false" }} || {{ form.pincode.errors|length|yesno:"true,false" }} || {{ form.student_photo.errors|length|yesno:"true,false" }} || {{ form.address_proof_type.errors|length|yesno:"true,false" }} || {{ form.address_proof_front.errors|length|yesno:"true,false" }} || {{ form.address_proof_back.errors|length|yesno:"true,false" }} || {{ form.booking_from_date.errors|length|yesno:"true,false" }};
+
+            if (hasPaymentErrors) {
+                showStep(3);
+            } else if (hasGuestErrors || {{ form.non_field_errors|length|yesno:"true,false" }}) {
+                showStep(1);
+            }
+        });
+    </script>
 {% endblock %}

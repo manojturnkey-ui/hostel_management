@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime
+import calendar
+from datetime import date, datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -108,6 +109,54 @@ def _build_latest_guest_payment(guest):
         "submitted_at": latest_booking_payment.confirmed_at or latest_booking_payment.created_at,
         "location": latest_booking_payment.booking.cot.get_location_path(),
         "screenshot": latest_booking_payment.payment_screenshot,
+    }
+
+
+def _get_booking_bill_context(booking):
+    if not booking:
+        return None
+
+    today = timezone.localdate()
+    prefetched_dues = list(getattr(booking, "monthly_dues", []))
+    dues = sorted(prefetched_dues, key=lambda item: (item.bill_year, item.bill_month, item.created_at), reverse=True)
+
+    current_bill = next((item for item in dues if item.bill_year == today.year and item.bill_month == today.month), None)
+    upcoming_or_open_bill = next(
+        (
+            item
+            for item in dues
+            if item.payment_status
+            in [
+                BillPaymentStatusChoices.UNPAID,
+                BillPaymentStatusChoices.PENDING_VERIFICATION,
+                BillPaymentStatusChoices.OVERDUE,
+            ]
+        ),
+        None,
+    )
+    selected_bill = current_bill or upcoming_or_open_bill or (dues[0] if dues else None)
+
+    if selected_bill:
+        renewal_month = calendar.month_name[selected_bill.bill_month]
+        renewal_year = selected_bill.bill_year
+        rent_expiry_date = selected_bill.billing_period_end
+        blocked_from_date = selected_bill.grace_period_end_date + timedelta(days=1)
+    else:
+        renewal_month = calendar.month_name[today.month]
+        renewal_year = today.year
+        month_end = calendar.monthrange(today.year, today.month)[1]
+        rent_expiry_date = date(today.year, today.month, month_end)
+        blocked_from_date = date(today.year, today.month, 6)
+
+    return {
+        "bill": selected_bill,
+        "rent_expiry_date": rent_expiry_date,
+        "renewal_window_label": f"1 to 5 {renewal_month} {renewal_year}",
+        "blocked_from_date": blocked_from_date,
+        "blocked_note": (
+            f"Please renew your stay between 1 and 5 {renewal_month} {renewal_year}. "
+            f"After {blocked_from_date.strftime('%d %b %Y')}, you may not be able to check in until the payment is verified."
+        ),
     }
 
 
@@ -328,6 +377,10 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
             except StudentAccess.DoesNotExist:
                 current_access = None
 
+        dashboard_current_booking = current_booking or booking_status_booking
+        dashboard_current_booking_billing = _get_booking_bill_context(dashboard_current_booking)
+        booking_status_billing = _get_booking_bill_context(booking_status_booking)
+
         context.update(
             {
                 "page_title": "Guest Portal",
@@ -335,7 +388,10 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
                 "guest": guest,
                 "guest_bookings": bookings,
                 "dashboard_pending_booking": pending_dashboard_booking,
+                "dashboard_current_booking": dashboard_current_booking,
+                "dashboard_current_booking_billing": dashboard_current_booking_billing,
                 "booking_status_booking": booking_status_booking,
+                "booking_status_billing": booking_status_billing,
                 "booking_history": booking_history,
                 "current_access": current_access,
                 "latest_payment": _build_latest_guest_payment(guest),

@@ -251,6 +251,25 @@ def send_booking_submitted_message(booking):
     return log_and_send("booking_submitted", booking.student, booking.student.whatsapp_number, "booking_submitted", booking_context(booking))
 
 
+def send_guest_portal_credentials_message(booking, username: str, password: str):
+    message = (
+        f"Dear {booking.student.full_name}, your guest login is ready.\n"
+        f"Username: {username}\n"
+        f"Password: {password}\n"
+        "Use these credentials to track your booking status and latest payment."
+    )
+    gateway_response = send_gateway_message(booking.student.whatsapp_number, message)
+    status = WhatsAppLogStatusChoices.SENT if gateway_response.ok and gateway_response.data.get("success", True) else WhatsAppLogStatusChoices.FAILED
+    return WhatsAppLog.objects.create(
+        student=booking.student,
+        mobile_number=booking.student.whatsapp_number,
+        event_type="guest_credentials",
+        message=message,
+        status=status,
+        response=gateway_response.summary,
+    )
+
+
 def send_payment_pending_message(booking):
     return log_and_send("payment_pending", booking.student, booking.student.whatsapp_number, "payment_pending", booking_context(booking))
 

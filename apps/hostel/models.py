@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 from config.model_mixins import TimeStampedModel
-from config.validators import validate_excel_file
+from config.validators import validate_excel_file, validate_image_file
 
 
 class ActiveStatusChoices(models.TextChoices):
@@ -54,6 +54,7 @@ class SystemSetting(TimeStampedModel):
 class Area(TimeStampedModel):
     area_name = models.CharField(max_length=150, unique=True)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="hostel_setup/areas/", blank=True, null=True, validators=[validate_image_file])
     status = models.CharField(max_length=10, choices=ActiveStatusChoices.choices, default=ActiveStatusChoices.ACTIVE)
 
     class Meta:
@@ -70,6 +71,7 @@ class Building(TimeStampedModel):
     area = models.ForeignKey(Area, on_delete=models.PROTECT, related_name="buildings")
     building_name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="hostel_setup/buildings/", blank=True, null=True, validators=[validate_image_file])
     status = models.CharField(max_length=10, choices=ActiveStatusChoices.choices, default=ActiveStatusChoices.ACTIVE)
 
     class Meta:
@@ -87,6 +89,7 @@ class Section(TimeStampedModel):
     building = models.ForeignKey(Building, on_delete=models.PROTECT, related_name="sections")
     section_name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="hostel_setup/sections/", blank=True, null=True, validators=[validate_image_file])
     status = models.CharField(max_length=10, choices=ActiveStatusChoices.choices, default=ActiveStatusChoices.ACTIVE)
 
     class Meta:
@@ -104,6 +107,7 @@ class Floor(TimeStampedModel):
     section = models.ForeignKey(Section, on_delete=models.PROTECT, related_name="floors")
     floor_name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="hostel_setup/floors/", blank=True, null=True, validators=[validate_image_file])
     status = models.CharField(max_length=10, choices=ActiveStatusChoices.choices, default=ActiveStatusChoices.ACTIVE)
 
     class Meta:
@@ -123,6 +127,7 @@ class Room(TimeStampedModel):
     room_name = models.CharField(max_length=150, blank=True)
     room_type = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="hostel_setup/rooms/", blank=True, null=True, validators=[validate_image_file])
     status = models.CharField(max_length=10, choices=ActiveStatusChoices.choices, default=ActiveStatusChoices.ACTIVE)
 
     class Meta:
@@ -152,6 +157,7 @@ class Cot(TimeStampedModel):
     )
     status = models.CharField(max_length=20, choices=CotStatusChoices.choices, default=CotStatusChoices.AVAILABLE)
     remarks = models.TextField(blank=True)
+    image = models.ImageField(upload_to="hostel_setup/cots/", blank=True, null=True, validators=[validate_image_file])
 
     class Meta:
         ordering = ["room__room_number", "cot_number"]

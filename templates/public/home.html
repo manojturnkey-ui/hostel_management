@@ -112,7 +112,11 @@
                     <div class="hostel-area-showcase-card hostel-home-card-gap">
                         <div class="hostel-area-showcase-thumb">
                             <a href="{% url 'public_features' %}?area={{ area.pk }}">
-                                <img src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '1' '2' '3' '4' %}.jpg" alt="{{ area.area_name }}">
+                                {% if area.image %}
+                                    <img src="{{ area.image.url }}" alt="{{ area.area_name }}">
+                                {% else %}
+                                    <img src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '1' '2' '3' '4' %}.jpg" alt="{{ area.area_name }}">
+                                {% endif %}
                             </a>
                         </div>
                         <div class="hostel-area-showcase-content">
@@ -229,7 +233,11 @@
                 <div class="col-xl-4 col-lg-6 col-md-6">
                     <div class="hostel-premium-card hostel-home-card-gap">
                         <div class="hostel-premium-thumb p-relative">
-                            <img class="w-100" src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '4' '2' '3' '1' '2' '3' %}.jpg" alt="Premium cot">
+                            {% if cot.image %}
+                                <img class="w-100" src="{{ cot.image.url }}" alt="Premium cot">
+                            {% else %}
+                                <img class="w-100" src="{% static 'public/tourex/img/destination/tu/des-' %}{% cycle '4' '2' '3' '1' '2' '3' %}.jpg" alt="Premium cot">
+                            {% endif %}
                             <span class="hostel-premium-badge">Featured</span>
                             <a class="hostel-premium-arrow" href="{% url 'public_booking_create' cot.pk %}" aria-label="Book this cot">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>

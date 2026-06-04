@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.db.models.deletion import ProtectedError, RestrictedError
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import FormView, TemplateView
 
@@ -107,6 +107,44 @@ def _group_room_results(cots):
             grouped.append(current_group)
         current_group["cots"].append(cot)
     return grouped
+
+
+def _feature_explorer_state(*, selected_area=None, selected_building=None, selected_section=None, selected_floor=None, selected_room=None):
+    if selected_room:
+        return {
+            "level": "cot",
+            "heading": "Available Cots",
+            "subtitle": "Choose a cot from the selected room and continue to booking.",
+        }
+    if selected_floor:
+        return {
+            "level": "room",
+            "heading": "Choose Room",
+            "subtitle": "Select a room to see the available cots inside it.",
+        }
+    if selected_section:
+        return {
+            "level": "floor",
+            "heading": "Choose Floor",
+            "subtitle": "Select a floor inside this building or wing.",
+        }
+    if selected_building:
+        return {
+            "level": "section",
+            "heading": "Choose Building / Wing",
+            "subtitle": "Select the building or wing available inside this society.",
+        }
+    if selected_area:
+        return {
+            "level": "building",
+            "heading": "Choose Society",
+            "subtitle": "Select the society available for the chosen area.",
+        }
+    return {
+        "level": "area",
+        "heading": "Choose Area",
+        "subtitle": "Start from the hostel area and move step by step until cot selection.",
+    }
 
 
 def _dummy_testimonials():
@@ -596,6 +634,28 @@ class FeaturePublicView(TemplateView):
             .order_by("cot_total")
         )
         cot_capacity_options = [value for value in cot_capacity_options if value]
+        if selected_cot_capacities:
+            filtered_rooms = filtered_rooms.annotate(cot_total=Count("cots")).filter(cot_total__in=selected_cot_capacities)
+
+        explorer_state = _feature_explorer_state(
+            selected_area=selected_area,
+            selected_building=selected_building,
+            selected_section=selected_section,
+            selected_floor=selected_floor,
+            selected_room=selected_room,
+        )
+
+        explorer_items = []
+        if explorer_state["level"] == "area":
+            explorer_items = list(filters["areas"])
+        elif explorer_state["level"] == "building":
+            explorer_items = list(filters["buildings"].filter(area_id=selected_area))
+        elif explorer_state["level"] == "section":
+            explorer_items = list(filters["sections"].filter(building_id=selected_building))
+        elif explorer_state["level"] == "floor":
+            explorer_items = list(filters["floors"].filter(section_id=selected_section))
+        elif explorer_state["level"] == "room":
+            explorer_items = list(filtered_rooms.filter(floor_id=selected_floor))
 
         matching_cots = list(
             _filtered_cots(
@@ -634,6 +694,8 @@ class FeaturePublicView(TemplateView):
                 "matching_cots": matching_cots,
                 "room_groups": _group_room_results(matching_cots),
                 "top_cots": Cot.objects.select_related("room__floor__section__building__area").order_by("-cot_price", "cot_number")[:12],
+                "explorer_state": explorer_state,
+                "explorer_items": explorer_items,
             }
         )
         return context
@@ -744,20 +806,7 @@ class RoomPublicView(TemplateView):
         return context
 
 
-class CotPublicView(TemplateView):
-    template_name = "public/cots.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+class CotPublicView(View):
+    def get(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=self.kwargs["room_id"], status=ActiveStatusChoices.ACTIVE)
-        context.update(
-            {
-                "page_title": room.full_label(),
-                "page_description": "Select your cot",
-                "room": room,
-                "cots": room.cots.order_by("cot_number"),
-                "confirmed_status": BookingStatusChoices.CONFIRMED,
-                "cot_available": CotStatusChoices.AVAILABLE,
-            }
-        )
-        return context
+        return redirect(f"{reverse('public_features')}?room={room.pk}")

@@ -14,6 +14,7 @@ from apps.payments.services import get_active_qr_setting
 from .forms import BookingReviewForm, GraceExtensionForm, ManualBillGenerateForm, MonthlyRentPaymentForm, PublicBookingForm
 from .models import BillPaymentStatusChoices, Booking, BookingStatusChoices, MonthlyRentDue, Student
 from .services import (
+    get_system_setting,
     confirm_booking_payment,
     confirm_monthly_bill_payment,
     create_public_booking,
@@ -322,12 +323,14 @@ class PublicBookingCreateView(FormView):
         context = super().get_context_data(**kwargs)
         default_date = timezone.localdate()
         estimates = estimate_booking_total(self.cot, default_date)
+        system_setting = get_system_setting()
         context.update(
             {
                 "page_title": "Book Cot",
                 "cot": self.cot,
                 "qr_setting": get_active_qr_setting(),
                 "estimates": estimates,
+                "billing_calculation_method": system_setting.billing_calculation_method,
             }
         )
         return context
