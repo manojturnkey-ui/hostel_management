@@ -51,7 +51,10 @@ class PublicBookingForm(StyledFormMixin, forms.Form):
     address_proof_type = forms.ChoiceField(choices=AddressProofTypeChoices.choices, label="Address Proof Type")
     address_proof_front = forms.ImageField(validators=[validate_image_file], label="Address Proof Front")
     address_proof_back = forms.ImageField(required=False, validators=[validate_image_file], label="Address Proof Back")
-    booking_from_date = forms.DateField(widget=forms.DateInput, label="Staying Start Date")
+    booking_from_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        label="Staying Start Date",
+    )
     utr_transaction_id = forms.CharField(max_length=100, label="Payment UTR / Transaction ID")
     payment_screenshot = forms.ImageField(validators=[validate_image_file], label="Payment Screenshot")
 

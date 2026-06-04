@@ -242,8 +242,8 @@
 {% block content %}
 <section class="hostel-checkout-area pt-120 pb-120">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-xl-7 col-lg-7">
+        <div class="row justify-content-center">
+            <div class="col-xl-9 col-lg-10">
                 <div
                     class="hostel-checkout-panel"
                     id="bookingWizard"
@@ -252,9 +252,7 @@
                     data-calculation-method="{{ billing_calculation_method }}"
                 >
                     <div class="hostel-panel-head">
-                        <span class="tg-section-subtitle">Guest Booking Form</span>
-                        <h3>Complete Your Cot Booking Request</h3>
-                        <p>First fill the guest details, then review the booking summary, and finally confirm payment on the same page.</p>
+                        <h3>Confirm Booking</h3>
                     </div>
 
                     <div class="hostel-stepper">
@@ -392,11 +390,11 @@
                             </div>
 
                             <div class="hostel-summary-note mt-3">
-                                The payable amount is calculated from your selected staying start date up to the last day of that month, then combined with the security deposit for this booking.
+                                Your first payment is calculated from the selected staying start date up to the last day of that month, then combined with the security deposit for this booking. From the next month onward, renewal between the 1st and 5th is charged as the full monthly rent for that month.
                             </div>
 
                             <div class="hostel-step-actions">
-                                <button type="button" class="tg-btn-border hostel-secondary-btn" data-step-back="1">Back</button>
+                                <button type="button" class="tg-btn-border hostel-secondary-btn" data-step-back="1"><i class="fa-solid fa-arrow-left-long me-2"></i>Back</button>
                                 <button type="button" class="tg-btn-border hostel-submit-btn" data-step-next="3">
                                     Confirm and Pay <i class="fa-solid fa-arrow-right-long ms-2"></i>
                                 </button>
@@ -444,35 +442,13 @@
                             </div>
 
                             <div class="hostel-step-actions">
-                                <button type="button" class="tg-btn-border hostel-secondary-btn" data-step-back="2">Back</button>
+                                <button type="button" class="tg-btn-border hostel-secondary-btn" data-step-back="2"><i class="fa-solid fa-arrow-left-long me-2"></i>Back</button>
                                 <button type="submit" class="tg-btn-border hostel-submit-btn">
                                     Submit Booking Request <i class="fa-solid fa-arrow-right-long ms-2"></i>
                                 </button>
                             </div>
                         </div>
                     </form>
-                </div>
-            </div>
-
-            <div class="col-xl-5 col-lg-5">
-                <div class="hostel-checkout-summary">
-                    <div class="hostel-summary-card">
-                        <span class="tg-section-subtitle">Selected Cot</span>
-                        <h3>Quick Booking Summary</h3>
-                        <ul class="hostel-summary-list">
-                            <li><span>Area</span><strong>{{ cot.room.floor.section.building.area.area_name }}</strong></li>
-                            <li><span>Society</span><strong>{{ cot.room.floor.section.building.building_name }}</strong></li>
-                            <li><span>Building / Wing</span><strong>{{ cot.room.floor.section.section_name }}</strong></li>
-                            <li><span>Floor</span><strong>{{ cot.room.floor.floor_name }}</strong></li>
-                            <li><span>Room</span><strong>{{ cot.room.room_number }}</strong></li>
-                            <li><span>Cot</span><strong>{{ cot.cot_number }}</strong></li>
-                        </ul>
-                        <div class="hostel-pricing-box">
-                            <div><span>Monthly Rent</span><strong>Rs. {{ estimates.monthly_rent }}</strong></div>
-                            <div><span>Security Deposit</span><strong>Rs. {{ estimates.security_deposit }}</strong></div>
-                            <div class="hostel-pricing-total"><span>Estimated Payable Now</span><strong>Rs. {{ estimates.total_amount }}</strong></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -583,6 +559,16 @@
 
             if (bookingDateInput) {
                 bookingDateInput.addEventListener("change", updateSummary);
+                bookingDateInput.addEventListener("focus", function () {
+                    if (typeof bookingDateInput.showPicker === "function") {
+                        bookingDateInput.showPicker();
+                    }
+                });
+                bookingDateInput.addEventListener("click", function () {
+                    if (typeof bookingDateInput.showPicker === "function") {
+                        bookingDateInput.showPicker();
+                    }
+                });
             }
 
             updateSummary();
