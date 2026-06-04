@@ -2138,6 +2138,10 @@ body.hostel-public-body {
     background: #f8f8f8;
     border-radius: 6px;
     padding: 22px;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .hostel-filter-head {
@@ -2158,6 +2162,29 @@ body.hostel-public-body {
     color: #5b16e8;
     font-size: 12px;
     font-weight: 600;
+}
+
+.hostel-grid-filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    margin-right: -6px;
+}
+
+.hostel-grid-filter-form::-webkit-scrollbar {
+    width: 6px;
+}
+
+.hostel-grid-filter-form::-webkit-scrollbar-thumb {
+    background: rgba(91, 22, 232, 0.28);
+    border-radius: 999px;
+}
+
+.hostel-grid-filter-form::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .hostel-filter-item {
@@ -2197,6 +2224,12 @@ body.hostel-public-body {
 .hostel-filter-check-group {
     display: grid;
     gap: 8px;
+}
+
+.hostel-filter-check-group-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 12px;
+    row-gap: 10px;
 }
 
 .hostel-filter-check {
@@ -2455,6 +2488,17 @@ body.hostel-public-body {
         position: static;
     }
 
+    .hostel-grid-filter-box {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .hostel-grid-filter-form {
+        overflow: visible;
+        padding-right: 0;
+        margin-right: 0;
+    }
+
     .hostel-grid-page-head {
         margin-top: 20px;
     }
@@ -2478,6 +2522,9 @@ body.hostel-public-body {
     .hostel-grid-cot-image {
         height: 190px;
     }
-}
 
+    .hostel-filter-check-group-two-col {
+        grid-template-columns: 1fr;
+    }
+}
 

@@ -101,7 +101,7 @@
                             <a href="{% url 'public_features' %}">Reset All</a>
                         </div>
 
-                        <form method="get" action="{% url 'public_features' %}">
+                        <form method="get" action="{% url 'public_features' %}" class="hostel-grid-filter-form">
                             <div class="hostel-filter-item">
                                 <label>Area</label>
                                 <select name="area" id="featureArea">
@@ -164,7 +164,7 @@
 
                             <div class="hostel-filter-item">
                                 <label>Room Type</label>
-                                <div class="hostel-filter-check-group">
+                                <div class="hostel-filter-check-group hostel-filter-check-group-two-col">
                                     {% for option in room_type_options %}
                                         <label class="hostel-filter-check">
                                             <input type="checkbox" name="room_type" value="{{ option.value }}" {% if option.value in selected_filters.room_types %}checked{% endif %}>
@@ -176,7 +176,7 @@
 
                             <div class="hostel-filter-item">
                                 <label>Cot Count In Room</label>
-                                <div class="hostel-filter-check-group">
+                                <div class="hostel-filter-check-group hostel-filter-check-group-two-col">
                                     {% for option in cot_capacity_options %}
                                         <label class="hostel-filter-check">
                                             <input type="checkbox" name="cot_capacity" value="{{ option }}" {% if option in selected_filters.cot_capacities %}checked{% endif %}>
