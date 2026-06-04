@@ -34,4 +34,99 @@
         </div>
     </div>
 </div>
+{% if relation_options %}
+    {{ relation_options|json_script:"hostel-relation-options" }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const relationNode = document.getElementById("hostel-relation-options");
+            if (!relationNode) return;
+
+            const relationOptions = JSON.parse(relationNode.textContent);
+            const areaSelect = document.getElementById("id_area");
+            const buildingSelect = document.getElementById("id_building");
+            const sectionSelect = document.getElementById("id_section");
+            const floorSelect = document.getElementById("id_floor");
+            const roomSelect = document.getElementById("id_room");
+
+            function rebuildSelect(select, items, selectedValue, placeholder) {
+                if (!select) return;
+                const currentValue = selectedValue || "";
+                select.innerHTML = "";
+                const placeholderOption = document.createElement("option");
+                placeholderOption.value = "";
+                placeholderOption.textContent = placeholder;
+                select.appendChild(placeholderOption);
+
+                items.forEach(function (item) {
+                    const option = document.createElement("option");
+                    option.value = item.id;
+                    option.textContent = item.label;
+                    if (String(item.id) === String(currentValue)) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            }
+
+            function syncSelectors(resetFrom) {
+                const areaValue = areaSelect ? areaSelect.value : "";
+                const buildingValue = buildingSelect ? buildingSelect.value : "";
+                const sectionValue = sectionSelect ? sectionSelect.value : "";
+                const floorValue = floorSelect ? floorSelect.value : "";
+                const roomValue = roomSelect ? roomSelect.value : "";
+
+                if (buildingSelect) {
+                    const filteredBuildings = areaValue
+                        ? relationOptions.buildings.filter(function (item) { return String(item.area_id) === String(areaValue); })
+                        : [];
+                    rebuildSelect(buildingSelect, filteredBuildings, resetFrom === "area" ? "" : buildingValue, "Select Society");
+                }
+
+                if (sectionSelect) {
+                    const filteredSections = buildingSelect && buildingSelect.value
+                        ? relationOptions.sections.filter(function (item) { return String(item.building_id) === String(buildingSelect.value); })
+                        : [];
+                    rebuildSelect(sectionSelect, filteredSections, (resetFrom === "area" || resetFrom === "building") ? "" : sectionValue, "Select Building / Wing");
+                }
+
+                if (floorSelect) {
+                    const filteredFloors = sectionSelect && sectionSelect.value
+                        ? relationOptions.floors.filter(function (item) { return String(item.section_id) === String(sectionSelect.value); })
+                        : [];
+                    rebuildSelect(floorSelect, filteredFloors, (resetFrom === "area" || resetFrom === "building" || resetFrom === "section") ? "" : floorValue, "Select Floor");
+                }
+
+                if (roomSelect) {
+                    const filteredRooms = floorSelect && floorSelect.value
+                        ? relationOptions.rooms.filter(function (item) { return String(item.floor_id) === String(floorSelect.value); })
+                        : [];
+                    rebuildSelect(roomSelect, filteredRooms, (resetFrom === "area" || resetFrom === "building" || resetFrom === "section" || resetFrom === "floor") ? "" : roomValue, "Select Room");
+                }
+            }
+
+            if (areaSelect) {
+                areaSelect.addEventListener("change", function () {
+                    syncSelectors("area");
+                });
+            }
+            if (buildingSelect) {
+                buildingSelect.addEventListener("change", function () {
+                    syncSelectors("building");
+                });
+            }
+            if (sectionSelect) {
+                sectionSelect.addEventListener("change", function () {
+                    syncSelectors("section");
+                });
+            }
+            if (floorSelect) {
+                floorSelect.addEventListener("change", function () {
+                    syncSelectors("floor");
+                });
+            }
+
+            syncSelectors("");
+        });
+    </script>
+{% endif %}
 {% endblock %}

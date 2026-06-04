@@ -162,6 +162,32 @@
                                 </select>
                             </div>
 
+                            <div class="hostel-filter-item">
+                                <label>Room Type</label>
+                                <div class="hostel-filter-check-group">
+                                    {% for option in room_type_options %}
+                                        <label class="hostel-filter-check">
+                                            <input type="checkbox" name="room_type" value="{{ option.value }}" {% if option.value in selected_filters.room_types %}checked{% endif %}>
+                                            <span>{{ option.label }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="hostel-filter-item">
+                                <label>Cot Count In Room</label>
+                                <div class="hostel-filter-check-group">
+                                    {% for option in cot_capacity_options %}
+                                        <label class="hostel-filter-check">
+                                            <input type="checkbox" name="cot_capacity" value="{{ option }}" {% if option in selected_filters.cot_capacities %}checked{% endif %}>
+                                            <span>{{ option }} Cot{{ option|pluralize }}</span>
+                                        </label>
+                                    {% empty %}
+                                        <p class="text-muted mb-0 small">No cot count filter available for the current selection.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
                             <button type="submit" class="hostel-filter-submit">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 Search
@@ -267,7 +293,7 @@
                             <div class="hostel-no-data">
                                 <i class="fa-solid fa-bed"></i>
                                 <h4>No cots found</h4>
-                                <p>Try changing area, building, section, floor or room filter.</p>
+                                <p>Try changing area, society, building or wing, floor, room, room type, or cot-count filter.</p>
                             </div>
                         </div>
                     {% endfor %}

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
@@ -42,7 +43,28 @@ def _build_filter_collections():
     }
 
 
-def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=None, room_id=None):
+def _hostel_relation_options():
+    return {
+        "buildings": [
+            {"id": item.pk, "label": item.building_name, "area_id": item.area_id}
+            for item in Building.objects.filter(status=ActiveStatusChoices.ACTIVE).order_by("building_name")
+        ],
+        "sections": [
+            {"id": item.pk, "label": item.section_name, "building_id": item.building_id}
+            for item in Section.objects.filter(status=ActiveStatusChoices.ACTIVE).order_by("section_name")
+        ],
+        "floors": [
+            {"id": item.pk, "label": item.floor_name, "section_id": item.section_id}
+            for item in Floor.objects.filter(status=ActiveStatusChoices.ACTIVE).order_by("floor_name")
+        ],
+        "rooms": [
+            {"id": item.pk, "label": item.full_label(), "floor_id": item.floor_id}
+            for item in Room.objects.filter(status=ActiveStatusChoices.ACTIVE).order_by("room_number")
+        ],
+    }
+
+
+def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=None, room_id=None, room_types=None, cot_capacities=None):
     queryset = Cot.objects.select_related("room__floor__section__building__area").order_by(
         "room__floor__section__building__area__area_name",
         "room__floor__section__building__building_name",
@@ -61,6 +83,14 @@ def _filtered_cots(area_id=None, building_id=None, section_id=None, floor_id=Non
         queryset = queryset.filter(room__floor_id=floor_id)
     if room_id:
         queryset = queryset.filter(room_id=room_id)
+    if room_types:
+        room_type_filter = Q()
+        for room_type in room_types:
+            room_type_filter |= Q(room__room_type__iexact=room_type)
+        queryset = queryset.filter(room_type_filter)
+    if cot_capacities:
+        room_ids = Room.objects.annotate(cot_total=Count("cots")).filter(cot_total__in=cot_capacities).values_list("id", flat=True)
+        queryset = queryset.filter(room_id__in=room_ids)
     return queryset
 
 
@@ -136,6 +166,13 @@ class AreaCreateView(PanelCreateView):
     back_url_name = "panel_area_list"
     success_message = "Area created successfully."
     success_url = reverse_lazy("panel_area_list")
+
+
+class HostelDependentFormContextMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["relation_options"] = _hostel_relation_options()
+        return context
 
 
 class AreaUpdateView(PanelUpdateView):
@@ -228,7 +265,7 @@ class FloorListView(PanelListView):
     update_url_name = "panel_floor_update"
 
 
-class FloorCreateView(PanelCreateView):
+class FloorCreateView(HostelDependentFormContextMixin, PanelCreateView):
     model = Floor
     form_class = FloorForm
     page_title = "Create Floor"
@@ -237,7 +274,7 @@ class FloorCreateView(PanelCreateView):
     success_url = reverse_lazy("panel_floor_list")
 
 
-class FloorUpdateView(PanelUpdateView):
+class FloorUpdateView(HostelDependentFormContextMixin, PanelUpdateView):
     model = Floor
     form_class = FloorForm
     page_title = "Update Floor"
@@ -263,7 +300,7 @@ class RoomListView(PanelListView):
     update_url_name = "panel_room_update"
 
 
-class RoomCreateView(PanelCreateView):
+class RoomCreateView(HostelDependentFormContextMixin, PanelCreateView):
     model = Room
     form_class = RoomForm
     page_title = "Create Room"
@@ -272,7 +309,7 @@ class RoomCreateView(PanelCreateView):
     success_url = reverse_lazy("panel_room_list")
 
 
-class RoomUpdateView(PanelUpdateView):
+class RoomUpdateView(HostelDependentFormContextMixin, PanelUpdateView):
     model = Room
     form_class = RoomForm
     page_title = "Update Room"
@@ -298,7 +335,7 @@ class CotListView(PanelListView):
     update_url_name = "panel_cot_update"
 
 
-class CotCreateView(PanelCreateView):
+class CotCreateView(HostelDependentFormContextMixin, PanelCreateView):
     model = Cot
     form_class = CotForm
     page_title = "Create Cot"
@@ -307,7 +344,7 @@ class CotCreateView(PanelCreateView):
     success_url = reverse_lazy("panel_cot_list")
 
 
-class CotUpdateView(PanelUpdateView):
+class CotUpdateView(HostelDependentFormContextMixin, PanelUpdateView):
     model = Cot
     form_class = CotForm
     page_title = "Update Cot"
@@ -398,7 +435,43 @@ class FeaturePublicView(TemplateView):
         selected_section = _safe_int(self.request.GET.get("section"))
         selected_floor = _safe_int(self.request.GET.get("floor"))
         selected_room = _safe_int(self.request.GET.get("room"))
-        matching_cots = list(_filtered_cots(selected_area, selected_building, selected_section, selected_floor, selected_room))
+        selected_room_types = [value for value in self.request.GET.getlist("room_type") if value in {"ac", "non-ac"}]
+        selected_cot_capacities = sorted({int(value) for value in self.request.GET.getlist("cot_capacity") if str(value).isdigit()})
+
+        filtered_rooms = filters["rooms"]
+        if selected_area:
+            filtered_rooms = filtered_rooms.filter(floor__section__building__area_id=selected_area)
+        if selected_building:
+            filtered_rooms = filtered_rooms.filter(floor__section__building_id=selected_building)
+        if selected_section:
+            filtered_rooms = filtered_rooms.filter(floor__section_id=selected_section)
+        if selected_floor:
+            filtered_rooms = filtered_rooms.filter(floor_id=selected_floor)
+        if selected_room_types:
+            room_type_filter = Q()
+            for room_type in selected_room_types:
+                room_type_filter |= Q(room_type__iexact=room_type)
+            filtered_rooms = filtered_rooms.filter(room_type_filter)
+
+        cot_capacity_options = list(
+            filtered_rooms.annotate(cot_total=Count("cots"))
+            .values_list("cot_total", flat=True)
+            .distinct()
+            .order_by("cot_total")
+        )
+        cot_capacity_options = [value for value in cot_capacity_options if value]
+
+        matching_cots = list(
+            _filtered_cots(
+                selected_area,
+                selected_building,
+                selected_section,
+                selected_floor,
+                selected_room,
+                selected_room_types,
+                selected_cot_capacities,
+            )
+        )
         context.update(
             {
                 "page_title": "Features",
@@ -414,7 +487,14 @@ class FeaturePublicView(TemplateView):
                     "section": selected_section,
                     "floor": selected_floor,
                     "room": selected_room,
+                    "room_types": selected_room_types,
+                    "cot_capacities": selected_cot_capacities,
                 },
+                "room_type_options": [
+                    {"value": "ac", "label": "AC"},
+                    {"value": "non-ac", "label": "Non-AC"},
+                ],
+                "cot_capacity_options": cot_capacity_options,
                 "matching_cots": matching_cots,
                 "room_groups": _group_room_results(matching_cots),
                 "top_cots": Cot.objects.select_related("room__floor__section__building__area").order_by("-cot_price", "cot_number")[:12],
