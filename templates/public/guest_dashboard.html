@@ -305,17 +305,6 @@
             text-align: right;
         }
 
-        .hostel-guest-payment-proof-box {
-            margin-top: 10px;
-        }
-
-        .hostel-guest-payment-proof {
-            width: 100%;
-            max-width: 280px;
-            border-radius: 18px;
-            border: 1px solid rgba(22, 32, 50, 0.08);
-        }
-
         .hostel-guest-renewal-note {
             margin-top: 14px;
             padding: 14px 16px;
@@ -609,11 +598,6 @@
                                 <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
                                 <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
                             </ul>
-                            {% if latest_payment.screenshot %}
-                                <div class="hostel-guest-payment-proof-box">
-                                    <img src="{{ latest_payment.screenshot.url }}" alt="Latest payment screenshot" class="hostel-guest-payment-proof">
-                                </div>
-                            {% endif %}
                         {% else %}
                             <div class="hostel-empty-panel">
                                 <h5>No payment record yet</h5>
