@@ -1,7 +1,9 @@
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError, RestrictedError
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import FormView, TemplateView
 
 from config.mixins import PanelLoginRequiredMixin
@@ -157,6 +159,8 @@ class AreaListView(PanelListView):
     search_fields = ["area_name", "description"]
     create_url_name = "panel_area_create"
     update_url_name = "panel_area_update"
+    delete_url_name = "panel_area_delete"
+    bulk_delete_url_name = "panel_area_bulk_delete"
 
 
 class AreaCreateView(PanelCreateView):
@@ -197,6 +201,8 @@ class BuildingListView(PanelListView):
     search_fields = ["building_name", "area__area_name"]
     create_url_name = "panel_building_create"
     update_url_name = "panel_building_update"
+    delete_url_name = "panel_building_delete"
+    bulk_delete_url_name = "panel_building_bulk_delete"
 
 
 class BuildingCreateView(PanelCreateView):
@@ -230,6 +236,8 @@ class SectionListView(PanelListView):
     search_fields = ["section_name", "building__building_name", "building__area__area_name"]
     create_url_name = "panel_section_create"
     update_url_name = "panel_section_update"
+    delete_url_name = "panel_section_delete"
+    bulk_delete_url_name = "panel_section_bulk_delete"
 
 
 class SectionCreateView(PanelCreateView):
@@ -263,6 +271,8 @@ class FloorListView(PanelListView):
     search_fields = ["floor_name", "section__section_name", "section__building__building_name"]
     create_url_name = "panel_floor_create"
     update_url_name = "panel_floor_update"
+    delete_url_name = "panel_floor_delete"
+    bulk_delete_url_name = "panel_floor_bulk_delete"
 
 
 class FloorCreateView(HostelDependentFormContextMixin, PanelCreateView):
@@ -298,6 +308,8 @@ class RoomListView(PanelListView):
     search_fields = ["room_number", "room_name", "room_type", "floor__floor_name"]
     create_url_name = "panel_room_create"
     update_url_name = "panel_room_update"
+    delete_url_name = "panel_room_delete"
+    bulk_delete_url_name = "panel_room_bulk_delete"
 
 
 class RoomCreateView(HostelDependentFormContextMixin, PanelCreateView):
@@ -333,6 +345,8 @@ class CotListView(PanelListView):
     search_fields = ["cot_number", "room__room_number"]
     create_url_name = "panel_cot_create"
     update_url_name = "panel_cot_update"
+    delete_url_name = "panel_cot_delete"
+    bulk_delete_url_name = "panel_cot_bulk_delete"
 
 
 class CotCreateView(HostelDependentFormContextMixin, PanelCreateView):
@@ -351,6 +365,128 @@ class CotUpdateView(HostelDependentFormContextMixin, PanelUpdateView):
     back_url_name = "panel_cot_list"
     success_message = "Cot updated successfully."
     success_url = reverse_lazy("panel_cot_list")
+
+
+class BaseHostelDeleteView(PanelLoginRequiredMixin, View):
+    model = None
+    success_url = ""
+    object_label = "Record"
+
+    def post(self, request, pk, *args, **kwargs):
+        instance = get_object_or_404(self.model, pk=pk)
+        try:
+            instance.delete()
+            messages.success(request, f"{self.object_label} deleted successfully.")
+        except (ProtectedError, RestrictedError):
+            messages.error(request, f"{self.object_label} cannot be deleted because it is linked to other records.")
+        except Exception as exc:
+            messages.error(request, f"Unable to delete {self.object_label.lower()}: {exc}")
+        return redirect(self.success_url)
+
+
+class BaseHostelBulkDeleteView(PanelLoginRequiredMixin, View):
+    model = None
+    success_url = ""
+    object_label = "records"
+
+    def post(self, request, *args, **kwargs):
+        selected_ids = [
+            int(item)
+            for item in request.POST.get("selected_ids", "").split(",")
+            if str(item).isdigit()
+        ]
+        if not selected_ids:
+            messages.warning(request, "Select at least one record to delete.")
+            return redirect(self.success_url)
+
+        deleted_count = 0
+        blocked_count = 0
+        for instance in self.model.objects.filter(pk__in=selected_ids):
+            try:
+                instance.delete()
+                deleted_count += 1
+            except (ProtectedError, RestrictedError):
+                blocked_count += 1
+            except Exception:
+                blocked_count += 1
+
+        if deleted_count:
+            messages.success(request, f"Deleted {deleted_count} {self.object_label}.")
+        if blocked_count:
+            messages.warning(request, f"{blocked_count} {self.object_label} could not be deleted because they are linked to other records.")
+        return redirect(self.success_url)
+
+
+class AreaDeleteView(BaseHostelDeleteView):
+    model = Area
+    success_url = reverse_lazy("panel_area_list")
+    object_label = "Area"
+
+
+class AreaBulkDeleteView(BaseHostelBulkDeleteView):
+    model = Area
+    success_url = reverse_lazy("panel_area_list")
+    object_label = "areas"
+
+
+class BuildingDeleteView(BaseHostelDeleteView):
+    model = Building
+    success_url = reverse_lazy("panel_building_list")
+    object_label = "Society"
+
+
+class BuildingBulkDeleteView(BaseHostelBulkDeleteView):
+    model = Building
+    success_url = reverse_lazy("panel_building_list")
+    object_label = "societies"
+
+
+class SectionDeleteView(BaseHostelDeleteView):
+    model = Section
+    success_url = reverse_lazy("panel_section_list")
+    object_label = "Building / Wing"
+
+
+class SectionBulkDeleteView(BaseHostelBulkDeleteView):
+    model = Section
+    success_url = reverse_lazy("panel_section_list")
+    object_label = "buildings / wings"
+
+
+class FloorDeleteView(BaseHostelDeleteView):
+    model = Floor
+    success_url = reverse_lazy("panel_floor_list")
+    object_label = "Floor"
+
+
+class FloorBulkDeleteView(BaseHostelBulkDeleteView):
+    model = Floor
+    success_url = reverse_lazy("panel_floor_list")
+    object_label = "floors"
+
+
+class RoomDeleteView(BaseHostelDeleteView):
+    model = Room
+    success_url = reverse_lazy("panel_room_list")
+    object_label = "Room"
+
+
+class RoomBulkDeleteView(BaseHostelBulkDeleteView):
+    model = Room
+    success_url = reverse_lazy("panel_room_list")
+    object_label = "rooms"
+
+
+class CotDeleteView(BaseHostelDeleteView):
+    model = Cot
+    success_url = reverse_lazy("panel_cot_list")
+    object_label = "Cot"
+
+
+class CotBulkDeleteView(BaseHostelBulkDeleteView):
+    model = Cot
+    success_url = reverse_lazy("panel_cot_list")
+    object_label = "cots"
 
 
 class ExcelUploadView(PanelLoginRequiredMixin, FormView):

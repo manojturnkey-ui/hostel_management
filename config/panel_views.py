@@ -35,6 +35,8 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
     create_url_name = ""
     update_url_name = ""
     detail_url_name = ""
+    delete_url_name = ""
+    bulk_delete_url_name = ""
 
     def get_search_query(self):
         return self.request.GET.get("q", "").strip()
@@ -61,6 +63,8 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
                 "create_url_name": self.create_url_name,
                 "update_url_name": self.update_url_name,
                 "detail_url_name": self.detail_url_name,
+                "delete_url_name": self.delete_url_name,
+                "bulk_delete_url_name": self.bulk_delete_url_name,
             }
         )
         return context

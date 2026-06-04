@@ -11,19 +11,33 @@
                         <button class="btn btn-outline-primary" type="submit">Search</button>
                     </form>
                     <div class="d-flex gap-2">
+                        {% if bulk_delete_url_name %}
+                            <button type="button" class="btn btn-outline-danger" id="bulkDeleteTrigger">Delete Selected</button>
+                        {% endif %}
                         {% if create_url_name %}
                             <a href="{% url create_url_name %}" class="btn btn-primary">Add New</a>
                         {% endif %}
                     </div>
                 </div>
+                {% if bulk_delete_url_name %}
+                    <form method="post" action="{% url bulk_delete_url_name %}" id="bulkDeleteForm" class="d-none">
+                        {% csrf_token %}
+                        <input type="hidden" name="selected_ids" id="bulkDeleteSelectedIds">
+                    </form>
+                {% endif %}
                 <div class="table-responsive">
                     <table class="table table-striped align-middle">
                         <thead>
                             <tr>
+                                {% if bulk_delete_url_name %}
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="selectAllRows">
+                                    </th>
+                                {% endif %}
                                 {% for column in columns %}
                                     <th>{{ column.label }}</th>
                                 {% endfor %}
-                                {% if detail_url_name or update_url_name %}
+                                {% if detail_url_name or update_url_name or delete_url_name %}
                                     <th class="text-end">Actions</th>
                                 {% endif %}
                             </tr>
@@ -31,6 +45,11 @@
                         <tbody>
                             {% for object in object_list %}
                                 <tr>
+                                    {% if bulk_delete_url_name %}
+                                        <td>
+                                            <input type="checkbox" class="bulk-row-check" value="{{ object.pk }}">
+                                        </td>
+                                    {% endif %}
                                     {% for column in columns %}
                                         {% with value=object|get_attr:column.value %}
                                             <td>
@@ -42,7 +61,7 @@
                                             </td>
                                         {% endwith %}
                                     {% endfor %}
-                                    {% if detail_url_name or update_url_name %}
+                                    {% if detail_url_name or update_url_name or delete_url_name %}
                                         <td class="text-end">
                                             {% if detail_url_name %}
                                                 <a href="{% url detail_url_name object.pk %}" class="btn btn-sm btn-outline-primary">View</a>
@@ -50,12 +69,24 @@
                                             {% if update_url_name %}
                                                 <a href="{% url update_url_name object.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
                                             {% endif %}
+                                            {% if delete_url_name %}
+                                                <form method="post" action="{% url delete_url_name object.pk %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Delete this record? This action cannot be undone.');"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            {% endif %}
                                         </td>
                                     {% endif %}
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="{% if detail_url_name or update_url_name %}{{ columns|length|add:1 }}{% else %}{{ columns|length }}{% endif %}" class="text-center text-muted py-4">No records found.</td>
+                                    <td colspan="{% if bulk_delete_url_name %}{% if detail_url_name or update_url_name or delete_url_name %}{{ columns|length|add:2 }}{% else %}{{ columns|length|add:1 }}{% endif %}{% else %}{% if detail_url_name or update_url_name or delete_url_name %}{{ columns|length|add:1 }}{% else %}{{ columns|length }}{% endif %}{% endif %}" class="text-center text-muted py-4">No records found.</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -65,4 +96,45 @@
         </div>
     </div>
 </div>
+{% if bulk_delete_url_name %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const selectAll = document.getElementById("selectAllRows");
+    const rowChecks = Array.from(document.querySelectorAll(".bulk-row-check"));
+    const bulkTrigger = document.getElementById("bulkDeleteTrigger");
+    const bulkForm = document.getElementById("bulkDeleteForm");
+    const bulkInput = document.getElementById("bulkDeleteSelectedIds");
+
+    if (selectAll) {
+        selectAll.addEventListener("change", function () {
+            rowChecks.forEach(function (checkbox) {
+                checkbox.checked = selectAll.checked;
+            });
+        });
+    }
+
+    rowChecks.forEach(function (checkbox) {
+        checkbox.addEventListener("change", function () {
+            if (!selectAll) return;
+            selectAll.checked = rowChecks.length > 0 && rowChecks.every(function (item) { return item.checked; });
+        });
+    });
+
+    if (bulkTrigger && bulkForm && bulkInput) {
+        bulkTrigger.addEventListener("click", function () {
+            const selectedIds = rowChecks.filter(function (checkbox) { return checkbox.checked; }).map(function (checkbox) { return checkbox.value; });
+            if (!selectedIds.length) {
+                alert("Please select at least one record to delete.");
+                return;
+            }
+            if (!confirm("Delete the selected records? This action cannot be undone.")) {
+                return;
+            }
+            bulkInput.value = selectedIds.join(",");
+            bulkForm.submit();
+        });
+    }
+});
+</script>
+{% endif %}
 {% endblock %}
