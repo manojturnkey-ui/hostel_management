@@ -104,7 +104,7 @@ class FloorForm(BaseHostelModelForm):
         else:
             self.fields["section"].queryset = self.fields["section"].queryset.none()
 
-        self.field_order = ["area", "building", "section", "floor_name", "description", "status"]
+        self.order_fields(["area", "building", "section", "floor_name", "description", "status"])
 
 
 class RoomForm(BaseHostelModelForm):
@@ -154,7 +154,7 @@ class RoomForm(BaseHostelModelForm):
         else:
             self.fields["floor"].queryset = self.fields["floor"].queryset.none()
 
-        self.field_order = ["area", "building", "section", "floor", "room_number", "room_name", "room_type", "description", "status"]
+        self.order_fields(["area", "building", "section", "floor", "room_number", "room_name", "room_type", "description", "status"])
 
     def clean_room_type(self):
         return (self.cleaned_data.get("room_type") or "").strip().lower()
@@ -212,7 +212,7 @@ class CotForm(BaseHostelModelForm):
         else:
             self.fields["room"].queryset = self.fields["room"].queryset.none()
 
-        self.field_order = ["area", "building", "section", "floor", "room", "cot_number", "cot_price", "security_deposit", "status", "remarks"]
+        self.order_fields(["area", "building", "section", "floor", "room", "cot_number", "cot_price", "security_deposit", "status", "remarks"])
 
 
 class ExcelUploadForm(BaseHostelModelForm):
