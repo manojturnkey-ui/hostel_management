@@ -19,18 +19,28 @@ class BuildingForm(BaseHostelModelForm):
     class Meta:
         model = Building
         fields = ["area", "building_name", "description", "status"]
+        labels = {
+            "building_name": "Society Name",
+        }
 
 
 class SectionForm(BaseHostelModelForm):
     class Meta:
         model = Section
         fields = ["building", "section_name", "description", "status"]
+        labels = {
+            "building": "Society",
+            "section_name": "Building / Wing Name",
+        }
 
 
 class FloorForm(BaseHostelModelForm):
     class Meta:
         model = Floor
         fields = ["section", "floor_name", "description", "status"]
+        labels = {
+            "section": "Building / Wing",
+        }
 
 
 class RoomForm(BaseHostelModelForm):

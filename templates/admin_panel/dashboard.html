@@ -105,18 +105,18 @@
                 </select>
             </div>
             <div class="col-md-4 col-xl">
-                <label class="form-label">Building</label>
+                <label class="form-label">Society</label>
                 <select name="building" class="form-select" onchange="this.form.submit()">
-                    <option value="">All Buildings</option>
+                    <option value="">All Society</option>
                     {% for item in hostel_filters.buildings %}
                         <option value="{{ item.pk }}" {% if hostel_filters.selected.building == item.pk %}selected{% endif %}>{{ item.building_name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-md-4 col-xl">
-                <label class="form-label">Section</label>
+                <label class="form-label">Buildings / Wings</label>
                 <select name="section" class="form-select" onchange="this.form.submit()">
-                    <option value="">All Sections</option>
+                    <option value="">All Buildings / Wings</option>
                     {% for item in hostel_filters.sections %}
                         <option value="{{ item.pk }}" {% if hostel_filters.selected.section == item.pk %}selected{% endif %}>{{ item.section_name }}</option>
                     {% endfor %}

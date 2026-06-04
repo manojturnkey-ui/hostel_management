@@ -170,8 +170,8 @@ class DashboardView(PanelTemplateView):
 
         context["dashboard_cards"] = [
             {"label": "Total Areas", "value": Area.objects.count(), "icon": "iconoir-map", "theme": "sunrise"},
-            {"label": "Total Buildings", "value": Building.objects.count(), "icon": "iconoir-building", "theme": "azure"},
-            {"label": "Total Sections / Wings", "value": Section.objects.count(), "icon": "iconoir-view-columns-3", "theme": "peach"},
+            {"label": "Total Society", "value": Building.objects.count(), "icon": "iconoir-building", "theme": "azure"},
+            {"label": "Total Buildings / Wings", "value": Section.objects.count(), "icon": "iconoir-view-columns-3", "theme": "peach"},
             {"label": "Total Floors", "value": Floor.objects.count(), "icon": "iconoir-multiple-pages", "theme": "violet"},
             {"label": "Total Rooms", "value": Room.objects.count(), "icon": "iconoir-home", "theme": "mint"},
             {"label": "Total Cots", "value": Cot.objects.count(), "icon": "iconoir-bed", "theme": "rose"},

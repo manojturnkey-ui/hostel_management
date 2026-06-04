@@ -32,8 +32,8 @@ class ReportsHomeView(PanelLoginRequiredMixin, TemplateView):
                     {"key": "pending-rent", "label": "Pending Rent Report"},
                     {"key": "overdue-rent", "label": "Overdue Rent Report"},
                     {"key": "blocked-access", "label": "Blocked Access Report"},
-                    {"key": "dues-by-location", "label": "Area / Building / Room Wise Dues"},
-                    {"key": "occupancy", "label": "Area / Building / Room Occupancy"},
+                    {"key": "dues-by-location", "label": "Area / Society / Room Wise Dues"},
+                    {"key": "occupancy", "label": "Area / Society / Room Occupancy"},
                 ],
             }
         )
@@ -81,7 +81,7 @@ class ReportResultView(PanelLoginRequiredMixin, TemplateView):
                 "",
             )
             queryset = self.apply_status_filter(queryset, "status")
-            return "Available Cots", ["Area", "Building", "Room", "Cot", "Price", "Status"], [
+            return "Available Cots", ["Area", "Society", "Room", "Cot", "Price", "Status"], [
                 [
                     cot.room.floor.section.building.area.area_name,
                     cot.room.floor.section.building.building_name,
@@ -98,7 +98,7 @@ class ReportResultView(PanelLoginRequiredMixin, TemplateView):
                 "",
             )
             queryset = self.apply_status_filter(queryset, "status")
-            return "Occupied Cots", ["Area", "Building", "Room", "Cot", "Occupant", "Status"], [
+            return "Occupied Cots", ["Area", "Society", "Room", "Cot", "Occupant", "Status"], [
                 [
                     cot.room.floor.section.building.area.area_name,
                     cot.room.floor.section.building.building_name,
@@ -277,7 +277,7 @@ class ReportResultView(PanelLoginRequiredMixin, TemplateView):
                     "booking__cot__room__room_number",
                 )
             )
-            return "Area / Building / Room Wise Dues Report", ["Area", "Building", "Room", "Due Count", "Due Amount"], [
+            return "Area / Society / Room Wise Dues Report", ["Area", "Society", "Room", "Due Count", "Due Amount"], [
                 [
                     row["booking__cot__room__floor__section__building__area__area_name"],
                     row["booking__cot__room__floor__section__building__building_name"],
@@ -303,7 +303,7 @@ class ReportResultView(PanelLoginRequiredMixin, TemplateView):
             .annotate(total=Count("id"))
             .order_by("cot__room__floor__section__building__area__area_name", "cot__room__room_number")
         )
-        return "Occupancy Report", ["Area", "Building", "Room", "Occupied Count"], [
+        return "Occupancy Report", ["Area", "Society", "Room", "Occupied Count"], [
             [
                 row["cot__room__floor__section__building__area__area_name"],
                 row["cot__room__floor__section__building__building_name"],

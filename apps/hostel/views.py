@@ -149,11 +149,11 @@ class AreaUpdateView(PanelUpdateView):
 
 class BuildingListView(PanelListView):
     model = Building
-    page_title = "Buildings"
-    page_subtitle = "Manage buildings area-wise"
+    page_title = "Society"
+    page_subtitle = "Manage society area-wise"
     columns = [
         {"label": "Area", "value": "area.area_name"},
-        {"label": "Building Name", "value": "building_name"},
+        {"label": "Society Name", "value": "building_name"},
         {"label": "Description", "value": "description"},
         {"label": "Status", "value": "status"},
     ]
@@ -165,29 +165,29 @@ class BuildingListView(PanelListView):
 class BuildingCreateView(PanelCreateView):
     model = Building
     form_class = BuildingForm
-    page_title = "Create Building"
+    page_title = "Create Society"
     back_url_name = "panel_building_list"
-    success_message = "Building created successfully."
+    success_message = "Society created successfully."
     success_url = reverse_lazy("panel_building_list")
 
 
 class BuildingUpdateView(PanelUpdateView):
     model = Building
     form_class = BuildingForm
-    page_title = "Update Building"
+    page_title = "Update Society"
     back_url_name = "panel_building_list"
-    success_message = "Building updated successfully."
+    success_message = "Society updated successfully."
     success_url = reverse_lazy("panel_building_list")
 
 
 class SectionListView(PanelListView):
     model = Section
-    page_title = "Sections / Wings"
-    page_subtitle = "Manage sections inside each building"
+    page_title = "Buildings / Wings"
+    page_subtitle = "Manage buildings or wings inside each society"
     columns = [
         {"label": "Area", "value": "building.area.area_name"},
-        {"label": "Building", "value": "building.building_name"},
-        {"label": "Section", "value": "section_name"},
+        {"label": "Society", "value": "building.building_name"},
+        {"label": "Building / Wing", "value": "section_name"},
         {"label": "Status", "value": "status"},
     ]
     search_fields = ["section_name", "building__building_name", "building__area__area_name"]
@@ -198,18 +198,18 @@ class SectionListView(PanelListView):
 class SectionCreateView(PanelCreateView):
     model = Section
     form_class = SectionForm
-    page_title = "Create Section / Wing"
+    page_title = "Create Building / Wing"
     back_url_name = "panel_section_list"
-    success_message = "Section created successfully."
+    success_message = "Building / Wing created successfully."
     success_url = reverse_lazy("panel_section_list")
 
 
 class SectionUpdateView(PanelUpdateView):
     model = Section
     form_class = SectionForm
-    page_title = "Update Section / Wing"
+    page_title = "Update Building / Wing"
     back_url_name = "panel_section_list"
-    success_message = "Section updated successfully."
+    success_message = "Building / Wing updated successfully."
     success_url = reverse_lazy("panel_section_list")
 
 
@@ -218,8 +218,8 @@ class FloorListView(PanelListView):
     page_title = "Floors"
     page_subtitle = "Manage floors section-wise"
     columns = [
-        {"label": "Building", "value": "section.building.building_name"},
-        {"label": "Section", "value": "section.section_name"},
+        {"label": "Society", "value": "section.building.building_name"},
+        {"label": "Building / Wing", "value": "section.section_name"},
         {"label": "Floor", "value": "floor_name"},
         {"label": "Status", "value": "status"},
     ]
@@ -251,7 +251,7 @@ class RoomListView(PanelListView):
     page_title = "Rooms"
     page_subtitle = "Manage floor-wise room inventory"
     columns = [
-        {"label": "Building", "value": "floor.section.building.building_name"},
+        {"label": "Society", "value": "floor.section.building.building_name"},
         {"label": "Floor", "value": "floor.floor_name"},
         {"label": "Room No.", "value": "room_number"},
         {"label": "Room Name", "value": "room_name"},
@@ -465,7 +465,7 @@ class BuildingPublicView(TemplateView):
         context.update(
             {
                 "page_title": area.area_name,
-                "page_description": "Select a building",
+                "page_description": "Select a society",
                 "items": area.buildings.filter(status=ActiveStatusChoices.ACTIVE).order_by("building_name"),
                 "item_type": "building",
                 "parent": area,
@@ -483,7 +483,7 @@ class SectionPublicView(TemplateView):
         context.update(
             {
                 "page_title": building.building_name,
-                "page_description": "Select a section or wing",
+                "page_description": "Select a building or wing",
                 "items": building.sections.filter(status=ActiveStatusChoices.ACTIVE).order_by("section_name"),
                 "item_type": "section",
                 "parent": building,

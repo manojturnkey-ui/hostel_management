@@ -115,9 +115,9 @@
                             </div>
 
                             <div class="hostel-filter-item">
-                                <label>Building</label>
+                                <label>Society</label>
                                 <select name="building" id="featureBuilding">
-                                    <option value="">All Buildings</option>
+                                    <option value="">All Society</option>
                                     {% for building in all_buildings %}
                                         <option value="{{ building.pk }}" data-area="{{ building.area_id }}" {% if selected_filters.building == building.pk %}selected{% endif %}>
                                             {{ building.building_name }}
@@ -127,9 +127,9 @@
                             </div>
 
                             <div class="hostel-filter-item">
-                                <label>Section / Wing</label>
+                                <label>Buildings / Wings</label>
                                 <select name="section" id="featureSection">
-                                    <option value="">All Sections</option>
+                                    <option value="">All Buildings / Wings</option>
                                     {% for section in all_sections %}
                                         <option value="{{ section.pk }}" data-building="{{ section.building_id }}" {% if selected_filters.section == section.pk %}selected{% endif %}>
                                             {{ section.section_name }}

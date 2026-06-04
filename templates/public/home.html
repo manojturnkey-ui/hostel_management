@@ -42,12 +42,12 @@
                                     </div>
                                 </div>
                                 <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15">
-                                    <span class="tg-booking-form-title">Building:</span>
+                                    <span class="tg-booking-form-title">Society:</span>
                                     <div class="hostel-home-select-wrap">
                                         <span class="hostel-home-select-icon"><i class="fa-solid fa-building"></i></span>
                                         <span class="hostel-home-select-angle"><i class="fa-solid fa-angle-down"></i></span>
                                         <select name="building" id="filterBuilding" class="hostel-home-search-select">
-                                            <option value="">All Buildings</option>
+                                            <option value="">All Society</option>
                                             {% for building in all_buildings %}
                                                 <option value="{{ building.pk }}" data-area="{{ building.area_id }}">{{ building.building_name }}</option>
                                             {% endfor %}
@@ -55,12 +55,12 @@
                                     </div>
                                 </div>
                                 <div class="tg-booking-form-parent-inner tg-hero-quantity p-relative mr-15">
-                                    <span class="tg-booking-form-title">Section / Wing:</span>
+                                    <span class="tg-booking-form-title">Buildings / Wings:</span>
                                     <div class="hostel-home-select-wrap">
                                         <span class="hostel-home-select-icon"><i class="fa-solid fa-layer-group"></i></span>
                                         <span class="hostel-home-select-angle"><i class="fa-solid fa-angle-down"></i></span>
                                         <select name="section" id="filterSection" class="hostel-home-search-select">
-                                            <option value="">All Sections</option>
+                                            <option value="">All Buildings / Wings</option>
                                             {% for section in all_sections %}
                                                 <option value="{{ section.pk }}" data-building="{{ section.building_id }}">{{ section.section_name }}</option>
                                             {% endfor %}

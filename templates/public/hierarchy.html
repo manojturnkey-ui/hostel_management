@@ -8,7 +8,7 @@
             <div class="col-lg-8">
                 <div class="tg-section-title-box">
                     <span class="tg-section-subtitle">
-                        {% if item_type == "building" %}Buildings{% elif item_type == "section" %}Sections / Wings{% elif item_type == "floor" %}Floors{% else %}Rooms{% endif %}
+                        {% if item_type == "building" %}Society{% elif item_type == "section" %}Buildings / Wings{% elif item_type == "floor" %}Floors{% else %}Rooms{% endif %}
                     </span>
                     <h2 class="tg-section-title">{{ page_title }}</h2>
                     <p class="hostel-section-copy mb-0">{{ page_description }}</p>
@@ -43,7 +43,7 @@
                                 </a>
                             {% endif %}
                             <div class="hostel-floating-pill">
-                                {% if item_type == "building" %}Building{% elif item_type == "section" %}Wing{% elif item_type == "floor" %}Floor{% else %}Room{% endif %}
+                                {% if item_type == "building" %}Society{% elif item_type == "section" %}Building / Wing{% elif item_type == "floor" %}Floor{% else %}Room{% endif %}
                             </div>
                         </div>
                         <div class="tg-listing-content">
@@ -77,9 +77,9 @@
                                 {% if item.description %}
                                     {{ item.description }}
                                 {% elif item_type == "building" %}
-                                    Open this building and continue into active sections or wings.
+                                    Open this society and continue into active buildings or wings.
                                 {% elif item_type == "section" %}
-                                    Continue to the floors available inside this section.
+                                    Continue to the floors available inside this building or wing.
                                 {% elif item_type == "floor" %}
                                     Browse rooms on this floor and check current cot inventory.
                                 {% else %}
@@ -90,7 +90,7 @@
                                 <div class="tg-listing-price">
                                     <span>Next Step</span>
                                     <strong>
-                                        {% if item_type == "building" %}View Sections{% elif item_type == "section" %}View Floors{% elif item_type == "floor" %}View Rooms{% else %}View Cots{% endif %}
+                                        {% if item_type == "building" %}View Buildings / Wings{% elif item_type == "section" %}View Floors{% elif item_type == "floor" %}View Rooms{% else %}View Cots{% endif %}
                                     </strong>
                                 </div>
                                 {% if item_type == "building" %}

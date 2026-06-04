@@ -11,8 +11,8 @@ def panel_context(request) -> dict[str, Any]:
             "icon": "iconoir-building",
             "children": [
                 {"label": "Areas", "url_name": "panel_area_list"},
-                {"label": "Buildings", "url_name": "panel_building_list"},
-                {"label": "Sections / Wings", "url_name": "panel_section_list"},
+                {"label": "Society", "url_name": "panel_building_list"},
+                {"label": "Buildings / Wings", "url_name": "panel_section_list"},
                 {"label": "Floors", "url_name": "panel_floor_list"},
                 {"label": "Rooms", "url_name": "panel_room_list"},
                 {"label": "Cots", "url_name": "panel_cot_list"},

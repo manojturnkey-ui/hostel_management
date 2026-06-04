@@ -26,8 +26,8 @@ class ReportFilterForm(StyledFormMixin, forms.Form):
     ]
 
     area = forms.ModelChoiceField(queryset=Area.objects.none(), required=False, empty_label="All Areas")
-    building = forms.ModelChoiceField(queryset=Building.objects.none(), required=False, empty_label="All Buildings")
-    section = forms.ModelChoiceField(queryset=Section.objects.none(), required=False, empty_label="All Sections")
+    building = forms.ModelChoiceField(queryset=Building.objects.none(), required=False, empty_label="All Society")
+    section = forms.ModelChoiceField(queryset=Section.objects.none(), required=False, empty_label="All Buildings / Wings")
     floor = forms.ModelChoiceField(queryset=Floor.objects.none(), required=False, empty_label="All Floors")
     room = forms.ModelChoiceField(queryset=Room.objects.none(), required=False, empty_label="All Rooms")
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
@@ -41,3 +41,5 @@ class ReportFilterForm(StyledFormMixin, forms.Form):
         self.fields["section"].queryset = Section.objects.select_related("building").order_by("section_name")
         self.fields["floor"].queryset = Floor.objects.select_related("section").order_by("floor_name")
         self.fields["room"].queryset = Room.objects.select_related("floor").order_by("room_number")
+        self.fields["building"].label = "Society"
+        self.fields["section"].label = "Buildings / Wings"
