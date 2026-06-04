@@ -26,7 +26,8 @@ class PanelTemplateView(PanelLoginRequiredMixin, TemplateView):
 class PanelListView(PanelLoginRequiredMixin, ListView):
     template_name = "admin_panel/shared/list.html"
     context_object_name = "object_list"
-    paginate_by = 20
+    paginate_by = 10
+    page_size_options = [10, 25, 50, 100, 500]
     page_title = ""
     page_subtitle = ""
     breadcrumbs = []
@@ -40,6 +41,14 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
 
     def get_search_query(self):
         return self.request.GET.get("q", "").strip()
+
+    def get_paginate_by(self, queryset):
+        raw_value = self.request.GET.get("per_page", "").strip()
+        if raw_value.isdigit():
+            per_page = int(raw_value)
+            if per_page in self.page_size_options:
+                return per_page
+        return self.paginate_by
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -65,6 +74,8 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
                 "detail_url_name": self.detail_url_name,
                 "delete_url_name": self.delete_url_name,
                 "bulk_delete_url_name": self.bulk_delete_url_name,
+                "page_size_options": self.page_size_options,
+                "current_per_page": self.get_paginate_by(self.object_list),
             }
         )
         return context

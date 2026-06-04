@@ -6,8 +6,19 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
-                    <form method="get" class="d-flex gap-2">
-                        <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search here">
+                    <form method="get" class="d-flex flex-wrap gap-2 align-items-end">
+                        <div>
+                            <label class="form-label mb-1 small">Search</label>
+                            <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search here">
+                        </div>
+                        <div>
+                            <label class="form-label mb-1 small">Rows</label>
+                            <select name="per_page" class="form-select" onchange="this.form.submit()">
+                                {% for option in page_size_options %}
+                                    <option value="{{ option }}" {% if current_per_page == option %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <button class="btn btn-outline-primary" type="submit">Search</button>
                     </form>
                     <div class="d-flex gap-2">
@@ -92,6 +103,44 @@
                         </tbody>
                     </table>
                 </div>
+                {% if is_paginated %}
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+                        <div class="text-muted small">
+                            Showing page {{ page_obj.number }} of {{ paginator.num_pages }} | Total records: {{ paginator.count }}
+                        </div>
+                        <nav aria-label="List pagination">
+                            <ul class="pagination mb-0">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ search_query|urlencode }}&per_page={{ current_per_page }}&page=1">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ search_query|urlencode }}&per_page={{ current_per_page }}&page={{ page_obj.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">First</span></li>
+                                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_obj.number }}</span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ search_query|urlencode }}&per_page={{ current_per_page }}&page={{ page_obj.next_page_number }}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?q={{ search_query|urlencode }}&per_page={{ current_per_page }}&page={{ paginator.num_pages }}">Last</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                                    <li class="page-item disabled"><span class="page-link">Last</span></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
