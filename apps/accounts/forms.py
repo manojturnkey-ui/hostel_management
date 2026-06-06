@@ -15,7 +15,7 @@ class PanelAuthenticationForm(StyledFormMixin, AuthenticationForm):
 
 
 class GuestAuthenticationForm(StyledFormMixin, AuthenticationForm):
-    username = forms.CharField(label="Guest Username", max_length=150)
+    username = forms.CharField(label="Mobile Number", max_length=150)
 
     def confirm_login_allowed(self, user):
         super().confirm_login_allowed(user)

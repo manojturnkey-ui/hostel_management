@@ -4,7 +4,7 @@ import calendar
 from datetime import date, datetime, timedelta
 
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db.models import Prefetch
@@ -353,6 +353,22 @@ class GuestLogoutView(View):
 class GuestDashboardView(GuestRequiredMixin, TemplateView):
     template_name = "public/guest_dashboard.html"
 
+    def _sync_guest_username(self, guest):
+        desired_username = guest.mobile_number
+        user = self.request.user
+        if not desired_username or user.username == desired_username:
+            return desired_username or user.username
+
+        User = get_user_model()
+        existing_owner = User.objects.filter(username=desired_username).exclude(pk=user.pk).first()
+        if existing_owner:
+            return user.username
+
+        user.username = desired_username
+        user.mobile_number = guest.mobile_number
+        user.save(update_fields=["username", "mobile_number"])
+        return desired_username
+
     def post(self, request, *args, **kwargs):
         password_form = GuestPasswordChangeForm(user=request.user, data=request.POST)
         if password_form.is_valid():
@@ -369,6 +385,7 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         guest = self.request.user.guest_profile
+        guest_login_name = self._sync_guest_username(guest)
         bookings = list(
             guest.bookings.select_related("cot__room__floor__section__building__area", "payment", "student_access")
             .prefetch_related("monthly_dues")
@@ -422,7 +439,7 @@ class GuestDashboardView(GuestRequiredMixin, TemplateView):
                 "booking_history": booking_history,
                 "current_access": current_access,
                 "latest_payment": _build_latest_guest_payment(guest),
-                "guest_login_name": self.request.user.username,
+                "guest_login_name": guest_login_name,
                 "password_form": kwargs.get("password_form") or GuestPasswordChangeForm(user=self.request.user),
                 "active_guest_section": kwargs.get("active_guest_section", "guest-dashboard-panel"),
             }

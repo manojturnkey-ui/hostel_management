@@ -138,7 +138,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="hostel-form-group">
-                            <label for="{{ form.username.id_for_label }}">Guest Username</label>
+                            <label for="{{ form.username.id_for_label }}">Mobile Number</label>
                             {{ form.username }}
                             {% for error in form.username.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                         </div>
