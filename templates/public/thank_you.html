@@ -26,7 +26,28 @@
         }
 
         .hostel-success-actions {
+            display: flex;
+            align-items: center;
             justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .hostel-success-actions .hostel-submit-btn,
+        .hostel-success-actions .hostel-secondary-btn {
+            min-width: 210px;
+            min-height: 46px;
+            padding: 0 22px;
+            border-radius: 14px;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .hostel-success-actions .hostel-submit-btn i,
+        .hostel-success-actions .hostel-secondary-btn i {
+            font-size: 14px;
         }
 
         @media (max-width: 767px) {
@@ -36,6 +57,11 @@
 
             .hostel-thankyou-area {
                 padding-top: 24px;
+            }
+
+            .hostel-success-actions .hostel-submit-btn,
+            .hostel-success-actions .hostel-secondary-btn {
+                min-width: 100%;
             }
         }
     </style>
