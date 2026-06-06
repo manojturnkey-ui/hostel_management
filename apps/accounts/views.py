@@ -133,7 +133,7 @@ def _get_booking_bill_context(booking):
         return None
 
     today = timezone.localdate()
-    prefetched_dues = list(getattr(booking, "monthly_dues", []))
+    prefetched_dues = list(booking.monthly_dues.all())
     dues = sorted(prefetched_dues, key=lambda item: (item.bill_year, item.bill_month, item.created_at), reverse=True)
 
     current_bill = next((item for item in dues if item.bill_year == today.year and item.bill_month == today.month), None)
