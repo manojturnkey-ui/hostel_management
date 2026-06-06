@@ -47,10 +47,10 @@ class PublicBookingForm(StyledFormMixin, forms.Form):
     address = forms.CharField(widget=forms.TextInput, label="Address")
     state = forms.CharField(max_length=150, label="State")
     pincode = forms.CharField(max_length=6, validators=[validate_pincode], label="Pincode")
-    student_photo = forms.ImageField(required=False, validators=[validate_image_file], label="Guest Photo")
+    student_photo = forms.ImageField(validators=[validate_image_file], label="Guest Photo")
     address_proof_type = forms.ChoiceField(choices=AddressProofTypeChoices.choices, label="Address Proof Type")
     address_proof_front = forms.ImageField(validators=[validate_image_file], label="Address Proof Front")
-    address_proof_back = forms.ImageField(required=False, validators=[validate_image_file], label="Address Proof Back")
+    address_proof_back = forms.ImageField(validators=[validate_image_file], label="Address Proof Back")
     booking_from_date = forms.DateField(
         widget=forms.DateInput(attrs={"type": "date"}),
         label="Staying Start Date",

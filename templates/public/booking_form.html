@@ -336,7 +336,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.student_photo.id_for_label }}">Guest Photo</label>
+                                        <label for="{{ form.student_photo.id_for_label }}">Guest Photo <span class="text-danger">*</span></label>
                                         {{ form.student_photo }}
                                         {% for error in form.student_photo.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
@@ -350,7 +350,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.address_proof_back.id_for_label }}">Address Proof Back</label>
+                                        <label for="{{ form.address_proof_back.id_for_label }}">Address Proof Back <span class="text-danger">*</span></label>
                                         {{ form.address_proof_back }}
                                         {% for error in form.address_proof_back.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
