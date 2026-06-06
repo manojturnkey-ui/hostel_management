@@ -18,7 +18,7 @@ from config.mixins import GuestRequiredMixin
 from config.panel_views import PanelTemplateView
 from apps.access_control.models import StudentAccess
 from apps.bookings.models import BillPaymentStatusChoices, Booking, BookingStatusChoices, MonthlyRentDue
-from apps.hostel.models import Area, Building, Cot, CotStatusChoices, Floor, Room, Section
+from apps.hostel.models import Area, Building, Cot, CotStatusChoices, Floor, Room, Section, SystemSetting
 from apps.payments.models import Payment, PaymentStatusChoices
 
 from .forms import GuestAuthenticationForm, GuestPasswordChangeForm, PanelAuthenticationForm
@@ -135,6 +135,7 @@ def _get_booking_bill_context(booking):
         return None
 
     today = timezone.localdate()
+    system_setting = SystemSetting.get_solo()
     prefetched_dues = list(booking.monthly_dues.all())
     dues = sorted(prefetched_dues, key=lambda item: (item.bill_year, item.bill_month, item.created_at), reverse=True)
 
@@ -155,25 +156,39 @@ def _get_booking_bill_context(booking):
     selected_bill = current_bill or upcoming_or_open_bill or (dues[0] if dues else None)
 
     if selected_bill:
-        renewal_month = calendar.month_name[selected_bill.bill_month]
+        renewal_month_number = selected_bill.bill_month
         renewal_year = selected_bill.bill_year
+        if selected_bill.bill_type == "partial_first_month":
+            if renewal_month_number == 12:
+                renewal_month_number = 1
+                renewal_year += 1
+            else:
+                renewal_month_number += 1
+        renewal_month = calendar.month_name[renewal_month_number]
         rent_expiry_date = selected_bill.billing_period_end
-        blocked_from_date = selected_bill.grace_period_end_date + timedelta(days=1)
     else:
-        renewal_month = calendar.month_name[today.month]
+        renewal_month_number = today.month
         renewal_year = today.year
+        renewal_month = calendar.month_name[renewal_month_number]
         month_end = calendar.monthrange(today.year, today.month)[1]
         rent_expiry_date = date(today.year, today.month, month_end)
-        blocked_from_date = date(today.year, today.month, 6)
+
+    renewal_month_last_day = calendar.monthrange(renewal_year, renewal_month_number)[1]
+    blocked_from_day = min(system_setting.payment_window_end_day + 1, renewal_month_last_day)
+    blocked_from_date = date(renewal_year, renewal_month_number, blocked_from_day)
 
     return {
         "bill": selected_bill,
         "rent_expiry_date": rent_expiry_date,
-        "renewal_window_label": f"1 to 5 {renewal_month} {renewal_year}",
+        "renewal_window_label": (
+            f"{system_setting.payment_window_start_day} to {system_setting.payment_window_end_day} "
+            f"{renewal_month} {renewal_year}"
+        ),
         "blocked_from_date": blocked_from_date,
         "blocked_note": (
-            f"Please renew your stay between 1 and 5 {renewal_month} {renewal_year}. "
-            f"After {blocked_from_date.strftime('%d %b %Y')}, you may not be able to check in until the payment is verified."
+            f"Please renew your stay between {system_setting.payment_window_start_day} and "
+            f"{system_setting.payment_window_end_day} {renewal_month} {renewal_year}. "
+            f"From {blocked_from_date.strftime('%d %b %Y')}, check-in may be blocked until the payment is verified."
         ),
     }
 

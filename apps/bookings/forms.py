@@ -9,7 +9,7 @@ from config.validators import (
     validate_whatsapp_number,
 )
 
-from .models import AddressProofTypeChoices, MonthlyRentDue, Student
+from .models import AddressProofTypeChoices, Booking, BookingStatusChoices, MonthlyRentDue, Student
 
 
 class BaseBookingModelForm(StyledFormMixin, forms.ModelForm):
@@ -63,6 +63,41 @@ class PublicBookingForm(StyledFormMixin, forms.Form):
         if booking_from_date < timezone.localdate():
             raise forms.ValidationError("Booking start date cannot be in the past.")
         return booking_from_date
+
+    def clean(self):
+        cleaned_data = super().clean()
+        mobile_number = cleaned_data.get("mobile_number")
+        full_name = (cleaned_data.get("full_name") or "").strip()
+
+        if not mobile_number or not full_name:
+            return cleaned_data
+
+        existing_guest = Student.objects.filter(mobile_number=mobile_number).order_by("-created_at").first()
+        if not existing_guest:
+            return cleaned_data
+
+        existing_name = (existing_guest.full_name or "").strip()
+        if existing_name and existing_name.casefold() != full_name.casefold():
+            self.add_error(
+                "mobile_number",
+                "This mobile number is already linked to another guest profile. Please use a different mobile number.",
+            )
+            return cleaned_data
+
+        existing_active_booking = Booking.objects.filter(
+            student=existing_guest,
+            booking_status__in=[
+                BookingStatusChoices.PENDING_ADMIN_CONFIRMATION,
+                BookingStatusChoices.CONFIRMED,
+            ],
+        ).exists()
+        if existing_active_booking:
+            self.add_error(
+                "mobile_number",
+                "This mobile number already has a pending or active booking request. Another booking is not allowed right now.",
+            )
+
+        return cleaned_data
 
 
 class BookingReviewForm(StyledFormMixin, forms.Form):

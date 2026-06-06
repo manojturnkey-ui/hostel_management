@@ -1,7 +1,51 @@
 {% extends "layouts/public_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .hostel-thankyou-header-bg {
+            height: 150px;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.42) 0%, rgba(15, 23, 42, 0.16) 100%), url("{% static 'public/tourex/img/hero/tu/banner.jpg' %}");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .hostel-thankyou-area {
+            padding-top: 36px;
+        }
+
+        .hostel-success-card {
+            text-align: center;
+        }
+
+        .hostel-success-card .hostel-credentials-panel {
+            margin-top: 22px;
+        }
+
+        .hostel-success-actions {
+            justify-content: center;
+        }
+
+        @media (max-width: 767px) {
+            .hostel-thankyou-header-bg {
+                height: 120px;
+            }
+
+            .hostel-thankyou-area {
+                padding-top: 24px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block hero_section %}
+<div class="hostel-thankyou-header-bg"></div>
+{% endblock %}
 
 {% block content %}
-<section class="pt-120 pb-120">
+<section class="pt-120 pb-120 hostel-thankyou-area">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-8 col-lg-10">
@@ -32,54 +76,13 @@
 
                     <div class="hostel-success-actions">
                         {% if guest_credentials %}
-                            <a href="{% url 'guest_login' %}" class="tg-btn-border hostel-submit-btn">Open Guest Login <i class="fa-solid fa-arrow-right-long"></i></a>
+                            <a href="{% url 'guest_login' %}" class="tg-btn-border hostel-submit-btn">Guest Login <i class="fa-solid fa-arrow-right-long"></i></a>
                         {% endif %}
-                        <a href="{% url 'public_home' %}" class="tg-btn-border hostel-secondary-btn">Back to Home</a>
+                        <a href="{% url 'public_home' %}" class="tg-btn-border hostel-secondary-btn"><i class="fa-solid fa-house me-2"></i>Back to Home</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-{% if guest_credentials %}
-<div class="modal fade" id="guestCredentialModal" tabindex="-1" aria-labelledby="guestCredentialLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content hostel-modal-card">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="guestCredentialLabel">Guest Portal Login</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="hostel-section-copy">Keep these credentials safe. You can use them as soon as you want to check your booking status.</p>
-                <div class="hostel-credentials-panel mb-0">
-                    <div class="hostel-credential-pill mb-15">
-                        <span>Username</span>
-                        <strong>{{ guest_credentials.username }}</strong>
-                    </div>
-                    <div class="hostel-credential-pill mb-15">
-                        <span>Password</span>
-                        <strong>{{ guest_credentials.password }}</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% endblock %}
-
-{% block extra_js %}
-    {{ block.super }}
-    {% if guest_credentials %}
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var modalElement = document.getElementById("guestCredentialModal");
-                if (modalElement) {
-                    var guestModal = new bootstrap.Modal(modalElement);
-                    guestModal.show();
-                }
-            });
-        </script>
-    {% endif %}
 {% endblock %}
