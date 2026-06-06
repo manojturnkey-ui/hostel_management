@@ -273,21 +273,21 @@
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.full_name.id_for_label }}">Guest Full Name</label>
+                                        <label for="{{ form.full_name.id_for_label }}">Guest Full Name <span class="text-danger">*</span></label>
                                         {{ form.full_name }}
                                         {% for error in form.full_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.mobile_number.id_for_label }}">Mobile Number</label>
+                                        <label for="{{ form.mobile_number.id_for_label }}">Mobile Number <span class="text-danger">*</span></label>
                                         {{ form.mobile_number }}
                                         {% for error in form.mobile_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.whatsapp_number.id_for_label }}">WhatsApp Number</label>
+                                        <label for="{{ form.whatsapp_number.id_for_label }}">WhatsApp Number <span class="text-danger">*</span></label>
                                         {{ form.whatsapp_number }}
                                         {% for error in form.whatsapp_number.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
@@ -301,35 +301,35 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.address.id_for_label }}">Address</label>
+                                        <label for="{{ form.address.id_for_label }}">Address <span class="text-danger">*</span></label>
                                         {{ form.address }}
                                         {% for error in form.address.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.state.id_for_label }}">State</label>
+                                        <label for="{{ form.state.id_for_label }}">State <span class="text-danger">*</span></label>
                                         {{ form.state }}
                                         {% for error in form.state.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.pincode.id_for_label }}">Pincode</label>
+                                        <label for="{{ form.pincode.id_for_label }}">Pincode <span class="text-danger">*</span></label>
                                         {{ form.pincode }}
                                         {% for error in form.pincode.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.address_proof_type.id_for_label }}">Address Proof Type</label>
+                                        <label for="{{ form.address_proof_type.id_for_label }}">Address Proof Type <span class="text-danger">*</span></label>
                                         {{ form.address_proof_type }}
                                         {% for error in form.address_proof_type.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.booking_from_date.id_for_label }}">Staying Start Date</label>
+                                        <label for="{{ form.booking_from_date.id_for_label }}">Staying Start Date <span class="text-danger">*</span></label>
                                         {{ form.booking_from_date }}
                                         {% for error in form.booking_from_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
@@ -343,7 +343,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="hostel-form-group">
-                                        <label for="{{ form.address_proof_front.id_for_label }}">Address Proof Front</label>
+                                        <label for="{{ form.address_proof_front.id_for_label }}">Address Proof Front <span class="text-danger">*</span></label>
                                         {{ form.address_proof_front }}
                                         {% for error in form.address_proof_front.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                                     </div>
