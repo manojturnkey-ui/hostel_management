@@ -320,8 +320,71 @@
             color: #172033;
         }
 
+        .hostel-guest-media-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .hostel-guest-media-card {
+            padding: 14px;
+            border-radius: 18px;
+            background: #fbfcff;
+            border: 1px solid rgba(22, 32, 50, 0.08);
+        }
+
+        .hostel-guest-media-card h5 {
+            font-size: 14px;
+            line-height: 1.35;
+            margin-bottom: 10px;
+            color: #172033;
+        }
+
+        .hostel-guest-media-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 1px solid rgba(22, 32, 50, 0.08);
+            background: #fff;
+        }
+
+        .hostel-guest-form-compact .hostel-form-group {
+            margin-bottom: 10px;
+        }
+
+        .hostel-guest-form-compact .hostel-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            line-height: 1.35;
+            font-weight: 600;
+            color: #172033;
+        }
+
+        .hostel-guest-form-compact input {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-radius: 12px;
+            padding: 6px 12px !important;
+            font-size: 13px;
+            line-height: 1.2 !important;
+        }
+
+        .hostel-guest-form-compact .hostel-submit-btn {
+            min-height: 40px;
+            font-size: 13px;
+            border-radius: 12px;
+            padding: 0 18px;
+        }
+
         @media (max-width: 1199px) {
             .hostel-guest-mini-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .hostel-guest-media-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
@@ -345,7 +408,8 @@
             .hostel-guest-mini-grid,
             .hostel-guest-profile-grid,
             .hostel-guest-status-grid,
-            .hostel-guest-booking-meta {
+            .hostel-guest-booking-meta,
+            .hostel-guest-media-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -504,6 +568,38 @@
                             <div class="hostel-guest-row"><span>Relative Contact</span><strong>{{ guest.relative_contact_number|default:"-" }}</strong></div>
                             <div class="hostel-guest-row"><span>State</span><strong>{{ guest.state|default:"-" }}</strong></div>
                         </div>
+                        <div class="hostel-guest-media-grid">
+                            <div class="hostel-guest-media-card">
+                                <h5>Guest Photo</h5>
+                                {% if guest.student_photo %}
+                                    <img src="{{ guest.student_photo.url }}" alt="Guest photo" class="hostel-guest-media-image">
+                                {% else %}
+                                    <div class="hostel-empty-panel mb-0">
+                                        <p class="mb-0">No guest photo uploaded yet.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="hostel-guest-media-card">
+                                <h5>Address Proof Front</h5>
+                                {% if guest.address_proof_front %}
+                                    <img src="{{ guest.address_proof_front.url }}" alt="Address proof front" class="hostel-guest-media-image">
+                                {% else %}
+                                    <div class="hostel-empty-panel mb-0">
+                                        <p class="mb-0">No front proof uploaded yet.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="hostel-guest-media-card">
+                                <h5>Address Proof Back</h5>
+                                {% if guest.address_proof_back %}
+                                    <img src="{{ guest.address_proof_back.url }}" alt="Address proof back" class="hostel-guest-media-image">
+                                {% else %}
+                                    <div class="hostel-empty-panel mb-0">
+                                        <p class="mb-0">No back proof uploaded yet.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -587,7 +683,7 @@
                 <div id="guest-payment-panel" class="hostel-guest-tab-panel">
                     <div class="hostel-guest-panel" id="guest-payment">
                         <div class="hostel-guest-panel-title">
-                            <h3>Payment</h3>
+                            <h3>Payment History</h3>
                         </div>
                         {% if latest_payment %}
                             <span class="hostel-status-chip {{ latest_payment.status }}">{{ latest_payment.status_display }}</span>
@@ -598,6 +694,12 @@
                                 <li><span>Submitted At</span><strong>{{ latest_payment.submitted_at|date:"d M Y, h:i A" }}</strong></li>
                                 <li><span>Location</span><strong>{{ latest_payment.location }}</strong></li>
                             </ul>
+                            {% if latest_payment.screenshot %}
+                                <div class="hostel-guest-media-card">
+                                    <h5>Uploaded Payment Photo</h5>
+                                    <img src="{{ latest_payment.screenshot.url }}" alt="Uploaded payment photo" class="hostel-guest-media-image">
+                                </div>
+                            {% endif %}
                         {% else %}
                             <div class="hostel-empty-panel">
                                 <h5>No payment record yet</h5>
@@ -613,7 +715,7 @@
                             <h3>Change Password</h3>
                         </div>
                         <p class="hostel-guest-panel-copy">Keep your guest portal secure with a fresh password whenever you need.</p>
-                        <form method="post">
+                        <form method="post" class="hostel-guest-form-compact">
                             {% csrf_token %}
                             <div class="hostel-form-group">
                                 <label for="{{ password_form.old_password.id_for_label }}">Current Password</label>

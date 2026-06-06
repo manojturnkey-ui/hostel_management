@@ -113,6 +113,7 @@ def _build_latest_guest_payment(guest):
             "utr": latest_bill_payment.utr_transaction_id,
             "submitted_at": latest_bill_payment.payment_date or latest_bill_payment.created_at,
             "location": latest_bill_payment.booking.cot.get_location_path(),
+            "screenshot": latest_bill_payment.payment_screenshot,
         }
 
     if not latest_booking_payment:
@@ -125,6 +126,7 @@ def _build_latest_guest_payment(guest):
         "utr": latest_booking_payment.utr_transaction_id,
         "submitted_at": latest_booking_payment.confirmed_at or latest_booking_payment.created_at,
         "location": latest_booking_payment.booking.cot.get_location_path(),
+        "screenshot": latest_booking_payment.payment_screenshot,
     }
 
 
