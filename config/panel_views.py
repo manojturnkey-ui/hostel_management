@@ -39,6 +39,9 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
     delete_url_name = ""
     bulk_delete_url_name = ""
 
+    def get_row_actions(self, obj):
+        return []
+
     def get_search_query(self):
         return self.request.GET.get("q", "").strip()
 
@@ -62,6 +65,7 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        object_list = context.get("object_list") or []
         context.update(
             {
                 "page_title": self.page_title,
@@ -76,6 +80,7 @@ class PanelListView(PanelLoginRequiredMixin, ListView):
                 "bulk_delete_url_name": self.bulk_delete_url_name,
                 "page_size_options": self.page_size_options,
                 "current_per_page": self.get_paginate_by(self.object_list),
+                "row_actions_map": {obj.pk: self.get_row_actions(obj) for obj in object_list},
             }
         )
         return context

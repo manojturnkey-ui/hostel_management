@@ -84,6 +84,27 @@
                                     {% endfor %}
                                     {% if detail_url_name or update_url_name or delete_url_name %}
                                         <td class="text-end">
+                                            {% for action in row_actions_map|dict_get:object.pk %}
+                                                {% if action.kind == "post" %}
+                                                    <form method="post" action="{% url action.url_name object.pk %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-sm {{ action.button_class|default:'btn-outline-secondary' }}"
+                                                            {% if action.confirm_message %}onclick="return confirm('{{ action.confirm_message }}');"{% endif %}
+                                                        >
+                                                            {{ action.label }}
+                                                        </button>
+                                                    </form>
+                                                {% elif action.kind == "link" %}
+                                                    <a
+                                                        href="{% url action.url_name object.pk %}"
+                                                        class="btn btn-sm {{ action.button_class|default:'btn-outline-secondary' }}"
+                                                    >
+                                                        {{ action.label }}
+                                                    </a>
+                                                {% endif %}
+                                            {% endfor %}
                                             {% if detail_url_name %}
                                                 <a href="{% url detail_url_name object.pk %}" class="btn btn-sm btn-outline-primary">View</a>
                                             {% endif %}

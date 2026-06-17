@@ -64,6 +64,13 @@ def badge_class(value):
     return mapping.get(str(value).lower(), "primary")
 
 
+@register.filter
+def dict_get(value, key):
+    if isinstance(value, dict):
+        return value.get(key, [])
+    return []
+
+
 @register.simple_tag
 def menu_group_open(group, current_name):
     for child in group.get("children", []):

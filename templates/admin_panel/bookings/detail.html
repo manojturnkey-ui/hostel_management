@@ -68,18 +68,36 @@
                 {% if booking.payment.payment_screenshot %}
                     <img src="{{ booking.payment.payment_screenshot.url }}" alt="Payment screenshot" class="preview-image mb-3">
                 {% endif %}
-                <form method="post" action="{% url 'panel_booking_confirm' booking.pk %}" class="mb-3">
-                    {% csrf_token %}
-                    <label class="form-label">Admin Remark</label>
-                    <textarea name="admin_remark" class="form-control mb-2" rows="3">{{ booking.admin_remark }}</textarea>
-                    <button type="submit" class="btn btn-success w-100">Confirm Booking</button>
-                </form>
-                <form method="post" action="{% url 'panel_booking_reject' booking.pk %}">
-                    {% csrf_token %}
-                    <label class="form-label">Reject Remark</label>
-                    <textarea name="admin_remark" class="form-control mb-2" rows="3"></textarea>
-                    <button type="submit" class="btn btn-danger w-100">Reject Booking</button>
-                </form>
+                {% if booking.booking_status == 'pending_admin_confirmation' %}
+                    <form method="post" action="{% url 'panel_booking_confirm' booking.pk %}" class="mb-3">
+                        {% csrf_token %}
+                        <label class="form-label">Admin Remark</label>
+                        <textarea name="admin_remark" class="form-control mb-2" rows="3">{{ booking.admin_remark }}</textarea>
+                        <button type="submit" class="btn btn-success w-100">Confirm Booking</button>
+                    </form>
+                    <form method="post" action="{% url 'panel_booking_reject' booking.pk %}" class="mb-3">
+                        {% csrf_token %}
+                        <label class="form-label">Reject Remark</label>
+                        <textarea name="admin_remark" class="form-control mb-2" rows="3"></textarea>
+                        <button type="submit" class="btn btn-danger w-100">Reject Booking</button>
+                    </form>
+                {% endif %}
+                {% if booking.booking_status == 'pending_admin_confirmation' or booking.booking_status == 'confirmed' %}
+                    <form method="post" action="{% url 'panel_booking_cancel' booking.pk %}">
+                        {% csrf_token %}
+                        <label class="form-label">Cancel Remark</label>
+                        <textarea name="admin_remark" class="form-control mb-2" rows="3">{{ booking.admin_remark }}</textarea>
+                        <button
+                            type="submit"
+                            class="btn btn-outline-danger w-100"
+                            onclick="return confirm('Cancel this booking and make the cot available again?');"
+                        >
+                            Cancel Booking
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="text-muted mb-0">This booking is already {{ booking.get_booking_status_display|lower }}.</p>
+                {% endif %}
             </div>
         </div>
     </div>

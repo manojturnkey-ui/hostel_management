@@ -322,6 +322,63 @@ def reject_booking_payment(payment: Payment, user, remark: str) -> Payment:
     return payment
 
 
+@transaction.atomic
+def cancel_booking(booking: Booking, user, remark: str = "") -> Booking:
+    from apps.access_control.models import AccessStatusChoices
+    from apps.access_control.services import change_student_access_status
+
+    booking = (
+        Booking.objects.select_for_update()
+        .select_related("cot", "payment")
+        .prefetch_related("monthly_dues")
+        .get(pk=booking.pk)
+    )
+    if booking.booking_status == BookingStatusChoices.CANCELLED:
+        return booking
+
+    action_time = timezone.now()
+    final_remark = remark or "Booking cancelled by admin."
+
+    booking.booking_status = BookingStatusChoices.CANCELLED
+    booking.admin_remark = final_remark
+    booking.confirmed_by = user
+    booking.confirmed_at = action_time
+    if not booking.booking_to_date:
+        booking.booking_to_date = timezone.localdate()
+    booking.save(update_fields=["booking_status", "admin_remark", "confirmed_by", "confirmed_at", "booking_to_date", "updated_at"])
+
+    if hasattr(booking, "payment"):
+        booking.payment.admin_remark = final_remark
+        if booking.payment.payment_status == PaymentStatusChoices.PENDING:
+            booking.payment.payment_status = PaymentStatusChoices.REJECTED
+            booking.payment.confirmed_by = user
+            booking.payment.confirmed_at = action_time
+            booking.payment.save(update_fields=["payment_status", "admin_remark", "confirmed_by", "confirmed_at", "updated_at"])
+        else:
+            booking.payment.save(update_fields=["admin_remark", "updated_at"])
+
+    booking.monthly_dues.exclude(payment_status=BillPaymentStatusChoices.PAID).update(
+        payment_status=BillPaymentStatusChoices.CANCELLED,
+        admin_remark=final_remark,
+        confirmed_by=user,
+        confirmed_at=action_time,
+        updated_at=action_time,
+    )
+
+    booking.cot.status = CotStatusChoices.AVAILABLE
+    booking.cot.save(update_fields=["status", "updated_at"])
+
+    if hasattr(booking, "student_access"):
+        change_student_access_status(
+            booking.student_access,
+            AccessStatusChoices.INACTIVE,
+            "Booking cancelled by admin",
+            changed_by=user,
+        )
+
+    return booking
+
+
 def submit_monthly_bill_payment(bill: MonthlyRentDue, cleaned_data: dict):
     bill.utr_transaction_id = cleaned_data["utr_transaction_id"]
     bill.payment_screenshot = cleaned_data["payment_screenshot"]

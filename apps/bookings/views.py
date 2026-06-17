@@ -14,6 +14,7 @@ from apps.payments.services import get_active_qr_setting
 from .forms import BookingReviewForm, GraceExtensionForm, ManualBillGenerateForm, MonthlyRentPaymentForm, PublicBookingForm
 from .models import BillPaymentStatusChoices, Booking, BookingStatusChoices, MonthlyRentDue, Student
 from .services import (
+    cancel_booking,
     get_system_setting,
     confirm_booking_payment,
     confirm_monthly_bill_payment,
@@ -60,6 +61,19 @@ class BookingStatusListView(PanelListView):
         if self.status_filter:
             queryset = queryset.filter(booking_status=self.status_filter)
         return queryset
+
+    def get_row_actions(self, obj):
+        if obj.booking_status not in [BookingStatusChoices.PENDING_ADMIN_CONFIRMATION, BookingStatusChoices.CONFIRMED]:
+            return []
+        return [
+            {
+                "label": "Cancel",
+                "url_name": "panel_booking_cancel",
+                "kind": "post",
+                "button_class": "btn-outline-danger",
+                "confirm_message": "Cancel this booking and make the cot available again?",
+            }
+        ]
 
 
 class PendingBookingListView(BookingStatusListView):
@@ -127,6 +141,19 @@ class RejectBookingView(PanelLoginRequiredMixin, View):
         reject_booking_payment(booking.payment, request.user, remark)
         messages.warning(request, "Booking rejected successfully.")
         return redirect("panel_booking_detail", pk=pk)
+
+
+class CancelBookingView(PanelLoginRequiredMixin, View):
+    def post(self, request, pk):
+        booking = get_object_or_404(Booking.objects.select_related("cot", "payment"), pk=pk)
+        redirect_to = request.META.get("HTTP_REFERER")
+        if booking.booking_status not in [BookingStatusChoices.PENDING_ADMIN_CONFIRMATION, BookingStatusChoices.CONFIRMED]:
+            messages.error(request, "Only pending or confirmed bookings can be cancelled.")
+            return redirect(redirect_to) if redirect_to else redirect("panel_booking_detail", pk=pk)
+
+        cancel_booking(booking, request.user, request.POST.get("admin_remark", "").strip())
+        messages.success(request, "Booking cancelled and cot marked available.")
+        return redirect(redirect_to) if redirect_to else redirect("panel_booking_detail", pk=pk)
 
 
 class BillListView(PanelListView):
