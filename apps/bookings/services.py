@@ -6,10 +6,11 @@ from decimal import Decimal, ROUND_HALF_UP
 from random import SystemRandom
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 
-from apps.hostel.models import BillingCalculationChoices, CotStatusChoices, SystemSetting
+from apps.hostel.models import BillingCalculationChoices, Cot, CotStatusChoices, SystemSetting
 from apps.payments.models import Payment, PaymentStatusChoices
 
 from .models import (
@@ -327,12 +328,10 @@ def cancel_booking(booking: Booking, user, remark: str = "") -> Booking:
     from apps.access_control.models import AccessStatusChoices
     from apps.access_control.services import change_student_access_status
 
-    booking = (
-        Booking.objects.select_for_update()
-        .select_related("cot", "payment")
-        .prefetch_related("monthly_dues")
-        .get(pk=booking.pk)
-    )
+    booking = Booking.objects.select_for_update().get(pk=booking.pk)
+    cot = Cot.objects.select_for_update().get(pk=booking.cot_id)
+    payment = Payment.objects.select_for_update().filter(booking=booking).first()
+    monthly_dues = MonthlyRentDue.objects.select_for_update().filter(booking=booking)
     if booking.booking_status == BookingStatusChoices.CANCELLED:
         return booking
 
@@ -347,17 +346,17 @@ def cancel_booking(booking: Booking, user, remark: str = "") -> Booking:
         booking.booking_to_date = timezone.localdate()
     booking.save(update_fields=["booking_status", "admin_remark", "confirmed_by", "confirmed_at", "booking_to_date", "updated_at"])
 
-    if hasattr(booking, "payment"):
-        booking.payment.admin_remark = final_remark
-        if booking.payment.payment_status == PaymentStatusChoices.PENDING:
-            booking.payment.payment_status = PaymentStatusChoices.REJECTED
-            booking.payment.confirmed_by = user
-            booking.payment.confirmed_at = action_time
-            booking.payment.save(update_fields=["payment_status", "admin_remark", "confirmed_by", "confirmed_at", "updated_at"])
+    if payment:
+        payment.admin_remark = final_remark
+        if payment.payment_status == PaymentStatusChoices.PENDING:
+            payment.payment_status = PaymentStatusChoices.REJECTED
+            payment.confirmed_by = user
+            payment.confirmed_at = action_time
+            payment.save(update_fields=["payment_status", "admin_remark", "confirmed_by", "confirmed_at", "updated_at"])
         else:
-            booking.payment.save(update_fields=["admin_remark", "updated_at"])
+            payment.save(update_fields=["admin_remark", "updated_at"])
 
-    booking.monthly_dues.exclude(payment_status=BillPaymentStatusChoices.PAID).update(
+    monthly_dues.exclude(payment_status=BillPaymentStatusChoices.PAID).update(
         payment_status=BillPaymentStatusChoices.CANCELLED,
         admin_remark=final_remark,
         confirmed_by=user,
@@ -365,12 +364,17 @@ def cancel_booking(booking: Booking, user, remark: str = "") -> Booking:
         updated_at=action_time,
     )
 
-    booking.cot.status = CotStatusChoices.AVAILABLE
-    booking.cot.save(update_fields=["status", "updated_at"])
+    cot.status = CotStatusChoices.AVAILABLE
+    cot.save(update_fields=["status", "updated_at"])
 
-    if hasattr(booking, "student_access"):
+    try:
+        student_access = booking.student_access
+    except ObjectDoesNotExist:
+        student_access = None
+
+    if student_access:
         change_student_access_status(
-            booking.student_access,
+            student_access,
             AccessStatusChoices.INACTIVE,
             "Booking cancelled by admin",
             changed_by=user,
